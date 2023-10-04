@@ -81,11 +81,6 @@ namespace FinaleSignalR_Client
             id = rnd.Next(100000).ToString();
 
             comm = new Communication(messages, this);
-
-            //Bullet 
-            this.MouseDown += Form1_MouseDown;
-            this.MouseUp += Form1_MouseUp;
-            //Bullet end 
         }
 
         public void createPlayer(string id)
@@ -262,22 +257,6 @@ namespace FinaleSignalR_Client
 
         //Bullet
         List<Bullet> bullets = new List<Bullet>();
-        private void Form1_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                isShooting = true;
-            }
-        }
-
-        private void Form1_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                isShooting = false;
-            }
-        }
-
         public void shootBullet(string x, string y, string directionX, string directionY)
         {
             Vector2 bulletDirection = new Vector2(float.Parse(directionX), float.Parse(directionY));
