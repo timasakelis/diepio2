@@ -6,6 +6,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FinaleSignalR_Client.Controls;
+using FinaleSignalR_Client.Web;
 using Microsoft.AspNetCore.SignalR.Client;
 
 
@@ -16,12 +17,12 @@ namespace FinaleSignalR_Client
 {
     public partial class Form1 : Form
     {
-        HubConnection connection;
         int playerspeed;
         int playerCount = 0;
-        int id;
+        public string id;
         PictureBox playerBox;
-        MapControl mapControl;
+        public MapControl mapControl;
+        Communication comm;
 
         int mapMinX = 0;
         int mapMinY = 0;
@@ -33,7 +34,7 @@ namespace FinaleSignalR_Client
         public Form1()
         {
             InitializeComponent();
-
+            this.playerBoxes = new System.Windows.Forms.PictureBox[50];
 
             playerspeed = 5;
             this.KeyPreview = true;
@@ -42,54 +43,13 @@ namespace FinaleSignalR_Client
             //this.obstacles = new List<Rectangle>();
             //obstacles.Add(new Rectangle(100, 100, 50, 50));
 
+            Random rnd = new Random();
+            id = rnd.Next(100000).ToString();
 
-            //((System.ComponentModel.ISupportInitialize)(Player)).EndInit();
-
-            //Conects to a given url
-            connection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:7181/chatHub")
-                .WithAutomaticReconnect()
-                .Build();
-
-            // These define what happens during their scenarios
-            connection.Reconnecting += (sender) =>
-            {
-                messages.Invoke((MethodInvoker)delegate
-                {
-                    var newMessage = "Attempting to connect to the server...";
-                    messages.Items.Add(newMessage);
-                });
-
-                return Task.CompletedTask;
-            };
-
-            connection.Reconnected += (sender) =>
-            {
-                messages.Invoke((MethodInvoker)delegate
-                {
-                    var newMessage = "Reconnected to the server";
-                    messages.Items.Clear();
-                    messages.Items.Add(newMessage);
-                });
-
-                return Task.CompletedTask;
-            };
-
-            connection.Closed += (sender) =>
-            {
-                messages.Invoke((MethodInvoker)delegate
-                {
-                    var newMessage = "Connection Closed";
-                    messages.Items.Add(newMessage);
-                    openConnection.Enabled = true;
-                    sendMessage.Enabled = true;
-                });
-
-                return Task.CompletedTask;
-            };
+            comm = new Communication(messages, this);
         }
 
-        private void createPlayer(string id)
+        public void createPlayer(string id)
         {
             var Player = new PictureBox();
             Player.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -103,69 +63,38 @@ namespace FinaleSignalR_Client
             this.mapMaxY = mapControl.Height - Player.Height;
 
             //adding player to map
-            this.mapControl.Controls.Add(Player);
-
             playerBoxes[playerCount] = Player;
+            this.mapControl.Controls.Add(playerBoxes[playerCount]);
 
 
-            //this.Controls.Add(playerBoxes[playerCount]);
             playerCount++;
         }
 
-        private async void button1_Click(object sender, EventArgs e)
+        public void RequestAccepted()
         {
-            connection.On<string, string>("ReceiveMessage", (user, message) =>
-            {
-                messages.Invoke((MethodInvoker)delegate
-                {
-                    var parsedMessage = message.Split('|');
-                    if (parsedMessage.Length > 0)
-                    {
-                        if (parsedMessage[0] == "All" || parsedMessage[0] == id.ToString())
-                        {
-                            switch (parsedMessage[1])
-                            {
-                                case "RequestAccepted":
-                                    createPlayer(id.ToString());
-                                    playerBox = playerBoxes[0];
-                                    ServerTimer.Start();
-                                    break;
-                                case "EnemyCreated":
-                                    if (parsedMessage[2] != id.ToString())
-                                    {
-                                        createPlayer(parsedMessage[2]);
-                                    }
-                                    break;
-                                case "Coords":
-                                    moveEnemy(parsedMessage[2], int.Parse(parsedMessage[3]), int.Parse(parsedMessage[4]));
-                                    break;
-                            }
-                        }
-
-                    }
-                    var newMessage = $"{user}: {message}";
-                    messages.Items.Add(newMessage);
-                });
-            });
-
-            try
-            {
-                await connection.StartAsync();
-                messages.Items.Add("Connection Started");
-                Random rnd = new Random();
-                id = rnd.Next(100000);
-                canICreateAvatar(id);
-
-                openConnection.Enabled = false;
-                sendMessage.Enabled = true;
-            }
-            catch (Exception ex)
-            {
-                messages.Items.Add(ex.Message);
-            }
+            createPlayer(id.ToString());
+            playerBox = playerBoxes[0];
+            ServerTimer.Start();
         }
 
-        private void moveEnemy(string id, int left, int top)
+        public void GameStartButtonStuff()
+        {
+            openConnection.Enabled = false;
+            sendMessage.Enabled = true;
+        }
+
+        public void GameClosedButtonStuff()
+        {
+            openConnection.Enabled = true;
+            sendMessage.Enabled = true;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            comm.ParseMessage();
+        }
+
+        public void moveEnemy(string id, int left, int top)
         {
             for (int i = 0; i < playerCount; i++)
             {
@@ -177,33 +106,9 @@ namespace FinaleSignalR_Client
             }
         }
 
-        private async void canICreateAvatar(int id)
+        private void sendMessage_Click(object sender, EventArgs e)
         {
-            try
-            {
-                await connection.InvokeAsync("SendMessage", id.ToString(), "Request|CreateAvatar");
-            }
-            catch (Exception ex)
-            {
-                messages.Items.Add(ex.Message);
-            }
-        }
-
-        private async void sendMessage_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                await connection.InvokeAsync("SendMessage", id.ToString(), "Chat|" + messageInput.Text);
-            }
-            catch (Exception ex)
-            {
-                messages.Items.Add(ex.Message);
-            }
-        }
-
-        private void playerBox_Click(object sender, EventArgs e)
-        {
-
+            comm.SendChatMessage(messageInput.Text);
         }
 
         private void KeyIsDown(object sender, KeyEventArgs e)
@@ -313,17 +218,9 @@ namespace FinaleSignalR_Client
             return false; // No collision detected
         }
 
-        private async void ServerTimer_Tick(object sender, EventArgs e)
+        private void ServerTimer_Tick(object sender, EventArgs e)
         {
-            try
-            {
-                Console.WriteLine(playerBox.Left.ToString());
-                await connection.InvokeAsync("SendMessage", id.ToString(), $"Coords|{playerBox.Left}|{playerBox.Top}");
-            }
-            catch (Exception ex)
-            {
-                messages.Items.Add(ex.Message);
-            }
+            comm.SendCoordinates(playerBox.Left, playerBox.Top);
         }
     }
 }

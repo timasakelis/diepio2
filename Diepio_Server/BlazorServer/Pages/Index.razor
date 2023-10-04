@@ -30,7 +30,25 @@
     private string? userInput;
     private string? messageInput;
     private int idCount = 0; // Who cares about security am I right? {BUG}
+    private int obstCount;
     private int[] playerIds = new int[50];
+    private Obst[] obst = new Obst[50];
+
+    private class Obst{
+
+        public int x;
+        public int y;
+        public int width;
+        public int height;
+
+        public Obst(int x, int y, int w, int h)
+        {
+            this.x = x;
+            this.y = y;
+            this.width = w;
+            this.height = h;
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -38,6 +56,14 @@
             .WithUrl(NavManager.ToAbsoluteUri("/chathub"))
             .WithAutomaticReconnect()
             .Build();
+
+        // Create Obst
+        obst[0] = new Obst(100, 100, 400, 10);
+        obst[1] = new Obst(200, 200, 10, 90);
+        obst[2] = new Obst(500, 300, 10, 200);
+        obst[3] = new Obst(100, 400, 100, 10);
+        obst[4] = new Obst(200, 500, 10, 30);
+        obstCount = 5;
 
         hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
         {
@@ -59,11 +85,16 @@
                             }
                             hubConnection.SendAsync("SendMessage", "SERVER", "All|EnemyCreated|" + gotId.ToString());
                             idCount++;
+                            for (int i = 0; i < obstCount; i++)
+                            {
+                                hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + "|Obstacles|" + obst[i].x + "|" + obst[i].y + "|" + obst[i].width + "|" + obst[i].height);
+                            }
                         }
                         break;
                     case "Coords": //write code to save, by replacing playerIds with Player class custom
                         hubConnection.SendAsync("SendMessage", "SERVER", "All|Coords|" +user.ToString()+ "|" + parsedMessage[1].ToString() + "|"+parsedMessage[2].ToString());
                         break;
+
                 }
                 if (parsedMessage[0] == "Request")
                 {
