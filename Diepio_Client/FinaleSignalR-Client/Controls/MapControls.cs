@@ -13,6 +13,9 @@ namespace FinaleSignalR_Client.Controls
         public List<Rectangle> obstacles = new List<Rectangle>();
         Graphics g;
         Pen p = new Pen(Brushes.Blue);
+        public bool isShooting;
+
+
         public MapControl()
         {
             //this.BackColor = Color.Green;
@@ -22,6 +25,9 @@ namespace FinaleSignalR_Client.Controls
             //obstacles.Add(new Rectangle(200, 200, 10, 90));
             //obstacles.Add(new Rectangle(500, 300, 10, 200));
             //obstacles.Add(new Rectangle(100, 400, 100, 10));
+
+            this.MouseDown += MapControl_MouseDown;
+            this.MouseUp += MapControl_MouseUp;
 
         }
 
@@ -53,6 +59,27 @@ namespace FinaleSignalR_Client.Controls
                 g.FillRectangle(Brushes.Gray, obstacle);
                 obstacles.Add(obstacle);
             }
+        }
+
+        public void MapControl_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                isShooting = true;
+            }
+        }
+
+        public void MapControl_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                isShooting = false;
+            }
+        }
+
+        public bool IsShooting()
+        {
+            return isShooting;
         }
 
     }

@@ -15,6 +15,32 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace FinaleSignalR_Client
 {
+
+    public class Bullet
+    {
+        public PictureBox BulletPictureBox { get; set; }
+        public Vector2 Direction { get; set; }
+        public float Speed { get; set; } = 10;
+
+        public Bullet(Point startPosition, Vector2 direction)
+        {
+            BulletPictureBox = new PictureBox
+            {
+                Size = new Size(10, 10),
+                BackColor = Color.Red,
+                Location = startPosition,
+            };
+            Direction = direction;
+        }
+
+        public void Move()
+        {
+            BulletPictureBox.Left += (int)(Direction.X * Speed);
+            BulletPictureBox.Top += (int)(Direction.Y * Speed);
+        }
+    }
+
+
     public partial class Form1 : Form
     {
         int playerspeed;
@@ -31,6 +57,13 @@ namespace FinaleSignalR_Client
 
         //List<Rectangle> obstacles;
 
+
+        //Bullet
+        private bool isShooting = false;
+        private DateTime lastBulletFiredTime;
+        private TimeSpan bulletCooldown = TimeSpan.FromMilliseconds(150);
+        //Bullet end
+
         public Form1()
         {
             InitializeComponent();
@@ -40,6 +73,7 @@ namespace FinaleSignalR_Client
             this.KeyPreview = true;
             this.mapControl = new MapControl();
             this.Controls.Add(this.mapControl);
+            this.mapControl.SendToBack();
             //this.obstacles = new List<Rectangle>();
             //obstacles.Add(new Rectangle(100, 100, 50, 50));
 
@@ -47,6 +81,11 @@ namespace FinaleSignalR_Client
             id = rnd.Next(100000).ToString();
 
             comm = new Communication(messages, this);
+
+            //Bullet 
+            this.MouseDown += Form1_MouseDown;
+            this.MouseUp += Form1_MouseUp;
+            //Bullet end 
         }
 
         public void createPlayer(string id)
@@ -75,6 +114,8 @@ namespace FinaleSignalR_Client
             createPlayer(id.ToString());
             playerBox = playerBoxes[0];
             ServerTimer.Start();
+            bulletMovementTimer.Start();
+
         }
 
         public void GameStartButtonStuff()
@@ -218,9 +259,76 @@ namespace FinaleSignalR_Client
             return false; // No collision detected
         }
 
+
+        //Bullet
+        List<Bullet> bullets = new List<Bullet>();
+        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                isShooting = true;
+            }
+        }
+
+        private void Form1_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                isShooting = false;
+            }
+        }
+
+        public void shootBullet(string x, string y, string directionX, string directionY)
+        {
+            Vector2 bulletDirection = new Vector2(float.Parse(directionX), float.Parse(directionY));
+            Point startPoint = new Point(int.Parse(x), int.Parse(y));
+            var bullet = new Bullet(startPoint, bulletDirection);
+            bullet.BulletPictureBox.BringToFront();
+            this.Controls.Add(bullet.BulletPictureBox);
+            this.mapControl.Controls.Add(bullet.BulletPictureBox);
+            bullets.Add(bullet);
+
+            //Limit on client to keep from lagging out
+            if (bullets.Count >= 30)
+            {
+                // Remove the first (oldest) bullet
+                if (bullets[0].BulletPictureBox != null)
+                {
+                    this.mapControl.Controls.Remove(bullets[0].BulletPictureBox);
+                    this.Controls.Remove(bullets[0].BulletPictureBox); 
+                    bullets[0].BulletPictureBox.Dispose(); 
+                }
+                bullets.RemoveAt(0); 
+            }
+        }
+        //Bullet End
+
         private void ServerTimer_Tick(object sender, EventArgs e)
         {
             comm.SendCoordinates(playerBox.Left, playerBox.Top);
+
+            //Send bullet info
+            if (this.mapControl.IsShooting() && (DateTime.Now - lastBulletFiredTime) > bulletCooldown)
+            {
+                Point targetPoint = this.PointToClient(Cursor.Position);
+                Vector2 start = new Vector2(playerBox.Location.X, playerBox.Location.Y);
+                Vector2 target = new Vector2(targetPoint.X, targetPoint.Y);
+                Vector2 direction = Vector2.Normalize(target - start);
+                lastBulletFiredTime = DateTime.Now;
+                //Bullet start from center of player instead of corner
+                int bulletStartX = playerBox.Location.X + playerBox.Width / 2;
+                int bulletStartY = playerBox.Location.Y + playerBox.Height / 2;
+                comm.SendBulletInfo(bulletStartX, bulletStartY, direction.X, direction.Y);
+            }
+        }
+
+        private void bulletMovementTimer_Tick(object sender, EventArgs e)
+        {
+            foreach (Bullet bullet in bullets)
+            {
+                bullet.Move();
+            }
+            
         }
     }
 }

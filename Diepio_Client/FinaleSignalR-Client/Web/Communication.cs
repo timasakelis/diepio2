@@ -105,6 +105,9 @@ namespace FinaleSignalR_Client.Web
                                     form.mapControl.SetObstacle(int.Parse(parsedMessage[2]), int.Parse(parsedMessage[3]), int.Parse(parsedMessage[4]), int.Parse(parsedMessage[5]));
                                     form.Refresh();
                                     break;
+                                case "BULLET":
+                                    form.shootBullet(parsedMessage[2], parsedMessage[3], parsedMessage[4], parsedMessage[5]);
+                                    break;
 
 
                             }
@@ -150,6 +153,18 @@ namespace FinaleSignalR_Client.Web
             catch (Exception ex)
             {
                 messages.Items.Add(ex.Message);
+            }
+        }
+
+        public async void SendBulletInfo(int x, int y, float directionX, float directionY)
+        {
+            try
+            {
+                await connection.InvokeAsync("SendMessage", id, $"BULLET|{x}|{y}|{directionX}|{directionY}");
+            }
+            catch (Exception ex)
+            {
+                messages.Items.Add($"Error sending bullet data: {ex.Message}");
             }
         }
 
