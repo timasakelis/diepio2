@@ -37,6 +37,7 @@ namespace FinaleSignalR_Client
             this.UpTimer = new System.Windows.Forms.Timer(this.components);
             this.DownTimer = new System.Windows.Forms.Timer(this.components);
             this.ServerTimer = new System.Windows.Forms.Timer(this.components);
+            this.bulletMovementTimer = new System.Windows.Forms.Timer(this.components);
             this.sendMessage = new System.Windows.Forms.Button();
             this.messageInput = new System.Windows.Forms.TextBox();
             this.messages = new System.Windows.Forms.ListBox();
@@ -77,6 +78,11 @@ namespace FinaleSignalR_Client
             // 
             this.ServerTimer.Interval = 10;
             this.ServerTimer.Tick += new System.EventHandler(this.ServerTimer_Tick);
+            //
+            // Bullet timer
+            //
+            bulletMovementTimer.Interval = 1;
+            bulletMovementTimer.Tick += new System.EventHandler(this.bulletMovementTimer_Tick);
             // 
             // sendMessage
             // 
@@ -136,6 +142,7 @@ namespace FinaleSignalR_Client
         private System.Windows.Forms.Timer UpTimer;
         private System.Windows.Forms.Timer DownTimer;
         private System.Windows.Forms.Timer ServerTimer;
+        private System.Windows.Forms.Timer bulletMovementTimer;
         private System.Windows.Forms.Button sendMessage;
         private System.Windows.Forms.TextBox messageInput;
         private System.Windows.Forms.ListBox messages;

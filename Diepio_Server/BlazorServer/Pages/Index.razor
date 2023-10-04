@@ -94,6 +94,10 @@
                     case "Coords": //write code to save, by replacing playerIds with Player class custom
                         hubConnection.SendAsync("SendMessage", "SERVER", "All|Coords|" +user.ToString()+ "|" + parsedMessage[1].ToString() + "|"+parsedMessage[2].ToString());
                         break;
+                    case "BULLET":
+                        hubConnection.SendAsync("SendMessage", "SERVER", $"All|BULLET|{parsedMessage[1]}|{parsedMessage[2]}|{parsedMessage[3]}|{parsedMessage[4]}");
+                        break;
+
 
                 }
                 if (parsedMessage[0] == "Request")
