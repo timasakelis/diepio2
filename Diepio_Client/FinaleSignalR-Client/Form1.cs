@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using FinaleSignalR_Client.Controls;
 using FinaleSignalR_Client.Web;
 using Microsoft.AspNetCore.SignalR.Client;
+using System.Linq;
 
 
 
@@ -37,6 +38,31 @@ namespace FinaleSignalR_Client
         {
             BulletPictureBox.Left += (int)(Direction.X * Speed);
             BulletPictureBox.Top += (int)(Direction.Y * Speed);
+        }
+    }
+
+    public class Pellet
+    {
+        public PictureBox PelletPictureBox { get; set; }
+        public int ID { get; set; }
+        public int HP { get; set; } = 1;
+        public int EXP { get; set; } = 10;
+
+        public Pellet(int id, Point startPosition)
+        {
+            PelletPictureBox = new PictureBox
+            {
+                Size = new Size(10, 10),
+                BackColor = Color.Green, // Example color
+                Location = startPosition,
+            };
+            ID = id;
+        }
+
+        // Add a method to check if the pellet is destroyed
+        public bool IsDestroyed()
+        {
+            return HP <= 0;
         }
     }
 
@@ -274,13 +300,30 @@ namespace FinaleSignalR_Client
                 if (bullets[0].BulletPictureBox != null)
                 {
                     this.mapControl.Controls.Remove(bullets[0].BulletPictureBox);
-                    this.Controls.Remove(bullets[0].BulletPictureBox); 
-                    bullets[0].BulletPictureBox.Dispose(); 
+                    this.Controls.Remove(bullets[0].BulletPictureBox);
+                    bullets[0].BulletPictureBox.Dispose();
                 }
-                bullets.RemoveAt(0); 
+                bullets.RemoveAt(0);
             }
         }
         //Bullet End
+
+        List<Pellet> pellets = new List<Pellet>();
+
+        public void createPellet(int id, int x, int y)
+        {
+
+            // Check if pellet already exists
+            if (pellets.Any(p => p.ID == id))
+            {
+                return;
+            }
+
+            Pellet pellet = new Pellet(id, new Point(x, y));
+            this.Controls.Add(pellet.PelletPictureBox);
+            this.mapControl.Controls.Add(pellet.PelletPictureBox);
+        }
+
 
         private void ServerTimer_Tick(object sender, EventArgs e)
         {
@@ -301,13 +344,60 @@ namespace FinaleSignalR_Client
             }
         }
 
+        List<Bullet> bulletsToRemove = new List<Bullet>();
+        List<Pellet> pelletsToRemove = new List<Pellet>();
         private void bulletMovementTimer_Tick(object sender, EventArgs e)
         {
             foreach (Bullet bullet in bullets)
             {
                 bullet.Move();
+
+                //if (bullet.BulletPictureBox.Left < 0 ||
+                //    bullet.BulletPictureBox.Right > this.Width ||
+                //    bullet.BulletPictureBox.Top < 0 ||
+                //    bullet.BulletPictureBox.Bottom > this.Height)
+                //{
+                //    bulletsToRemove.Add(bullet);
+                //    this.Controls.Remove(bullet.BulletPictureBox);
+                //    this.mapControl.Controls.Remove(bullet.BulletPictureBox);
+                //}
+
+                foreach (Pellet pellet in pellets)
+                {
+                    if (bullet.BulletPictureBox.Bounds.IntersectsWith(pellet.PelletPictureBox.Bounds))
+                    {
+                        pellet.HP--;
+
+                        // Remove the bullet when it hits a pellet
+                        bulletsToRemove.Add(bullet);
+                        this.Controls.Remove(bullet.BulletPictureBox);
+
+                        // Check if the pellet is destroyed
+                        if (pellet.IsDestroyed())
+                        {
+                            // Remove the pellet
+                            pelletsToRemove.Add(pellet);
+                            this.Controls.Remove(pellet.PelletPictureBox);
+                            this.mapControl.Controls.Remove(pellet.PelletPictureBox);
+
+                            // to do: increase tank's EXP when a pellet is destroyed
+                        }
+                    }
+                }
             }
-            
+
+            // Remove out-of-bounds bullets from the list
+            foreach (Bullet bullet in bulletsToRemove)
+            {
+                bullets.Remove(bullet);
+            }
+            // Remove out-of-bounds bullets from the list
+            foreach (Pellet pellet in pelletsToRemove)
+            {
+                //To do logic send server
+                pellets.Remove(pellet);
+            }
+
         }
     }
 }
