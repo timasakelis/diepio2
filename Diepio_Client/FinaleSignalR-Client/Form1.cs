@@ -1,13 +1,11 @@
-﻿using System;
+﻿using FinaleSignalR_Client.Controls;
+using FinaleSignalR_Client.Objects;
+using FinaleSignalR_Client.Web;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
-using System.Runtime.Remoting.Messaging;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using FinaleSignalR_Client.Controls;
-using FinaleSignalR_Client.Web;
-using Microsoft.AspNetCore.SignalR.Client;
 
 
 
@@ -16,37 +14,14 @@ using Microsoft.AspNetCore.SignalR.Client;
 namespace FinaleSignalR_Client
 {
 
-    public class Bullet
-    {
-        public PictureBox BulletPictureBox { get; set; }
-        public Vector2 Direction { get; set; }
-        public float Speed { get; set; } = 10;
-
-        public Bullet(Point startPosition, Vector2 direction)
-        {
-            BulletPictureBox = new PictureBox
-            {
-                Size = new Size(10, 10),
-                BackColor = Color.Red,
-                Location = startPosition,
-            };
-            Direction = direction;
-        }
-
-        public void Move()
-        {
-            BulletPictureBox.Left += (int)(Direction.X * Speed);
-            BulletPictureBox.Top += (int)(Direction.Y * Speed);
-        }
-    }
-
 
     public partial class Form1 : Form
     {
-        int playerspeed;
-        int playerCount = 0;
         public string id;
-        PictureBox playerBox;
+        int playerCount = 0;
+        Player player;
+        Player[] players;
+
         public MapControl mapControl;
         Communication comm;
 
@@ -54,8 +29,6 @@ namespace FinaleSignalR_Client
         int mapMinY = 0;
         int mapMaxX = 0;
         int mapMaxY = 0;
-
-        //List<Rectangle> obstacles;
 
 
         //Bullet
@@ -68,14 +41,12 @@ namespace FinaleSignalR_Client
         {
             InitializeComponent();
             this.playerBoxes = new System.Windows.Forms.PictureBox[50];
-
-            playerspeed = 5;
+            this.players = new Player[50];
+            
             this.KeyPreview = true;
             this.mapControl = new MapControl();
             this.Controls.Add(this.mapControl);
             this.mapControl.SendToBack();
-            //this.obstacles = new List<Rectangle>();
-            //obstacles.Add(new Rectangle(100, 100, 50, 50));
 
             Random rnd = new Random();
             id = rnd.Next(100000).ToString();
@@ -85,29 +56,22 @@ namespace FinaleSignalR_Client
 
         public void createPlayer(string id)
         {
-            var Player = new PictureBox();
-            Player.BackColor = System.Drawing.SystemColors.ControlDark;
-            Player.Location = new System.Drawing.Point(666, 422);
-            Player.Name = id;
-            Player.Size = new System.Drawing.Size(64, 64);
-            Player.TabIndex = 0;
-            Player.TabStop = false;
+            var newPlayer = new Player(new Size(64, 64), id, "new player", 500, 500, 5, SystemColors.ControlDark, new Point(666, 422));
 
-            this.mapMaxX = mapControl.Width - Player.Width;
-            this.mapMaxY = mapControl.Height - Player.Height;
+            this.mapMaxX = mapControl.Width - newPlayer.PlayerBox.Width;
+            this.mapMaxY = mapControl.Height - newPlayer.PlayerBox.Height;
 
             //adding player to map
-            playerBoxes[playerCount] = Player;
+            playerBoxes[playerCount] = newPlayer.PlayerBox;
+            players[playerCount] = newPlayer;
             this.mapControl.Controls.Add(playerBoxes[playerCount]);
-
-
             playerCount++;
         }
 
         public void RequestAccepted()
         {
             createPlayer(id.ToString());
-            playerBox = playerBoxes[0];
+            this.player = players[this.playerCount-1];
             ServerTimer.Start();
             bulletMovementTimer.Start();
 
@@ -193,48 +157,48 @@ namespace FinaleSignalR_Client
         private void DownTimer_Tick(object sender, EventArgs e)
         {
 
-            if (playerBox.Top + playerspeed < mapMaxY)
+            if (this.player.PlayerBox.Top + this.player.Playerspeed < mapMaxY)
             {
-                int newPlayerTop = playerBox.Top + playerspeed;
+                int newPlayerTop = this.player.PlayerBox.Top + this.player.Playerspeed;
 
                 // Check if the new position collides with any obstacle
-                if (!CollidesWithObstacle(playerBox.Left, newPlayerTop, playerBox.Width, playerBox.Height))
-                    playerBox.Top += playerspeed;
+                if (!CollidesWithObstacle(this.player.PlayerBox.Left, newPlayerTop, this.player.PlayerBox.Width, this.player.PlayerBox.Height))
+                    this.player.PlayerBox.Top += this.player.Playerspeed;
             }
         }
 
         private void LeftTimer_Tick_1(object sender, EventArgs e)
         {
-            if (playerBox.Left - playerspeed > mapMinX)
+            if (this.player.PlayerBox.Left - this.player.Playerspeed > mapMinX)
             {
-                int newPlayerLeft = playerBox.Left - playerspeed;
+                int newPlayerLeft = this.player.PlayerBox.Left - this.player.Playerspeed;
 
                 // Check if the new position collides with any obstacle
-                if (!CollidesWithObstacle(newPlayerLeft, playerBox.Top, playerBox.Width, playerBox.Height))
+                if (!CollidesWithObstacle(newPlayerLeft, this.player.PlayerBox.Top, this.player.PlayerBox.Width, this.player.PlayerBox.Height))
 
-                    playerBox.Left -= playerspeed;
+                    this.player.PlayerBox.Left -= this.player.Playerspeed;
             }
         }
 
         private void UpTimer_Tick_1(object sender, EventArgs e)
         {
-            if (playerBox.Top - playerspeed > mapMinY)
+            if (this.player.PlayerBox.Top - this.player.Playerspeed > mapMinY)
             {
-                int newPlayerTop = playerBox.Top - playerspeed;
+                int newPlayerTop = this.player.PlayerBox.Top - this.player.Playerspeed;
 
                 // Check if the new position collides with any obstacle
-                if (!CollidesWithObstacle(playerBox.Left, newPlayerTop, playerBox.Width, playerBox.Height))
-                    playerBox.Top -= playerspeed;
+                if (!CollidesWithObstacle(this.player.PlayerBox.Left, newPlayerTop, this.player.PlayerBox.Width, this.player.PlayerBox.Height))
+                    this.player.PlayerBox.Top -= this.player.Playerspeed;
             }
         }
 
         private void RightTimer_Tick_1(object sender, EventArgs e)
         {
-            if (playerBox.Left + playerspeed < mapMaxX)
+            if (this.player.PlayerBox.Left + this.player.Playerspeed < mapMaxX)
             {
-                int newPlayerLeft = playerBox.Left + playerspeed;
-                if (!CollidesWithObstacle(newPlayerLeft, playerBox.Top, playerBox.Width, playerBox.Height))
-                    playerBox.Left += playerspeed;
+                int newPlayerLeft = this.player.PlayerBox.Left + this.player.Playerspeed;
+                if (!CollidesWithObstacle(newPlayerLeft, this.player.PlayerBox.Top, this.player.PlayerBox.Width, this.player.PlayerBox.Height))
+                    this.player.PlayerBox.Left += this.player.Playerspeed;
             }
         }
 
@@ -284,19 +248,19 @@ namespace FinaleSignalR_Client
 
         private void ServerTimer_Tick(object sender, EventArgs e)
         {
-            comm.SendCoordinates(playerBox.Left, playerBox.Top);
+            comm.SendCoordinates(this.player.PlayerBox.Left, this.player.PlayerBox.Top);
 
             //Send bullet info
             if (this.mapControl.IsShooting() && (DateTime.Now - lastBulletFiredTime) > bulletCooldown)
             {
                 Point targetPoint = this.PointToClient(Cursor.Position);
-                Vector2 start = new Vector2(playerBox.Location.X, playerBox.Location.Y);
+                Vector2 start = new Vector2(this.player.PlayerBox.Location.X, this.player.PlayerBox.Location.Y);
                 Vector2 target = new Vector2(targetPoint.X, targetPoint.Y);
                 Vector2 direction = Vector2.Normalize(target - start);
                 lastBulletFiredTime = DateTime.Now;
                 //Bullet start from center of player instead of corner
-                int bulletStartX = playerBox.Location.X + playerBox.Width / 2;
-                int bulletStartY = playerBox.Location.Y + playerBox.Height / 2;
+                int bulletStartX = this.player.PlayerBox.Location.X + this.player.PlayerBox.Width / 2;
+                int bulletStartY = this.player.PlayerBox.Location.Y + this.player.PlayerBox.Height / 2;
                 comm.SendBulletInfo(bulletStartX, bulletStartY, direction.X, direction.Y);
             }
         }
