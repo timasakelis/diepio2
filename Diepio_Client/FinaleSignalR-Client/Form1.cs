@@ -1,13 +1,11 @@
-﻿using System;
+﻿using FinaleSignalR_Client.Controls;
+using FinaleSignalR_Client.Objects;
+using FinaleSignalR_Client.Web;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
-using System.Runtime.Remoting.Messaging;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using FinaleSignalR_Client.Controls;
-using FinaleSignalR_Client.Web;
-using Microsoft.AspNetCore.SignalR.Client;
 
 
 
@@ -15,32 +13,6 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace FinaleSignalR_Client
 {
-
-    public class Bullet
-    {
-        public PictureBox BulletPictureBox { get; set; }
-        public Vector2 Direction { get; set; }
-        public float Speed { get; set; } = 10;
-
-        public Bullet(Point startPosition, Vector2 direction)
-        {
-            BulletPictureBox = new PictureBox
-            {
-                Size = new Size(10, 10),
-                BackColor = Color.Red,
-                Location = startPosition,
-            };
-            Direction = direction;
-        }
-
-        public void Move()
-        {
-            BulletPictureBox.Left += (int)(Direction.X * Speed);
-            BulletPictureBox.Top += (int)(Direction.Y * Speed);
-        }
-    }
-
-
     public partial class Form1 : Form
     {
         int playerspeed;
@@ -69,22 +41,21 @@ namespace FinaleSignalR_Client
             InitializeComponent();
             this.playerBoxes = new System.Windows.Forms.PictureBox[50];
 
-            playerspeed = 5;
             this.KeyPreview = true;
             this.mapControl = new MapControl();
             this.Controls.Add(this.mapControl);
             this.mapControl.SendToBack();
-            //this.obstacles = new List<Rectangle>();
-            //obstacles.Add(new Rectangle(100, 100, 50, 50));
 
-            Random rnd = new Random();
-            id = rnd.Next(100000).ToString();
+            
 
             comm = new Communication(messages, this);
         }
 
         public void createPlayer(string id)
         {
+            Random rnd = new Random();
+            id = rnd.Next(100000).ToString();
+            playerspeed = 5;
             var Player = new PictureBox();
             Player.BackColor = System.Drawing.SystemColors.ControlDark;
             Player.Location = new System.Drawing.Point(666, 422);
