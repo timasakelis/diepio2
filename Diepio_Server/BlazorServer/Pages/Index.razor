@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
+@using System.Diagnostics;
 @inject NavigationManager NavManager
 @implements IAsyncDisposable
 
@@ -33,6 +34,12 @@
     private int obstCount;
     private int[] playerIds = new int[50];
     private Obst[] obst = new Obst[50];
+    private List<string> tempMessages = new();
+    private List<string> coordMessages = new();
+    private PlayerList Players = new();
+
+    private Stopwatch stopwatch;
+    private int sendingTime = 50;
 
     private class Obst{
 
@@ -47,6 +54,58 @@
             this.y = y;
             this.width = w;
             this.height = h;
+        }
+    }
+
+    private class PlayerList
+    {
+        public List<Player> playerList;
+
+        public PlayerList()
+        {
+            playerList = new();
+        }
+
+        public void Add(Player p)
+        {
+            playerList.Add(p);
+        }
+
+        public Player getPlayer(string id)
+        {
+            foreach (Player p in playerList)
+            {
+                if (p.id == id)
+                {
+                    return p;
+                }
+            }
+            return null; //Here's your "value is null" error
+        }
+    }
+
+    private class Player
+    {
+        public int Left;
+        public int Top;
+        public string id;
+
+        public Player(string id, int l, int t)
+        {
+            this.id = id;
+            Left = l;
+            Top = t;
+        }
+
+        public (int, int) getCoords(int l, int t)
+        {
+            return (Left, Top);
+        }
+
+        public void setCoords(int l, int t)
+        {
+            Left = l;
+            Top = t;
         }
     }
 
@@ -65,10 +124,34 @@
         obst[4] = new Obst(200, 500, 10, 30);
         obstCount = 5;
 
-        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        //HOLY MOLY USE
+        /*
+        public Task SendMessageToCaller(string user, string message)
+            {
+            return Clients.Caller.SendAsync("ReceiveMessage", user, message);
+         }
+         */
+
+        stopwatch = new Stopwatch();
+        stopwatch.Start();
+
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) => 
         {
 
             var parsedMessage = message.Split('|');
+            //tempMessages.Add(tempMessages.Count.ToString());
+
+            if (stopwatch.ElapsedMilliseconds > sendingTime)
+            {
+                
+                foreach (Player p in Players.playerList) {
+                    //hubConnection.SendAsync("SendMessage", "SERVER_TEST", mess); //AND THIS IS WHERE YOU SHOULD SEND THE DUMBASS POSITION OUT
+                }
+                tempMessages.Clear();
+                stopwatch.Restart();
+            }
+
+
             if (parsedMessage.Length > 0)
             {
                 switch (parsedMessage[0])
@@ -78,6 +161,7 @@
                         {
                             int gotId = int.Parse(user);
                             playerIds[idCount] = gotId;
+                            Players.Add(new Player(user, 0, 0));
                             hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + "|RequestAccepted");
                             for (int i = 0; i < idCount; i++)
                             {
@@ -92,23 +176,22 @@
                         }
                         break;
                     case "Coords": //write code to save, by replacing playerIds with Player class custom
-                        hubConnection.SendAsync("SendMessage", "SERVER", "All|Coords|" +user.ToString()+ "|" + parsedMessage[1].ToString() + "|"+parsedMessage[2].ToString());
+                        //hubConnection.SendAsync("SendMessage", "SERVER", "All|Coords|" +user.ToString()+ "|" + parsedMessage[1].ToString() + "|"+parsedMessage[2].ToString());
+                        //coordMessage = 
+                        //tempMessages.Add("All|Coords|" + user.ToString() + "|" + parsedMessage[1].ToString() + "|" + parsedMessage[2].ToString());
+                        Players.getPlayer(user).setCoords(int.Parse(parsedMessage[1]), int.Parse(parsedMessage[2])); //OK SO THIS IS WHERE WE MAKE THE PLAYER GET THE POSITION
+
                         break;
                     case "BULLET":
                         hubConnection.SendAsync("SendMessage", "SERVER", $"All|BULLET|{parsedMessage[1]}|{parsedMessage[2]}|{parsedMessage[3]}|{parsedMessage[4]}");
+                        //tempMessages.Add($"All|BULLET|{parsedMessage[1]}|{parsedMessage[2]}|{parsedMessage[3]}|{parsedMessage[4]}");
                         break;
-
-
-                }
-                if (parsedMessage[0] == "Request")
-                {
-                    
                 }
             }
-            
+
 
             var formattedMessage = $"{user}: {message}";
-            messages.Add(formattedMessage);
+            //messages.Add(formattedMessage);
             InvokeAsync(StateHasChanged);
         });
 
