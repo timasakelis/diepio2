@@ -96,7 +96,7 @@
                         }
                         break;
                     case "Coords": //write code to save, by replacing playerIds with Player class custom
-                        hubConnection.SendAsync("SendMessage", "SERVER", "All|Coords|" +user.ToString()+ "|" + parsedMessage[1].ToString() + "|"+parsedMessage[2].ToString());
+                    hubConnection.SendAsync("SendMessage", "SERVER", "All|Coords|" +user.ToString()+ "|" + parsedMessage[1].ToString() + "|"+parsedMessage[2].ToString());
                         break;
                     case "BULLET":
                         hubConnection.SendAsync("SendMessage", "SERVER", $"All|BULLET|{parsedMessage[1]}|{parsedMessage[2]}|{parsedMessage[3]}|{parsedMessage[4]}");
@@ -109,10 +109,10 @@
                 }
                 if (parsedMessage[0] == "Request")
                 {
-                    
+
                 }
             }
-            
+
 
             var formattedMessage = $"{user}: {message}";
             messages.Add(formattedMessage);
@@ -145,6 +145,7 @@
         public int ID { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
+        public int TYPE { get; set; }
     }
 
     private List<Pellet> pellets = new();
@@ -155,7 +156,7 @@
 
         foreach (var pellet in pellets)
         {
-            hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{pellet.ID}|{pellet.X}|{pellet.Y}");
+            hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{pellet.ID}|{pellet.X}|{pellet.Y}|{pellet.TYPE}");
         }
 
         if (pellets.Count >= 30)
@@ -169,10 +170,11 @@
             int id = rnd.Next(int.MaxValue / 2, int.MaxValue);
             int x = rnd.Next(800);
             int y = rnd.Next(600);
+            int type = rnd.Next(3);
        
          
-            pellets.Add(new Pellet {ID = id, X = x, Y = y });
-            hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{id}|{x}|{y}");
+            pellets.Add(new Pellet {ID = id, X = x, Y = y, TYPE = type});
+            hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{id}|{x}|{y}|{type}");
         }
     }
 
