@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-
 namespace BlazorServer.Hubs;
 
 public class ChatHub : Hub

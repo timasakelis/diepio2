@@ -99,7 +99,10 @@ namespace FinaleSignalR_Client.Web
                                     }
                                     break;
                                 case "Coords":
-                                    form.moveEnemy(parsedMessage[2], int.Parse(parsedMessage[3]), int.Parse(parsedMessage[4]));
+                                    if (parsedMessage[2] != id)
+                                    {
+                                        form.moveEnemy(parsedMessage[2], int.Parse(parsedMessage[3]), int.Parse(parsedMessage[4]));
+                                    }
                                     break;
                                 case "Obstacles":
                                     form.mapControl.SetObstacle(int.Parse(parsedMessage[2]), int.Parse(parsedMessage[3]), int.Parse(parsedMessage[4]), int.Parse(parsedMessage[5]));
@@ -117,8 +120,8 @@ namespace FinaleSignalR_Client.Web
                         }
 
                     }
-                    var newMessage = $"{user}: {message}";
-                    messages.Items.Add(newMessage);
+                    //var newMessage = $"{user}: {message}";
+                    //messages.Items.Add(newMessage);
                 });
             });
 

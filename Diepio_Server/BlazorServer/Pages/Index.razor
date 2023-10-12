@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
+@using System.Diagnostics;
 @using System.Timers;
 @inject NavigationManager NavManager
 @implements IAsyncDisposable
@@ -34,6 +35,12 @@
     private int obstCount;
     private int[] playerIds = new int[50];
     private Obst[] obst = new Obst[50];
+    private List<string> tempMessages = new();
+    private List<string> coordMessages = new();
+    private PlayerList Players = new();
+
+    private Stopwatch stopwatch;
+    private int sendingTime = 50;
 
     private class Obst{
 
@@ -48,6 +55,58 @@
             this.y = y;
             this.width = w;
             this.height = h;
+        }
+    }
+
+    private class PlayerList
+    {
+        public List<Player> playerList;
+
+        public PlayerList()
+        {
+            playerList = new();
+        }
+
+        public void Add(Player p)
+        {
+            playerList.Add(p);
+        }
+
+        public Player getPlayer(string id)
+        {
+            foreach (Player p in playerList)
+            {
+                if (p.id == id)
+                {
+                    return p;
+                }
+            }
+            return null; //Here's your "value is null" error
+        }
+    }
+
+    private class Player
+    {
+        public int Left;
+        public int Top;
+        public string id;
+
+        public Player(string id, int l, int t)
+        {
+            this.id = id;
+            Left = l;
+            Top = t;
+        }
+
+        public (int, int) getCoords()
+        {
+            return (Left, Top);
+        }
+
+        public void setCoords(int l, int t)
+        {
+            Left = l;
+            Top = t;
         }
     }
 
@@ -68,6 +127,32 @@
         obst[4] = new Obst(200, 500, 10, 30);
         obstCount = 5;
 
+        //HOLY MOLY USE IN ChatHub.cs, but still need to implement
+        /*
+        public Task SendMessageToCaller(string user, string message)
+            {
+            return Clients.Caller.SendAsync("ReceiveMessage", user, message);
+         }
+         */
+
+        stopwatch = new Stopwatch();
+        stopwatch.Start();
+
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) => 
+        {
+            //Now this stopwatch decides how frequently to send out stored player coordinates
+            //This means it doesnt just respond to everyone every single time, which is catastrophic
+            //It sends out coords every, say, 50ms
+            if (stopwatch.ElapsedMilliseconds > sendingTime)
+            {
+                foreach (Player p in Players.playerList) {
+                    (int, int) pos = p.getCoords();
+                    hubConnection.SendAsync("SendMessage", "SERVER", "All|Coords|" + p.id.ToString() + "|" + pos.Item1.ToString() + "|" + pos.Item2.ToString());
+                    //messages.Add(p.id.ToString());
+                }
+                stopwatch.Restart();
+            }
+
         SetupPelletGenerationTimer(hubConnection);
 
         hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
@@ -82,10 +167,14 @@
                         {
                             int gotId = int.Parse(user);
                             playerIds[idCount] = gotId;
+                            Players.Add(new Player(user, 500, 500));
                             hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + "|RequestAccepted");
                             for (int i = 0; i < idCount; i++)
                             {
-                                hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + "|EnemyCreated|" + playerIds[i].ToString());
+                                if (gotId != playerIds[i])
+                                {
+                                    hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + "|EnemyCreated|" + playerIds[i].ToString());
+                                }
                             }
                             hubConnection.SendAsync("SendMessage", "SERVER", "All|EnemyCreated|" + gotId.ToString());
                             idCount++;
@@ -95,8 +184,8 @@
                             }
                         }
                         break;
-                    case "Coords": //write code to save, by replacing playerIds with Player class custom
-                    hubConnection.SendAsync("SendMessage", "SERVER", "All|Coords|" +user.ToString()+ "|" + parsedMessage[1].ToString() + "|"+parsedMessage[2].ToString());
+                    case "Coords": //Now saves location data into a custom PlayerList
+                        Players.getPlayer(user).setCoords(int.Parse(parsedMessage[1]), int.Parse(parsedMessage[2]));
                         break;
                     case "BULLET":
                         hubConnection.SendAsync("SendMessage", "SERVER", $"All|BULLET|{parsedMessage[1]}|{parsedMessage[2]}|{parsedMessage[3]}|{parsedMessage[4]}");
@@ -104,18 +193,13 @@
                     case "PELLET":
                         hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{parsedMessage[1]}|{parsedMessage[2]}");
                         break;
-
-
-                }
-                if (parsedMessage[0] == "Request")
-                {
-
                 }
             }
+            //Uncomment to see all messages
+            //var formattedMessage = $"{user}: {message}";
+            //messages.Add(formattedMessage);
 
-
-            var formattedMessage = $"{user}: {message}";
-            messages.Add(formattedMessage);
+            //Updates browser view, left it on for debugging
             InvokeAsync(StateHasChanged);
         });
 

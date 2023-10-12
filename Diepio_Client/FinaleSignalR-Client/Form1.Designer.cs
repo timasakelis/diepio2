@@ -45,10 +45,9 @@ namespace FinaleSignalR_Client
             // 
             // openConnection
             // 
-            this.openConnection.Location = new System.Drawing.Point(1288, 27);
-            this.openConnection.Margin = new System.Windows.Forms.Padding(4);
+            this.openConnection.Location = new System.Drawing.Point(966, 22);
             this.openConnection.Name = "openConnection";
-            this.openConnection.Size = new System.Drawing.Size(201, 50);
+            this.openConnection.Size = new System.Drawing.Size(151, 41);
             this.openConnection.TabIndex = 0;
             this.openConnection.Text = "Open Connection";
             this.openConnection.UseVisualStyleBackColor = true;
@@ -76,21 +75,20 @@ namespace FinaleSignalR_Client
             // 
             // ServerTimer
             // 
-            this.ServerTimer.Interval = 10;
+            this.ServerTimer.Interval = 50;
             this.ServerTimer.Tick += new System.EventHandler(this.ServerTimer_Tick);
-            //
-            // Bullet timer
-            //
-            bulletMovementTimer.Interval = 1;
-            bulletMovementTimer.Tick += new System.EventHandler(this.bulletMovementTimer_Tick);
+            // 
+            // bulletMovementTimer
+            // 
+            this.bulletMovementTimer.Interval = 1;
+            this.bulletMovementTimer.Tick += new System.EventHandler(this.bulletMovementTimer_Tick);
             // 
             // sendMessage
             // 
             this.sendMessage.Enabled = false;
-            this.sendMessage.Location = new System.Drawing.Point(1302, 85);
-            this.sendMessage.Margin = new System.Windows.Forms.Padding(4);
+            this.sendMessage.Location = new System.Drawing.Point(976, 69);
             this.sendMessage.Name = "sendMessage";
-            this.sendMessage.Size = new System.Drawing.Size(187, 53);
+            this.sendMessage.Size = new System.Drawing.Size(140, 43);
             this.sendMessage.TabIndex = 2;
             this.sendMessage.Text = "Send Message";
             this.sendMessage.UseVisualStyleBackColor = true;
@@ -98,32 +96,28 @@ namespace FinaleSignalR_Client
             // 
             // messageInput
             // 
-            this.messageInput.Location = new System.Drawing.Point(1318, 146);
-            this.messageInput.Margin = new System.Windows.Forms.Padding(4);
+            this.messageInput.Location = new System.Drawing.Point(988, 119);
             this.messageInput.Name = "messageInput";
-            this.messageInput.Size = new System.Drawing.Size(171, 22);
+            this.messageInput.Size = new System.Drawing.Size(129, 20);
             this.messageInput.TabIndex = 1;
             // 
             // messages
             // 
             this.messages.FormattingEnabled = true;
-            this.messages.ItemHeight = 16;
-            this.messages.Location = new System.Drawing.Point(1339, 183);
-            this.messages.Margin = new System.Windows.Forms.Padding(4);
+            this.messages.Location = new System.Drawing.Point(845, 149);
             this.messages.Name = "messages";
-            this.messages.Size = new System.Drawing.Size(150, 68);
+            this.messages.Size = new System.Drawing.Size(273, 589);
             this.messages.TabIndex = 3;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1529, 983);
+            this.ClientSize = new System.Drawing.Size(1147, 799);
             this.Controls.Add(this.messages);
             this.Controls.Add(this.sendMessage);
             this.Controls.Add(this.messageInput);
             this.Controls.Add(this.openConnection);
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyIsDown);
