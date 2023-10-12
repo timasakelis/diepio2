@@ -14,8 +14,9 @@ namespace FinaleSignalR_Client.Objects
         public PictureBox BulletPictureBox { get; set; }
         public Vector2 Direction { get; set; }
         public float Speed { get; set; } = 10;
+        public string playerid { get; set; }
 
-        public Bullet(Point startPosition, Vector2 direction)
+        public Bullet(Point startPosition, Vector2 direction, string playerid)
         {
             BulletPictureBox = new PictureBox
             {
@@ -24,6 +25,7 @@ namespace FinaleSignalR_Client.Objects
                 Location = startPosition,
             };
             Direction = direction;
+            this.playerid = playerid;
         }
 
         public void Move()

@@ -18,31 +18,6 @@ using System.Drawing.Drawing2D;
 
 namespace FinaleSignalR_Client
 {
-
-    public class Bullet
-    {
-        public PictureBox BulletPictureBox { get; set; }
-        public Vector2 Direction { get; set; }
-        public float Speed { get; set; } = 10;
-
-        public Bullet(Point startPosition, Vector2 direction)
-        {
-            BulletPictureBox = new PictureBox
-            {
-                Size = new Size(10, 10),
-                BackColor = Color.Red,
-                Location = startPosition,
-            };
-            Direction = direction;
-        }
-
-        public void Move()
-        {
-            BulletPictureBox.Left += (int)(Direction.X * Speed);
-            BulletPictureBox.Top += (int)(Direction.Y * Speed);
-        }
-    }
-
     //Pellet
     public interface IPellet
     {
@@ -221,7 +196,7 @@ namespace FinaleSignalR_Client
 
         public void createPlayer(string id)
         {
-            var newPlayer = new Player(new Size(64, 64), id, "new player", 500, 500, 5, SystemColors.ControlDark, new Point(666, 422));
+            var newPlayer = new Player(new Size(64, 64), id, "new player", 20, 20, 5, SystemColors.ControlDark, new Point(666, 422));
 
             this.mapMaxX = mapControl.Width - newPlayer.PlayerBox.Width;
             this.mapMaxY = mapControl.Height - newPlayer.PlayerBox.Height;
@@ -387,13 +362,13 @@ namespace FinaleSignalR_Client
 
         //Bullet
         List<Bullet> bullets = new List<Bullet>();
-        public void shootBullet(string x, string y, string directionX, string directionY)
+        public void shootBullet(string x, string y, string directionX, string directionY, string playerid)
         {
             Vector2 bulletDirection = new Vector2(float.Parse(directionX), float.Parse(directionY));
             Point startPoint = new Point(int.Parse(x), int.Parse(y));
-            var bullet = new Bullet(startPoint, bulletDirection);
+            var bullet = new Bullet(startPoint, bulletDirection, playerid);
             bullet.BulletPictureBox.BringToFront();
-            this.Controls.Add(bullet.BulletPictureBox);
+            //this.Controls.Add(bullet.BulletPictureBox);
             this.mapControl.Controls.Add(bullet.BulletPictureBox);
             bullets.Add(bullet);
 
@@ -404,7 +379,7 @@ namespace FinaleSignalR_Client
                 if (bullets[0].BulletPictureBox != null)
                 {
                     this.mapControl.Controls.Remove(bullets[0].BulletPictureBox);
-                    this.Controls.Remove(bullets[0].BulletPictureBox);
+                    //this.Controls.Remove(bullets[0].BulletPictureBox);
                     bullets[0].BulletPictureBox.Dispose();
                 }
                 bullets.RemoveAt(0);
@@ -427,7 +402,7 @@ namespace FinaleSignalR_Client
             IPellet pellet = pelletFactory.CreatePellet(id, x, y, type);
 
             // Add the pellet to UI controls.
-            this.Controls.Add(pellet.PelletPictureBox);
+            //this.Controls.Add(pellet.PelletPictureBox);
             this.mapControl.Controls.Add(pellet.PelletPictureBox);
 
             // Add the pellet to the pellet list.
@@ -450,7 +425,7 @@ namespace FinaleSignalR_Client
                 //Bullet start from center of player instead of corner
                 int bulletStartX = this.player.PlayerBox.Location.X + this.player.PlayerBox.Width / 2;
                 int bulletStartY = this.player.PlayerBox.Location.Y + this.player.PlayerBox.Height / 2;
-                comm.SendBulletInfo(bulletStartX, bulletStartY, direction.X, direction.Y);
+                comm.SendBulletInfo(bulletStartX, bulletStartY, direction.X, direction.Y, this.player.PlayerBox.Name);
             }
         }
 
@@ -471,6 +446,22 @@ namespace FinaleSignalR_Client
                 //    this.Controls.Remove(bullet.BulletPictureBox);
                 //    this.mapControl.Controls.Remove(bullet.BulletPictureBox);
                 //}
+                foreach (Player pl in this.players)
+                {
+                    if (pl != null)
+                    {
+                        if (pl.PlayerBox.Name != bullet.playerid && bullet.BulletPictureBox.Bounds.IntersectsWith(pl.PlayerBox.Bounds))
+                        {
+                            pl.CurrentHP--;
+                            if (pl.CurrentHP < 1)
+                            {
+                                pl.PlayerBox.BackColor = Color.Red;
+                            }
+                            bulletsToRemove.Add(bullet);
+                            this.mapControl.Controls.Remove(bullet.BulletPictureBox);  
+                        }
+                    }
+                }
 
                 foreach (IPellet pellet in pellets)
                 {
@@ -480,14 +471,14 @@ namespace FinaleSignalR_Client
 
                         // Remove the bullet when it hits a pellet
                         bulletsToRemove.Add(bullet);
-                        this.Controls.Remove(bullet.BulletPictureBox);
+                        this.mapControl.Controls.Remove(bullet.BulletPictureBox);
 
                         // Check if the pellet is destroyed
                         if (pellet.IsDestroyed())
                         {
                             // Remove the pellet
                             pelletsToRemove.Add(pellet);
-                            this.Controls.Remove(pellet.PelletPictureBox);
+                            //this.Controls.Remove(pellet.PelletPictureBox);
                             this.mapControl.Controls.Remove(pellet.PelletPictureBox);
 
                             // to do: increase tank's EXP when a pellet is destroyed
