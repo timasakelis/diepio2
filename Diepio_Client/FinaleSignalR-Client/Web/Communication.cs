@@ -109,7 +109,7 @@ namespace FinaleSignalR_Client.Web
                                     form.shootBullet(parsedMessage[2], parsedMessage[3], parsedMessage[4], parsedMessage[5]);
                                     break;
                                 case "PELLET":
-                                    form.createPellet(int.Parse(parsedMessage[2]), int.Parse(parsedMessage[3]), int.Parse(parsedMessage[4]));
+                                    form.createPellet(int.Parse(parsedMessage[2]), int.Parse(parsedMessage[3]), int.Parse(parsedMessage[4]), int.Parse(parsedMessage[5]));
                                     break;
 
 

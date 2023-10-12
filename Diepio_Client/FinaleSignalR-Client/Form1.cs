@@ -9,6 +9,7 @@ using FinaleSignalR_Client.Controls;
 using FinaleSignalR_Client.Web;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Linq;
+using System.Drawing.Drawing2D;
 
 
 
@@ -41,30 +42,141 @@ namespace FinaleSignalR_Client
         }
     }
 
-    public class Pellet
+    //Pellet
+    public interface IPellet
     {
-        public PictureBox PelletPictureBox { get; set; }
-        public int ID { get; set; }
-        public int HP { get; set; } = 1;
-        public int EXP { get; set; } = 10;
+        PictureBox PelletPictureBox { get; }
+        int ID { get; }
+        int HP { get; set; }
+        int EXP { get; set; }
+        bool IsDestroyed();
+    }
 
-        public Pellet(int id, Point startPosition)
+    public class PelletFactory
+    {
+        public IPellet CreatePellet(int id, int x, int y, int type)
         {
+            switch (type)
+            {
+                case 0:
+                    return new SquarePellet(id, x, y);
+                case 1:
+                    return new TrianglePellet(id, x, y);
+                case 2:
+                    return new OctagonPellet(id, x, y);
+                default:
+                    throw new ArgumentException("Invalid pellet type", nameof(type));
+            }
+        }
+    }
+
+    public class SquarePellet : IPellet
+    {
+        public PictureBox PelletPictureBox { get; }
+        public int ID { get; }
+        public int HP { get; set; } = 5;  // example value
+        public int EXP { get; set; } = 10; // example value
+
+        public SquarePellet(int id, int x, int y)
+        {
+            ID = id;
             PelletPictureBox = new PictureBox
             {
                 Size = new Size(10, 10),
-                BackColor = Color.Green, // Example color
-                Location = startPosition,
+                BackColor = Color.Green,
+                Location = new Point(x, y),
             };
-            ID = id;
         }
 
-        // Add a method to check if the pellet is destroyed
         public bool IsDestroyed()
         {
             return HP <= 0;
         }
     }
+
+    public class TrianglePellet : IPellet
+    {
+        public PictureBox PelletPictureBox { get; }
+        public int ID { get; }
+        public int HP { get; set; } = 6;  // example value
+        public int EXP { get; set; } = 18; // example value
+
+        public TrianglePellet(int id, int x, int y)
+        {
+            ID = id;
+            PelletPictureBox = new PictureBox
+            {
+                Size = new Size(14, 14), // adjusted size
+                BackColor = Color.Transparent,
+                Location = new Point(x, y),
+            };
+
+            PelletPictureBox.Paint += (s, e) =>
+            {
+                // Points to define the triangle with doubled size
+                Point point1 = new Point(7, 0);
+                Point point2 = new Point(0, 14);
+                Point point3 = new Point(14, 14);
+
+                // Define a polygon (here a triangle) and fill it
+                e.Graphics.FillPolygon(Brushes.Yellow, new Point[] { point1, point2, point3 });
+            };
+        }
+
+        public bool IsDestroyed()
+        {
+            return HP <= 0;
+        }
+    }
+
+
+
+    public class OctagonPellet : IPellet
+    {
+        public PictureBox PelletPictureBox { get; }
+        public int ID { get; }
+        public int HP { get; set; } = 2;  // example value
+        public int EXP { get; set; } = 20; // example value
+
+        public OctagonPellet(int id, int x, int y)
+        {
+            ID = id;
+
+            PelletPictureBox = new PictureBox
+            {
+                Size = new Size(20, 20),
+                BackColor = Color.Transparent,
+                Location = new Point(x, y),
+            };
+
+            PelletPictureBox.Paint += PelletPictureBox_Paint;
+        }
+
+        private void PelletPictureBox_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Point[] octagonPoints = new Point[]
+            {
+            new Point(10, 0),
+            new Point(20, 5),
+            new Point(20, 15),
+            new Point(10, 20),
+            new Point(0, 15),
+            new Point(0, 5),
+            new Point(10, 0),
+            };
+
+            GraphicsPath path = new GraphicsPath();
+            path.AddPolygon(octagonPoints);
+            g.FillPath(Brushes.Purple, path);
+        }
+
+        public bool IsDestroyed()
+        {
+            return HP <= 0;
+        }
+    }
+
 
 
     public partial class Form1 : Form
@@ -115,7 +227,7 @@ namespace FinaleSignalR_Client
             Player.BackColor = System.Drawing.SystemColors.ControlDark;
             Player.Location = new System.Drawing.Point(666, 422);
             Player.Name = id;
-            Player.Size = new System.Drawing.Size(64, 64);
+            Player.Size = new System.Drawing.Size(48, 48);
             Player.TabIndex = 0;
             Player.TabStop = false;
 
@@ -308,20 +420,26 @@ namespace FinaleSignalR_Client
         }
         //Bullet End
 
-        List<Pellet> pellets = new List<Pellet>();
+        List<IPellet> pellets = new List<IPellet>();
+        PelletFactory pelletFactory = new PelletFactory();
 
-        public void createPellet(int id, int x, int y)
+        public void createPellet(int id, int x, int y, int type)
         {
-
             // Check if pellet already exists
             if (pellets.Any(p => p.ID == id))
             {
                 return;
             }
 
-            Pellet pellet = new Pellet(id, new Point(x, y));
+            // Use the factory to create a pellet of a specified type.
+            IPellet pellet = pelletFactory.CreatePellet(id, x, y, type);
+
+            // Add the pellet to UI controls.
             this.Controls.Add(pellet.PelletPictureBox);
             this.mapControl.Controls.Add(pellet.PelletPictureBox);
+
+            // Add the pellet to the pellet list.
+            pellets.Add(pellet);
         }
 
 
@@ -345,7 +463,7 @@ namespace FinaleSignalR_Client
         }
 
         List<Bullet> bulletsToRemove = new List<Bullet>();
-        List<Pellet> pelletsToRemove = new List<Pellet>();
+        List<IPellet> pelletsToRemove = new List<IPellet>();
         private void bulletMovementTimer_Tick(object sender, EventArgs e)
         {
             foreach (Bullet bullet in bullets)
@@ -362,7 +480,7 @@ namespace FinaleSignalR_Client
                 //    this.mapControl.Controls.Remove(bullet.BulletPictureBox);
                 //}
 
-                foreach (Pellet pellet in pellets)
+                foreach (IPellet pellet in pellets)
                 {
                     if (bullet.BulletPictureBox.Bounds.IntersectsWith(pellet.PelletPictureBox.Bounds))
                     {
@@ -392,7 +510,7 @@ namespace FinaleSignalR_Client
                 bullets.Remove(bullet);
             }
             // Remove out-of-bounds bullets from the list
-            foreach (Pellet pellet in pelletsToRemove)
+            foreach (IPellet pellet in pelletsToRemove)
             {
                 //To do logic send server
                 pellets.Remove(pellet);
