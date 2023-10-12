@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
 @using System.Diagnostics;
+@using System.Timers;
 @inject NavigationManager NavManager
 @implements IAsyncDisposable
 
@@ -116,6 +117,8 @@
             .WithAutomaticReconnect()
             .Build();
 
+        GenerateAndSendPellets(hubConnection);
+
         // Create Obst
         obst[0] = new Obst(100, 100, 400, 10);
         obst[1] = new Obst(200, 200, 10, 90);
@@ -150,6 +153,10 @@
                 stopwatch.Restart();
             }
 
+        SetupPelletGenerationTimer(hubConnection);
+
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
             var parsedMessage = message.Split('|');
             if (parsedMessage.Length > 0)
             {
@@ -183,9 +190,11 @@
                     case "BULLET":
                         hubConnection.SendAsync("SendMessage", "SERVER", $"All|BULLET|{parsedMessage[1]}|{parsedMessage[2]}|{parsedMessage[3]}|{parsedMessage[4]}");
                         break;
+                    case "PELLET":
+                        hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{parsedMessage[1]}|{parsedMessage[2]}");
+                        break;
                 }
             }
-
             //Uncomment to see all messages
             //var formattedMessage = $"{user}: {message}";
             //messages.Add(formattedMessage);
@@ -214,4 +223,57 @@
             await hubConnection.DisposeAsync();
         }
     }
+
+    public class Pellet
+    {
+        public int ID { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int TYPE { get; set; }
+    }
+
+    private List<Pellet> pellets = new();
+    Random rnd = new Random();
+
+    public void GenerateAndSendPellets(HubConnection hubConnection)
+    {
+
+        foreach (var pellet in pellets)
+        {
+            hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{pellet.ID}|{pellet.X}|{pellet.Y}|{pellet.TYPE}");
+        }
+
+        if (pellets.Count >= 30)
+        {
+            return;
+        }
+
+       
+        for (int i = 0; i < 30; i++)
+        {
+            int id = rnd.Next(int.MaxValue / 2, int.MaxValue);
+            int x = rnd.Next(800);
+            int y = rnd.Next(600);
+            int type = rnd.Next(3);
+       
+         
+            pellets.Add(new Pellet {ID = id, X = x, Y = y, TYPE = type});
+            hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{id}|{x}|{y}|{type}");
+        }
+    }
+
+
+    public void DestroyPellet(int pelletID)
+    {
+        pellets.RemoveAll(p => p.ID == pelletID);
+        hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLETDESTROY|{pelletID}");
+    }
+
+    public void SetupPelletGenerationTimer(HubConnection hubConnection)
+    {
+        Timer timer = new Timer(10000); // Interval set to 10 seconds
+        timer.Elapsed += (sender, e) => GenerateAndSendPellets(hubConnection);
+        timer.Start();
+    }
+
 }
