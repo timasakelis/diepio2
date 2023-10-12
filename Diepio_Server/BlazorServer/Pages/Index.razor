@@ -5,6 +5,7 @@
 @inject NavigationManager NavManager
 @implements IAsyncDisposable
 
+
 <div class="form-group">
     <label>
         User: <input @bind="userInput" />
@@ -26,6 +27,7 @@
     }
 </ul>
 
+
 @code {
     private HubConnection? hubConnection;
     private List<string> messages = new();
@@ -41,6 +43,17 @@
 
     private Stopwatch stopwatch;
     private int sendingTime = 50;
+
+    private List<Pellet> pellets = new();
+    Random rnd = new Random();
+
+    public class Pellet
+    {
+        public int ID { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int TYPE { get; set; }
+    }
 
     private class Obst{
 
@@ -153,10 +166,8 @@
                 stopwatch.Restart();
             }
 
-        SetupPelletGenerationTimer(hubConnection);
+            //SetupPelletGenerationTimer(hubConnection);
 
-        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
-        {
             var parsedMessage = message.Split('|');
             if (parsedMessage.Length > 0)
             {
@@ -181,6 +192,10 @@
                             for (int i = 0; i < obstCount; i++)
                             {
                                 hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + "|Obstacles|" + obst[i].x + "|" + obst[i].y + "|" + obst[i].width + "|" + obst[i].height);
+                            }
+                            foreach (Pellet pellet in pellets)
+                            {
+                                hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + $"|PELLET|{pellet.ID}|{pellet.X}|{pellet.Y}|{pellet.TYPE}");
                             }
                         }
                         break;
@@ -224,30 +239,21 @@
         }
     }
 
-    public class Pellet
-    {
-        public int ID { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int TYPE { get; set; }
-    }
-
-    private List<Pellet> pellets = new();
-    Random rnd = new Random();
+    
 
     public void GenerateAndSendPellets(HubConnection hubConnection)
     {
-
-        foreach (var pellet in pellets)
-        {
-            hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{pellet.ID}|{pellet.X}|{pellet.Y}|{pellet.TYPE}");
-        }
-
+        messages.Add("Pellet count: " + pellets.Count.ToString());
         if (pellets.Count >= 30)
         {
             return;
         }
 
+        /*
+        foreach (var pellet in pellets)
+        {
+            hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{pellet.ID}|{pellet.X}|{pellet.Y}|{pellet.TYPE}");
+        }*/
        
         for (int i = 0; i < 30; i++)
         {
@@ -258,7 +264,7 @@
        
          
             pellets.Add(new Pellet {ID = id, X = x, Y = y, TYPE = type});
-            hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{id}|{x}|{y}|{type}");
+            //hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{id}|{x}|{y}|{type}");
         }
     }
 
