@@ -97,7 +97,7 @@
             Top = t;
         }
 
-        public (int, int) getCoords(int l, int t)
+        public (int, int) getCoords()
         {
             return (Left, Top);
         }
@@ -124,7 +124,7 @@
         obst[4] = new Obst(200, 500, 10, 30);
         obstCount = 5;
 
-        //HOLY MOLY USE
+        //HOLY MOLY USE IN ChatHub.cs, but still need to implement
         /*
         public Task SendMessageToCaller(string user, string message)
             {
@@ -137,21 +137,20 @@
 
         hubConnection.On<string, string>("ReceiveMessage", (user, message) => 
         {
-
-            var parsedMessage = message.Split('|');
-            //tempMessages.Add(tempMessages.Count.ToString());
-
+            //Now this stopwatch decides how frequently to send out stored player coordinates
+            //This means it doesnt just respond to everyone every single time, which is catastrophic
+            //It sends out coords every, say, 50ms
             if (stopwatch.ElapsedMilliseconds > sendingTime)
             {
-                
                 foreach (Player p in Players.playerList) {
-                    //hubConnection.SendAsync("SendMessage", "SERVER_TEST", mess); //AND THIS IS WHERE YOU SHOULD SEND THE DUMBASS POSITION OUT
+                    (int, int) pos = p.getCoords();
+                    hubConnection.SendAsync("SendMessage", "SERVER", "All|Coords|" + p.id.ToString() + "|" + pos.Item1.ToString() + "|" + pos.Item2.ToString());
+                    //messages.Add(p.id.ToString());
                 }
-                tempMessages.Clear();
                 stopwatch.Restart();
             }
 
-
+            var parsedMessage = message.Split('|');
             if (parsedMessage.Length > 0)
             {
                 switch (parsedMessage[0])
@@ -161,11 +160,14 @@
                         {
                             int gotId = int.Parse(user);
                             playerIds[idCount] = gotId;
-                            Players.Add(new Player(user, 0, 0));
+                            Players.Add(new Player(user, 500, 500));
                             hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + "|RequestAccepted");
                             for (int i = 0; i < idCount; i++)
                             {
-                                hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + "|EnemyCreated|" + playerIds[i].ToString());
+                                if (gotId != playerIds[i])
+                                {
+                                    hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + "|EnemyCreated|" + playerIds[i].ToString());
+                                }
                             }
                             hubConnection.SendAsync("SendMessage", "SERVER", "All|EnemyCreated|" + gotId.ToString());
                             idCount++;
@@ -175,23 +177,20 @@
                             }
                         }
                         break;
-                    case "Coords": //write code to save, by replacing playerIds with Player class custom
-                        //hubConnection.SendAsync("SendMessage", "SERVER", "All|Coords|" +user.ToString()+ "|" + parsedMessage[1].ToString() + "|"+parsedMessage[2].ToString());
-                        //coordMessage = 
-                        //tempMessages.Add("All|Coords|" + user.ToString() + "|" + parsedMessage[1].ToString() + "|" + parsedMessage[2].ToString());
-                        Players.getPlayer(user).setCoords(int.Parse(parsedMessage[1]), int.Parse(parsedMessage[2])); //OK SO THIS IS WHERE WE MAKE THE PLAYER GET THE POSITION
-
+                    case "Coords": //Now saves location data into a custom PlayerList
+                        Players.getPlayer(user).setCoords(int.Parse(parsedMessage[1]), int.Parse(parsedMessage[2]));
                         break;
                     case "BULLET":
                         hubConnection.SendAsync("SendMessage", "SERVER", $"All|BULLET|{parsedMessage[1]}|{parsedMessage[2]}|{parsedMessage[3]}|{parsedMessage[4]}");
-                        //tempMessages.Add($"All|BULLET|{parsedMessage[1]}|{parsedMessage[2]}|{parsedMessage[3]}|{parsedMessage[4]}");
                         break;
                 }
             }
 
-
-            var formattedMessage = $"{user}: {message}";
+            //Uncomment to see all messages
+            //var formattedMessage = $"{user}: {message}";
             //messages.Add(formattedMessage);
+
+            //Updates browser view, left it on for debugging
             InvokeAsync(StateHasChanged);
         });
 

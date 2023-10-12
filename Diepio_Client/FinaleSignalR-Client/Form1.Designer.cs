@@ -104,9 +104,9 @@ namespace FinaleSignalR_Client
             // messages
             // 
             this.messages.FormattingEnabled = true;
-            this.messages.Location = new System.Drawing.Point(1004, 149);
+            this.messages.Location = new System.Drawing.Point(845, 149);
             this.messages.Name = "messages";
-            this.messages.Size = new System.Drawing.Size(114, 56);
+            this.messages.Size = new System.Drawing.Size(273, 589);
             this.messages.TabIndex = 3;
             // 
             // Form1

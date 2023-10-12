@@ -102,6 +102,7 @@ namespace FinaleSignalR_Client
                 {
                     playerBoxes[i].Left = left;
                     playerBoxes[i].Top = top;
+                    return;
                 }
             }
         }
