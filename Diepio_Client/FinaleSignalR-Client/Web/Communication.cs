@@ -6,6 +6,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FinaleSignalR_Client.Controls;
+using FinaleSignalR_Client.Objects;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace FinaleSignalR_Client.Web
@@ -109,7 +110,7 @@ namespace FinaleSignalR_Client.Web
                                     form.Refresh();
                                     break;
                                 case "BULLET":
-                                    form.shootBullet(parsedMessage[2], parsedMessage[3], parsedMessage[4], parsedMessage[5]);
+                                    form.shootBullet(parsedMessage[2], parsedMessage[3], parsedMessage[4], parsedMessage[5], parsedMessage[6]);
                                     break;
                                 case "PELLET":
                                     form.createPellet(int.Parse(parsedMessage[2]), int.Parse(parsedMessage[3]), int.Parse(parsedMessage[4]), int.Parse(parsedMessage[5]));
@@ -162,11 +163,11 @@ namespace FinaleSignalR_Client.Web
             }
         }
 
-        public async void SendBulletInfo(int x, int y, float directionX, float directionY)
+        public async void SendBulletInfo(int x, int y, float directionX, float directionY, string id)
         {
             try
             {
-                await connection.InvokeAsync("SendMessage", id, $"BULLET|{x}|{y}|{directionX}|{directionY}");
+                await connection.InvokeAsync("SendMessage", id, $"BULLET|{x}|{y}|{directionX}|{directionY}|{id}");
             }
             catch (Exception ex)
             {

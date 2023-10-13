@@ -203,7 +203,7 @@
                         Players.getPlayer(user).setCoords(int.Parse(parsedMessage[1]), int.Parse(parsedMessage[2]));
                         break;
                     case "BULLET":
-                        hubConnection.SendAsync("SendMessage", "SERVER", $"All|BULLET|{parsedMessage[1]}|{parsedMessage[2]}|{parsedMessage[3]}|{parsedMessage[4]}");
+                        hubConnection.SendAsync("SendMessage", "SERVER", $"All|BULLET|{parsedMessage[1]}|{parsedMessage[2]}|{parsedMessage[3]}|{parsedMessage[4]}|{parsedMessage[5]}");
                         break;
                     case "PELLET":
                         hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{parsedMessage[1]}|{parsedMessage[2]}");
