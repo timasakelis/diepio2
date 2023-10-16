@@ -11,6 +11,7 @@ using FinaleSignalR_Client.Web;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Linq;
 using System.Drawing.Drawing2D;
+using FinaleSignalR_Client.Stategy;
 
 
 
@@ -165,10 +166,10 @@ namespace FinaleSignalR_Client
         public MapControl mapControl;
         Communication comm;
 
-        int mapMinX = 0;
-        int mapMinY = 0;
-        int mapMaxX = 0;
-        int mapMaxY = 0;
+        //int mapMinX = 0;
+        //int mapMinY = 0;
+        //int mapMaxX = 0;
+        //int mapMaxY = 0;
 
 
         //Bullet
@@ -197,9 +198,13 @@ namespace FinaleSignalR_Client
         public void createPlayer(string id)
         {
             var newPlayer = new Player(new Size(64, 64), id, "new player", 20, 20, 5, SystemColors.ControlDark, new Point(666, 422));
+            newPlayer.SetStrategy(new FastMove());
 
-            this.mapMaxX = mapControl.Width - newPlayer.PlayerBox.Width;
-            this.mapMaxY = mapControl.Height - newPlayer.PlayerBox.Height;
+
+            mapControl.mapMinX = 0;
+            mapControl.mapMinY = 0;
+            mapControl.mapMaxX = mapControl.Width - newPlayer.PlayerBox.Width;
+            mapControl.mapMaxY = mapControl.Height - newPlayer.PlayerBox.Height;
 
             //adding player to map
             playerBoxes[playerCount] = newPlayer.PlayerBox;
@@ -251,7 +256,7 @@ namespace FinaleSignalR_Client
         {
             comm.SendChatMessage(messageInput.Text);
         }
-
+        //------------------------Movement-------------------------------
         private void KeyIsDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Left)
@@ -297,68 +302,24 @@ namespace FinaleSignalR_Client
 
         private void DownTimer_Tick(object sender, EventArgs e)
         {
-
-            if (this.player.PlayerBox.Top + this.player.Playerspeed < mapMaxY)
-            {
-                int newPlayerTop = this.player.PlayerBox.Top + this.player.Playerspeed;
-
-                // Check if the new position collides with any obstacle
-                if (!CollidesWithObstacle(this.player.PlayerBox.Left, newPlayerTop, this.player.PlayerBox.Width, this.player.PlayerBox.Height))
-                    this.player.PlayerBox.Top += this.player.Playerspeed;
-            }
+            this.player.ExecuteStrategy("down", mapControl);
         }
 
         private void LeftTimer_Tick_1(object sender, EventArgs e)
         {
-            if (this.player.PlayerBox.Left - this.player.Playerspeed > mapMinX)
-            {
-                int newPlayerLeft = this.player.PlayerBox.Left - this.player.Playerspeed;
-
-                // Check if the new position collides with any obstacle
-                if (!CollidesWithObstacle(newPlayerLeft, this.player.PlayerBox.Top, this.player.PlayerBox.Width, this.player.PlayerBox.Height))
-
-                    this.player.PlayerBox.Left -= this.player.Playerspeed;
-            }
+            this.player.ExecuteStrategy("left", mapControl);
         }
 
         private void UpTimer_Tick_1(object sender, EventArgs e)
         {
-            if (this.player.PlayerBox.Top - this.player.Playerspeed > mapMinY)
-            {
-                int newPlayerTop = this.player.PlayerBox.Top - this.player.Playerspeed;
-
-                // Check if the new position collides with any obstacle
-                if (!CollidesWithObstacle(this.player.PlayerBox.Left, newPlayerTop, this.player.PlayerBox.Width, this.player.PlayerBox.Height))
-                    this.player.PlayerBox.Top -= this.player.Playerspeed;
-            }
+            this.player.ExecuteStrategy("up", mapControl);
         }
 
         private void RightTimer_Tick_1(object sender, EventArgs e)
         {
-            if (this.player.PlayerBox.Left + this.player.Playerspeed < mapMaxX)
-            {
-                int newPlayerLeft = this.player.PlayerBox.Left + this.player.Playerspeed;
-                if (!CollidesWithObstacle(newPlayerLeft, this.player.PlayerBox.Top, this.player.PlayerBox.Width, this.player.PlayerBox.Height))
-                    this.player.PlayerBox.Left += this.player.Playerspeed;
-            }
+            this.player.ExecuteStrategy("right", mapControl);
         }
-
-        // Function to check collision with obstacles
-        private bool CollidesWithObstacle(int x, int y, int width, int height)
-        {
-            Rectangle playerRect = new Rectangle(x, y, width, height);
-
-            foreach (Rectangle obstacle in this.mapControl.obstacles)
-            {
-                if (playerRect.IntersectsWith(obstacle))
-                {
-                    return true; // Collision detected
-                }
-            }
-
-            return false; // No collision detected
-        }
-
+        //-------------------------------------------------------
 
         //Bullet
         List<Bullet> bullets = new List<Bullet>();

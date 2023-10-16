@@ -10,6 +10,11 @@ namespace FinaleSignalR_Client.Controls
 {
     public class MapControl : Panel
     {
+        public int mapMinX {  get; set; }
+        public int mapMinY { get; set; }
+        public int mapMaxX { get; set; }
+        public int mapMaxY { get; set; }
+
         public List<Rectangle> obstacles = new List<Rectangle>();
         Graphics g;
         Pen p = new Pen(Brushes.Blue);
