@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace FinaleSignalR_Client.Stategy
 {
-    internal class FastMove : MoveAlgorithm
+    internal class HighHP : MoveAlgorithm
     {
-        public void behaveDiffrentley(string dirrection, Player player, MapControl mapControl)
+        public void behaveDiffrentley(string dirrection, Player player, Map mapControl)
         {
             switch (dirrection)
             {
@@ -56,7 +56,7 @@ namespace FinaleSignalR_Client.Stategy
                     break;
             }
         }
-        private bool CollidesWithObstacle(int x, int y, int width, int height, MapControl mapControl)
+        private bool CollidesWithObstacle(int x, int y, int width, int height, Map mapControl)
         {
             Rectangle playerRect = new Rectangle(x, y, width, height);
 

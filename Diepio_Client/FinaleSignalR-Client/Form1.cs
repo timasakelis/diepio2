@@ -163,7 +163,7 @@ namespace FinaleSignalR_Client
         Player player;
         Player[] players;
 
-        public MapControl mapControl;
+        public Map mapControl;
         Communication comm;
 
         //int mapMinX = 0;
@@ -185,7 +185,7 @@ namespace FinaleSignalR_Client
             this.players = new Player[50];
 
             this.KeyPreview = true;
-            this.mapControl = new MapControl();
+            this.mapControl = new Map();
             this.Controls.Add(this.mapControl);
             this.mapControl.SendToBack();
 
@@ -198,7 +198,7 @@ namespace FinaleSignalR_Client
         public void createPlayer(string id)
         {
             var newPlayer = new Player(new Size(64, 64), id, "new player", 20, 20, 5, SystemColors.ControlDark, new Point(666, 422));
-            newPlayer.SetStrategy(new FastMove());
+            newPlayer.SetStrategy(new HighHP());
 
 
             mapControl.mapMinX = 0;
@@ -415,7 +415,7 @@ namespace FinaleSignalR_Client
                         {
                             pl.CurrentHP--;
                             if (pl.CurrentHP < pl.MaxHP * 0.5)
-                                pl.SetStrategy(new SlowMove());
+                                pl.SetStrategy(new LowHP());
                             if (pl.CurrentHP < 1)
                             {
                                 pl.PlayerBox.BackColor = Color.Red;

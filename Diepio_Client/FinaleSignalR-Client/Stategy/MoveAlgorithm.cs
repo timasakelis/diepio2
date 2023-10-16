@@ -10,6 +10,6 @@ namespace FinaleSignalR_Client.Stategy
 {
     public interface MoveAlgorithm
     {
-        void behaveDiffrentley(string dirrection, Player player, MapControl mapControl);
+        void behaveDiffrentley(string dirrection, Player player, Map mapControl);
     }
 }

@@ -42,7 +42,7 @@ namespace FinaleSignalR_Client.Objects
             moveAlgorithm = moveType;
         }
 
-        public void ExecuteStrategy(string dirrection, MapControl mapControl)
+        public void ExecuteStrategy(string dirrection, Map mapControl)
         {
             moveAlgorithm?.behaveDiffrentley(dirrection, this, mapControl);
         }

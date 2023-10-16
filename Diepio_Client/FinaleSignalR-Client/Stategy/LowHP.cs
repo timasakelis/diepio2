@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace FinaleSignalR_Client.Stategy
 {
-    public class SlowMove : MoveAlgorithm
+    public class LowHP : MoveAlgorithm
     {
-        public void behaveDiffrentley(string dirrection, Player player, MapControl mapControl)
+        public void behaveDiffrentley(string dirrection, Player player, Map mapControl)
         {
             player.Playerspeed = 2;
             switch (dirrection)

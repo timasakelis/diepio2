@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace FinaleSignalR_Client.Controls
 {
-    public class MapControl : Panel
+    public class Map : Panel
     {
         public int mapMinX {  get; set; }
         public int mapMinY { get; set; }
@@ -21,7 +21,7 @@ namespace FinaleSignalR_Client.Controls
         public bool isShooting;
 
 
-        public MapControl()
+        public Map()
         {
             //this.BackColor = Color.Green;
             this.Size = new Size(800, 600);
