@@ -414,6 +414,8 @@ namespace FinaleSignalR_Client
                         if (pl.PlayerBox.Name != bullet.playerid && bullet.BulletPictureBox.Bounds.IntersectsWith(pl.PlayerBox.Bounds))
                         {
                             pl.CurrentHP--;
+                            if (pl.CurrentHP < pl.MaxHP * 0.5)
+                                pl.SetStrategy(new SlowMove());
                             if (pl.CurrentHP < 1)
                             {
                                 pl.PlayerBox.BackColor = Color.Red;
