@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FinaleSignalR_Client.Controls;
+using FinaleSignalR_Client.Stategy;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -32,5 +34,18 @@ namespace FinaleSignalR_Client.Objects
             this.PlayerBox.TabIndex = 0;
             this.PlayerBox.TabStop = false;
         }
+
+        private MoveAlgorithm moveAlgorithm;
+
+        public void SetStrategy(MoveAlgorithm moveType)
+        {
+            moveAlgorithm = moveType;
+        }
+
+        public void ExecuteStrategy(string dirrection, MapControl mapControl)
+        {
+            moveAlgorithm?.behaveDiffrentley(dirrection, this, mapControl);
+        }
+
     }
 }
