@@ -11,15 +11,16 @@ namespace FinaleSignalR_Client.Decorator
 {
     public class Bullet : IBullet
     {
-        public PictureBox BulletPictureBox = new PictureBox
-        {
-            Size = new Size(10, 10),
-            BackColor = Color.Red
-        };
+        public PictureBox BulletPictureBox;
         public Vector2 Direction { get; set; }
         public string playerid { get;}
         public Bullet(string playerid)
         {
+            BulletPictureBox = new PictureBox
+            {
+                Size = new Size(10, 10),
+                BackColor = Color.Red
+            };
             this.playerid = playerid;
         }
         public void SetTragectory(Point startPosition, Vector2 direction)
@@ -36,13 +37,12 @@ namespace FinaleSignalR_Client.Decorator
 
         public Size GetSize()
         {
-            BulletPictureBox.Size = new Size(10, 10);
-            return BulletPictureBox.Size;
+            return new Size(10, 10);
         }
 
         public float GetSpeed()
         {
-            return 5;
+            return 6;
         }
     }
 

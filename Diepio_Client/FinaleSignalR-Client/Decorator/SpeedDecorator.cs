@@ -11,10 +11,8 @@ namespace FinaleSignalR_Client.Decorator
 {
     public class SpeedDecorator : BulletDecorator
     {
-        //public string playerid { get; set; }
-        public SpeedDecorator(IBullet bullet) : base(bullet)
+        public SpeedDecorator(IBullet bullet  ) : base(bullet)
         {
-            //this.playerid = bullet.playerid;
         }
         public override PictureBox GetPictureBox()
         {
@@ -23,7 +21,7 @@ namespace FinaleSignalR_Client.Decorator
 
         public override float GetSpeed()
         {
-            return base.GetSpeed() + 5;
+            return base.GetSpeed() + 1;
         }
     }
 }

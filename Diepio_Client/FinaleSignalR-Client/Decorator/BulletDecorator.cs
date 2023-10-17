@@ -30,12 +30,10 @@ namespace FinaleSignalR_Client.Decorator
         {
             return _bullet.GetSpeed();
         }
-
-        /*public void Move()
+        public virtual Size GetSize()
         {
-            _bullet.Move();
-        }*/
-
+            return _bullet.GetSize();
+        }
         public void SetTragectory(Point startPosition, Vector2 direction)
         {
             _bullet.SetTragectory(startPosition, direction);

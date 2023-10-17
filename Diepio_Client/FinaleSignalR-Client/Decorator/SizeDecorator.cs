@@ -11,21 +11,23 @@ namespace FinaleSignalR_Client.Decorator
 {
     public class SizeDecorator : BulletDecorator
     {
-        //private IBullet bullet;
-        //public Size Size { get; }
-        //public string playerid { get; }
-
-        //public PictureBox BulletPictureBox => bullet.BulletPictureBox;
-        //public Vector2 Direction => bullet.Direction;
-        //public string playerid {  get; set; }
-        public SizeDecorator(IBullet bullet): base(bullet) { 
-            //this.playerid = bullet.playerid;
+        public int Magnatude {  get; set; }
+        public SizeDecorator(IBullet bullet, int magnatude): base(bullet) { 
+            Magnatude = magnatude;
         }
 
         public override PictureBox GetPictureBox()
         {
             PictureBox temp = base.GetPictureBox();
-            temp.Size = new Size(base.GetPictureBox().Size.Width + 5, base.GetPictureBox().Size.Height + 5);
+            temp.Size = this.GetSize();
+            return temp;
+        }
+
+        public override Size GetSize()
+        {
+            var temp = base.GetSize();
+            temp.Width += Magnatude;
+            temp.Height += Magnatude;
             return temp;
         }
 

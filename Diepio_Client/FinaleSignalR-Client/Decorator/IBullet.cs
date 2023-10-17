@@ -11,16 +11,12 @@ namespace FinaleSignalR_Client.Decorator
 {
     public interface IBullet
     {
-        //PictureBox BulletPictureBox { get; }
-        //Vector2 Direction { get; }
         string playerid { get; }
         Vector2 Direction { get; }
         PictureBox GetPictureBox();
         float GetSpeed();
-        //void Move();
+        Size GetSize();
         void SetTragectory(Point startPosition, Vector2 direction);
 
-        //void Move();
-        //void SetTragectory(Point startPosition, Vector2 direction);
     }
 }
