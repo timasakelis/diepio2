@@ -112,6 +112,9 @@ namespace FinaleSignalR_Client.Web
                                 case "BULLET":
                                     form.shootBullet(parsedMessage[2], parsedMessage[3], parsedMessage[4], parsedMessage[5], parsedMessage[6]);
                                     break;
+                                case "UPGRADE":
+                                    form.Upgrade(parsedMessage[2], parsedMessage[3], parsedMessage[4]);
+                                    break;
                                 case "PELLET":
                                     form.createPellet(int.Parse(parsedMessage[2]), int.Parse(parsedMessage[3]), int.Parse(parsedMessage[4]), int.Parse(parsedMessage[5]));
                                     break;
@@ -172,6 +175,18 @@ namespace FinaleSignalR_Client.Web
             catch (Exception ex)
             {
                 messages.Items.Add($"Error sending bullet data: {ex.Message}");
+            }
+        }
+
+        public async void SendUpgradeInfo(string size, string speed, string id)
+        {
+            try
+            {
+                await connection.InvokeAsync("SendMessage", id, $"UPGRADE|{size}|{speed}|{id}");
+            }
+            catch (Exception ex)
+            {
+                messages.Items.Add($"Error sending upgrade data: {ex.Message}");
             }
         }
 

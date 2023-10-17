@@ -144,16 +144,28 @@ namespace FinaleSignalR_Client
 
             if(e.KeyCode == Keys.D1)
             {
-                player.weapon.SizeBoost();
+                Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
+                if (foundPlayer.weapon.Size < 10) {
+                    Upgrade((foundPlayer.weapon.Size+1).ToString(), (foundPlayer.weapon.Speed).ToString(), this.id);
+                    comm.SendUpgradeInfo((foundPlayer.weapon.Size + 1).ToString(), (foundPlayer.weapon.Speed).ToString(), this.id);
+                }
             }
 
             if (e.KeyCode == Keys.D2)
             {
-                player.weapon.SpeedBoost();
+                Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
+                if (foundPlayer.weapon.Speed < 5)
+                {
+                    Upgrade((foundPlayer.weapon.Size).ToString(), (foundPlayer.weapon.Speed+1).ToString(), this.id);
+                    comm.SendUpgradeInfo((foundPlayer.weapon.Size).ToString(), (foundPlayer.weapon.Speed + 1).ToString(), this.id);
+                }
             }
             if (e.KeyCode == Keys.D3)
             {
-                player.weapon.Default();
+                Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
+                Upgrade(0.ToString(), 0.ToString(), this.id);
+                comm.SendUpgradeInfo(0.ToString(), 0.ToString(), this.id);
+
             }
         }
 
@@ -203,6 +215,14 @@ namespace FinaleSignalR_Client
         {
             Player foundPlayer = players.FirstOrDefault(player => player.Id == playerid);
             foundPlayer.Fire(x, y, directionX, directionY, playerid, mapControl, bullets);
+
+        }
+
+        public void Upgrade(string size, string speed, string playerid)
+        {
+            Player foundPlayer = players.FirstOrDefault(player => player.Id == playerid);
+            foundPlayer.weapon.Size = int.Parse(size);
+            foundPlayer.weapon.Speed = int.Parse(speed);
 
         }
 
