@@ -175,7 +175,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Decorator\BasicBullet.cs" />
+    <Compile Include="Decorator\Bullet.cs" />
+    <Compile Include="Decorator\BulletDecorator.cs" />
     <Compile Include="Decorator\IBullet.cs" />
     <Compile Include="Decorator\SizeDecorator.cs" />
     <Compile Include="Decorator\SpeedDecorator.cs" />

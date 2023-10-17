@@ -9,30 +9,29 @@ using System.Windows.Forms;
 
 namespace FinaleSignalR_Client.Decorator
 {
-    public class SizeDecorator : IBullet
+    public class SizeDecorator : BulletDecorator
     {
-        private IBullet bullet;
-        public Size Size { get; }
-        public string playerid { get; }
+        //private IBullet bullet;
+        //public Size Size { get; }
+        //public string playerid { get; }
 
-        public PictureBox BulletPictureBox => bullet.BulletPictureBox;
-        public Vector2 Direction => bullet.Direction;
-
-        public SizeDecorator(IBullet bullet, Size size)
-        {
-            this.bullet = bullet;
-            this.playerid = bullet.playerid;
-            this.Size = size;
-            this.bullet.BulletPictureBox.Size = size;
+        //public PictureBox BulletPictureBox => bullet.BulletPictureBox;
+        //public Vector2 Direction => bullet.Direction;
+        //public string playerid {  get; set; }
+        public SizeDecorator(IBullet bullet): base(bullet) { 
+            //this.playerid = bullet.playerid;
         }
 
-        public void Move()
+        public override PictureBox GetPictureBox()
         {
-            bullet.Move();
+            PictureBox temp = base.GetPictureBox();
+            temp.Size = new Size(base.GetPictureBox().Size.Width + 5, base.GetPictureBox().Size.Height + 5);
+            return temp;
         }
-        public void SetTragectory(Point startPosition, Vector2 direction)
+
+        public override float GetSpeed()
         {
-            bullet.SetTragectory(startPosition, direction);
+            return base.GetSpeed();
         }
     }
 }

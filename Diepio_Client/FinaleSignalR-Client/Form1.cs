@@ -210,13 +210,13 @@ namespace FinaleSignalR_Client
         {
             foreach (IBullet bullet in bullets)
             {
-                bullet.Move();
+                MoveBullet(bullet);
              
                 foreach (Player pl in this.players)
                 {
                     if (pl != null)
-                    {
-                        if (pl.PlayerBox.Name != bullet.playerid && bullet.BulletPictureBox.Bounds.IntersectsWith(pl.PlayerBox.Bounds))
+                    {//pl.PlayerBox.Name != (bullet as Bullet).playerid &&
+                        if (pl.PlayerBox.Name != bullet.playerid && bullet.GetPictureBox().Bounds.IntersectsWith(pl.PlayerBox.Bounds))
                         {
                             pl.CurrentHP--;
                             if (pl.CurrentHP < pl.MaxHP * 0.5)
@@ -226,20 +226,20 @@ namespace FinaleSignalR_Client
                                 pl.PlayerBox.BackColor = Color.Red;
                             }
                             bulletsToRemove.Add(bullet);
-                            this.mapControl.Controls.Remove(bullet.BulletPictureBox);  
+                            this.mapControl.Controls.Remove(bullet.GetPictureBox());  
                         }
                     }
                 }
 
                 foreach (IPellet pellet in pellets)
                 {
-                    if (bullet.BulletPictureBox.Bounds.IntersectsWith(pellet.PelletPictureBox.Bounds))
+                    if (bullet.GetPictureBox().Bounds.IntersectsWith(pellet.PelletPictureBox.Bounds))
                     {
                         pellet.HP--;
 
                         // Remove the bullet when it hits a pellet
                         bulletsToRemove.Add(bullet);
-                        this.mapControl.Controls.Remove(bullet.BulletPictureBox);
+                        this.mapControl.Controls.Remove(bullet.GetPictureBox());
 
                         // Check if the pellet is destroyed
                         if (pellet.IsDestroyed())
@@ -254,7 +254,7 @@ namespace FinaleSignalR_Client
                     }
                 }
             }
-
+            
             // Remove out-of-bounds bullets from the list
             foreach (IBullet bullet in bulletsToRemove)
             {
@@ -267,6 +267,12 @@ namespace FinaleSignalR_Client
                 pellets.Remove(pellet);
             }
 
+        }
+
+        public void MoveBullet(IBullet bullet)
+        {
+            bullet.GetPictureBox().Left += (int)(bullet.Direction.X * bullet.GetSpeed());
+            bullet.GetPictureBox().Top += (int)(bullet.Direction.Y * bullet.GetSpeed());
         }
         //Bullet End
 

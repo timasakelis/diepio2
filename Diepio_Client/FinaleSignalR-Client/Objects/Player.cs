@@ -26,7 +26,7 @@ namespace FinaleSignalR_Client.Objects
             this.Name = name;
             this.CurrentHP = currentHP;
             this.MaxHP = maxHP;
-            this.weapon = new Weapon(Id); // Default weapon
+            this.weapon = new Weapon(); // Default weapon
             this.Playerspeed = speed;
             this.PlayerBox = new PictureBox();
             this.PlayerBox.BackColor = color;
@@ -53,7 +53,7 @@ namespace FinaleSignalR_Client.Objects
 
         public void Fire(string x, string y, string directionX, string directionY, string playerid, Map mapControl, List<IBullet> bullets)
         {
-            weapon.Fire( x,  y,  directionX,  directionY,  mapControl,  bullets);
+            weapon.Fire( x,  y,  directionX,  directionY,  mapControl,  bullets, Id);
         }
 
     }
