@@ -1,17 +1,15 @@
 ﻿using FinaleSignalR_Client.Controls;
+using FinaleSignalR_Client.Decorator;
+using FinaleSignalR_Client.Factory;
 using FinaleSignalR_Client.Objects;
+using FinaleSignalR_Client.Stategy;
 using FinaleSignalR_Client.Web;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
-using FinaleSignalR_Client.Controls;
-using FinaleSignalR_Client.Web;
-using Microsoft.AspNetCore.SignalR.Client;
-using System.Linq;
-using System.Drawing.Drawing2D;
-using FinaleSignalR_Client.Stategy;
 
 
 
@@ -20,141 +18,6 @@ using FinaleSignalR_Client.Stategy;
 namespace FinaleSignalR_Client
 {
     //Pellet
-    public interface IPellet
-    {
-        PictureBox PelletPictureBox { get; }
-        int ID { get; }
-        int HP { get; set; }
-        int EXP { get; set; }
-        bool IsDestroyed();
-    }
-
-    public class PelletFactory
-    {
-        public IPellet CreatePellet(int id, int x, int y, int type)
-        {
-            switch (type)
-            {
-                case 0:
-                    return new SquarePellet(id, x, y);
-                case 1:
-                    return new TrianglePellet(id, x, y);
-                case 2:
-                    return new OctagonPellet(id, x, y);
-                default:
-                    throw new ArgumentException("Invalid pellet type", nameof(type));
-            }
-        }
-    }
-
-    public class SquarePellet : IPellet
-    {
-        public PictureBox PelletPictureBox { get; }
-        public int ID { get; }
-        public int HP { get; set; } = 5;  // example value
-        public int EXP { get; set; } = 10; // example value
-
-        public SquarePellet(int id, int x, int y)
-        {
-            ID = id;
-            PelletPictureBox = new PictureBox
-            {
-                Size = new Size(10, 10),
-                BackColor = Color.Green,
-                Location = new Point(x, y),
-            };
-        }
-
-        public bool IsDestroyed()
-        {
-            return HP <= 0;
-        }
-    }
-
-    public class TrianglePellet : IPellet
-    {
-        public PictureBox PelletPictureBox { get; }
-        public int ID { get; }
-        public int HP { get; set; } = 6;  // example value
-        public int EXP { get; set; } = 18; // example value
-
-        public TrianglePellet(int id, int x, int y)
-        {
-            ID = id;
-            PelletPictureBox = new PictureBox
-            {
-                Size = new Size(14, 14), // adjusted size
-                BackColor = Color.Transparent,
-                Location = new Point(x, y),
-            };
-
-            PelletPictureBox.Paint += (s, e) =>
-            {
-                // Points to define the triangle with doubled size
-                Point point1 = new Point(7, 0);
-                Point point2 = new Point(0, 14);
-                Point point3 = new Point(14, 14);
-
-                // Define a polygon (here a triangle) and fill it
-                e.Graphics.FillPolygon(Brushes.Yellow, new Point[] { point1, point2, point3 });
-            };
-        }
-
-        public bool IsDestroyed()
-        {
-            return HP <= 0;
-        }
-    }
-
-
-
-    public class OctagonPellet : IPellet
-    {
-        public PictureBox PelletPictureBox { get; }
-        public int ID { get; }
-        public int HP { get; set; } = 2;  // example value
-        public int EXP { get; set; } = 20; // example value
-
-        public OctagonPellet(int id, int x, int y)
-        {
-            ID = id;
-
-            PelletPictureBox = new PictureBox
-            {
-                Size = new Size(20, 20),
-                BackColor = Color.Transparent,
-                Location = new Point(x, y),
-            };
-
-            PelletPictureBox.Paint += PelletPictureBox_Paint;
-        }
-
-        private void PelletPictureBox_Paint(object sender, PaintEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            Point[] octagonPoints = new Point[]
-            {
-            new Point(10, 0),
-            new Point(20, 5),
-            new Point(20, 15),
-            new Point(10, 20),
-            new Point(0, 15),
-            new Point(0, 5),
-            new Point(10, 0),
-            };
-
-            GraphicsPath path = new GraphicsPath();
-            path.AddPolygon(octagonPoints);
-            g.FillPath(Brushes.Purple, path);
-        }
-
-        public bool IsDestroyed()
-        {
-            return HP <= 0;
-        }
-    }
-
-
 
     public partial class Form1 : Form
     {
@@ -165,17 +28,17 @@ namespace FinaleSignalR_Client
 
         public Map mapControl;
         Communication comm;
-
-        //int mapMinX = 0;
-        //int mapMinY = 0;
-        //int mapMaxX = 0;
-        //int mapMaxY = 0;
-
+        
+        List<IPellet> pellets = new List<IPellet>();
+        PelletFactory pelletFactory = new PelletFactory();
 
         //Bullet
+        List<IBullet> bullets = new List<IBullet>();
         private bool isShooting = false;
         private DateTime lastBulletFiredTime;
         private TimeSpan bulletCooldown = TimeSpan.FromMilliseconds(150);
+        List<IBullet> bulletsToRemove = new List<IBullet>();
+        List<IPellet> pelletsToRemove = new List<IPellet>();
         //Bullet end
 
         public Form1()
@@ -278,6 +141,20 @@ namespace FinaleSignalR_Client
             {
                 DownTimer.Start();
             }
+
+            if(e.KeyCode == Keys.D1)
+            {
+                player.weapon.SizeBoost();
+            }
+
+            if (e.KeyCode == Keys.D2)
+            {
+                player.weapon.SpeedBoost();
+            }
+            if (e.KeyCode == Keys.D3)
+            {
+                player.weapon.Default();
+            }
         }
 
         private void KeyIsUp(object sender, KeyEventArgs e)
@@ -322,91 +199,19 @@ namespace FinaleSignalR_Client
         //-------------------------------------------------------
 
         //Bullet
-        List<Bullet> bullets = new List<Bullet>();
         public void shootBullet(string x, string y, string directionX, string directionY, string playerid)
         {
-            Vector2 bulletDirection = new Vector2(float.Parse(directionX), float.Parse(directionY));
-            Point startPoint = new Point(int.Parse(x), int.Parse(y));
-            var bullet = new Bullet(startPoint, bulletDirection, playerid);
-            bullet.BulletPictureBox.BringToFront();
-            //this.Controls.Add(bullet.BulletPictureBox);
-            this.mapControl.Controls.Add(bullet.BulletPictureBox);
-            bullets.Add(bullet);
+            Player foundPlayer = players.FirstOrDefault(player => player.Id == playerid);
+            foundPlayer.Fire(x, y, directionX, directionY, playerid, mapControl, bullets);
 
-            //Limit on client to keep from lagging out
-            if (bullets.Count >= 30)
-            {
-                // Remove the first (oldest) bullet
-                if (bullets[0].BulletPictureBox != null)
-                {
-                    this.mapControl.Controls.Remove(bullets[0].BulletPictureBox);
-                    //this.Controls.Remove(bullets[0].BulletPictureBox);
-                    bullets[0].BulletPictureBox.Dispose();
-                }
-                bullets.RemoveAt(0);
-            }
-        }
-        //Bullet End
-
-        List<IPellet> pellets = new List<IPellet>();
-        PelletFactory pelletFactory = new PelletFactory();
-
-        public void createPellet(int id, int x, int y, int type)
-        {
-            // Check if pellet already exists
-            if (pellets.Any(p => p.ID == id))
-            {
-                return;
-            }
-
-            // Use the factory to create a pellet of a specified type.
-            IPellet pellet = pelletFactory.CreatePellet(id, x, y, type);
-
-            // Add the pellet to UI controls.
-            //this.Controls.Add(pellet.PelletPictureBox);
-            this.mapControl.Controls.Add(pellet.PelletPictureBox);
-
-            // Add the pellet to the pellet list.
-            pellets.Add(pellet);
         }
 
-
-        private void ServerTimer_Tick(object sender, EventArgs e)
-        {
-            comm.SendCoordinates(this.player.PlayerBox.Left, this.player.PlayerBox.Top);
-
-            //Send bullet info
-            if (this.mapControl.IsShooting() && (DateTime.Now - lastBulletFiredTime) > bulletCooldown)
-            {
-                Point targetPoint = this.PointToClient(Cursor.Position);
-                Vector2 start = new Vector2(this.player.PlayerBox.Location.X, this.player.PlayerBox.Location.Y);
-                Vector2 target = new Vector2(targetPoint.X, targetPoint.Y);
-                Vector2 direction = Vector2.Normalize(target - start);
-                lastBulletFiredTime = DateTime.Now;
-                //Bullet start from center of player instead of corner
-                int bulletStartX = this.player.PlayerBox.Location.X + this.player.PlayerBox.Width / 2;
-                int bulletStartY = this.player.PlayerBox.Location.Y + this.player.PlayerBox.Height / 2;
-                comm.SendBulletInfo(bulletStartX, bulletStartY, direction.X, direction.Y, this.player.PlayerBox.Name);
-            }
-        }
-
-        List<Bullet> bulletsToRemove = new List<Bullet>();
-        List<IPellet> pelletsToRemove = new List<IPellet>();
         private void bulletMovementTimer_Tick(object sender, EventArgs e)
         {
-            foreach (Bullet bullet in bullets)
+            foreach (IBullet bullet in bullets)
             {
                 bullet.Move();
-
-                //if (bullet.BulletPictureBox.Left < 0 ||
-                //    bullet.BulletPictureBox.Right > this.Width ||
-                //    bullet.BulletPictureBox.Top < 0 ||
-                //    bullet.BulletPictureBox.Bottom > this.Height)
-                //{
-                //    bulletsToRemove.Add(bullet);
-                //    this.Controls.Remove(bullet.BulletPictureBox);
-                //    this.mapControl.Controls.Remove(bullet.BulletPictureBox);
-                //}
+             
                 foreach (Player pl in this.players)
                 {
                     if (pl != null)
@@ -451,7 +256,7 @@ namespace FinaleSignalR_Client
             }
 
             // Remove out-of-bounds bullets from the list
-            foreach (Bullet bullet in bulletsToRemove)
+            foreach (IBullet bullet in bulletsToRemove)
             {
                 bullets.Remove(bullet);
             }
@@ -463,5 +268,45 @@ namespace FinaleSignalR_Client
             }
 
         }
+        //Bullet End
+
+        public void createPellet(int id, int x, int y, int type)
+        {
+            // Check if pellet already exists
+            if (pellets.Any(p => p.ID == id))
+            {
+                return;
+            }
+
+            // Use the factory to create a pellet of a specified type.
+            IPellet pellet = pelletFactory.CreatePellet(id, x, y, type);
+
+            // Add the pellet to UI controls.
+            //this.Controls.Add(pellet.PelletPictureBox);
+            this.mapControl.Controls.Add(pellet.PelletPictureBox);
+
+            // Add the pellet to the pellet list.
+            pellets.Add(pellet);
+        }
+
+        private void ServerTimer_Tick(object sender, EventArgs e)
+        {
+            comm.SendCoordinates(this.player.PlayerBox.Left, this.player.PlayerBox.Top);
+
+            //Send bullet info
+            if (this.mapControl.IsShooting() && (DateTime.Now - lastBulletFiredTime) > bulletCooldown)
+            {
+                Point targetPoint = this.PointToClient(Cursor.Position);
+                Vector2 start = new Vector2(this.player.PlayerBox.Location.X, this.player.PlayerBox.Location.Y);
+                Vector2 target = new Vector2(targetPoint.X, targetPoint.Y);
+                Vector2 direction = Vector2.Normalize(target - start);
+                lastBulletFiredTime = DateTime.Now;
+                //Bullet start from center of player instead of corner
+                int bulletStartX = this.player.PlayerBox.Location.X + this.player.PlayerBox.Width / 2;
+                int bulletStartY = this.player.PlayerBox.Location.Y + this.player.PlayerBox.Height / 2;
+                comm.SendBulletInfo(bulletStartX, bulletStartY, direction.X, direction.Y, this.player.PlayerBox.Name);
+            }
+        }
+
     }
 }
