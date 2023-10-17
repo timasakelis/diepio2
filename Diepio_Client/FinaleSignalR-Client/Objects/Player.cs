@@ -1,6 +1,7 @@
 ﻿using FinaleSignalR_Client.Controls;
 using FinaleSignalR_Client.Decorator;
 using FinaleSignalR_Client.Stategy;
+using FinaleSignalR_Client.Web;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -51,10 +52,6 @@ namespace FinaleSignalR_Client.Objects
         }
 
 
-        public void Fire(string x, string y, string directionX, string directionY, string playerid, Map mapControl, List<IBullet> bullets)
-        {
-            weapon.Fire( x,  y,  directionX,  directionY,  mapControl,  bullets, Id);
-        }
 
     }
 }

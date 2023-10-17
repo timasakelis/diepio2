@@ -145,26 +145,18 @@ namespace FinaleSignalR_Client
             if(e.KeyCode == Keys.D1)
             {
                 Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
-                if (foundPlayer.weapon.Size < 10) {
-                    Upgrade((foundPlayer.weapon.Size+1).ToString(), (foundPlayer.weapon.Speed).ToString(), this.id);
-                    comm.SendUpgradeInfo((foundPlayer.weapon.Size + 1).ToString(), (foundPlayer.weapon.Speed).ToString(), this.id);
-                }
+                foundPlayer.weapon.SizeBoost();
             }
 
             if (e.KeyCode == Keys.D2)
             {
                 Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
-                if (foundPlayer.weapon.Speed < 5)
-                {
-                    Upgrade((foundPlayer.weapon.Size).ToString(), (foundPlayer.weapon.Speed+1).ToString(), this.id);
-                    comm.SendUpgradeInfo((foundPlayer.weapon.Size).ToString(), (foundPlayer.weapon.Speed + 1).ToString(), this.id);
-                }
+                foundPlayer.weapon.SpeedBoost();
             }
             if (e.KeyCode == Keys.D3)
             {
                 Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
-                Upgrade(0.ToString(), 0.ToString(), this.id);
-                comm.SendUpgradeInfo(0.ToString(), 0.ToString(), this.id);
+                foundPlayer.weapon.Default();
 
             }
         }
@@ -211,12 +203,37 @@ namespace FinaleSignalR_Client
         //-------------------------------------------------------
 
         //Bullet
-        public void shootBullet(string x, string y, string directionX, string directionY, string playerid)
+        public void shootBullet(string x, string y, string directionX, string directionY, string playerid, string sentSpeed, string sentSize)
         {
-            Player foundPlayer = players.FirstOrDefault(player => player.Id == playerid);
-            foundPlayer.Fire(x, y, directionX, directionY, playerid, mapControl, bullets);
+            Vector2 bulletDirection = new Vector2(float.Parse(directionX), float.Parse(directionY));
+            Point startPoint = new Point(int.Parse(x), int.Parse(y));
+            IBullet bullet = new Bullet(playerid);
+
+
+            for (int i = 0; i < int.Parse(sentSpeed); i++)
+            {
+                bullet = new SpeedDecorator(bullet);
+            }
+
+            bullet = new SizeDecorator(bullet, int.Parse(sentSize));
+
+            bullet.SetTragectory(startPoint, bulletDirection);
+            mapControl.Controls.Add(bullet.GetPictureBox());
+            bullets.Add(bullet);
+
+            if (bullets.Count >= 30)
+            {
+                // Remove the first (oldest) bullet
+                if (bullets[0].GetPictureBox() != null)
+                {
+                    mapControl.Controls.Remove(bullets[0].GetPictureBox());
+                    bullets[0].GetPictureBox().Dispose();
+                }
+                bullets.RemoveAt(0);
+            }
 
         }
+
 
         public void Upgrade(string size, string speed, string playerid)
         {
@@ -330,7 +347,7 @@ namespace FinaleSignalR_Client
                 //Bullet start from center of player instead of corner
                 int bulletStartX = this.player.PlayerBox.Location.X + this.player.PlayerBox.Width / 2;
                 int bulletStartY = this.player.PlayerBox.Location.Y + this.player.PlayerBox.Height / 2;
-                comm.SendBulletInfo(bulletStartX, bulletStartY, direction.X, direction.Y, this.player.PlayerBox.Name);
+                comm.SendBulletInfo(bulletStartX, bulletStartY, direction.X, direction.Y, this.player.PlayerBox.Name, player.weapon.Speed.ToString(), player.weapon.Size.ToString());
             }
         }
 
