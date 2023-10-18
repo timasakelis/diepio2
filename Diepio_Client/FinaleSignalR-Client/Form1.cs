@@ -26,6 +26,7 @@ namespace FinaleSignalR_Client
     {
         public string id;
         int playerCount = 0;
+        bool changeColor = false;
         Player player;
         Player[] players;
 
@@ -339,7 +340,7 @@ namespace FinaleSignalR_Client
             }
 
             // Use the factory to create a pellet of a specified type.
-            IPellet pellet = pelletFactory.CreatePellet(id, x, y, type);
+            IPellet pellet = pelletFactory.CreatePellet(id, x, y, type, changeColor);
 
             // Add the pellet to UI controls.
             //this.Controls.Add(pellet.PelletPictureBox);
@@ -368,5 +369,9 @@ namespace FinaleSignalR_Client
             }
         }
 
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            changeColor = true;
+        }
     }
 }

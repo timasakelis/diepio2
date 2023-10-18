@@ -116,10 +116,8 @@ namespace FinaleSignalR_Client.Web
                                     form.createPellet(int.Parse(parsedMessage[2]), int.Parse(parsedMessage[3]), int.Parse(parsedMessage[4]), int.Parse(parsedMessage[5]));
                                     break;
 
-
                             }
                         }
-
                     }
                     //var newMessage = $"{user}: {message}";
                     //messages.Items.Add(newMessage);
