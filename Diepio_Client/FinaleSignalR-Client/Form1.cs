@@ -10,6 +10,9 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using Microsoft.AspNetCore.SignalR.Client;
+using System.Drawing.Drawing2D;
+using FinaleSignalR_Client.Command;
 
 
 
@@ -28,7 +31,10 @@ namespace FinaleSignalR_Client
 
         public Map mapControl;
         Communication comm;
-        
+        InputControl inputControl;
+        InputArrowKeys inputArrowKeys;
+        InputAWSD inputAWSD;
+    
         List<IPellet> pellets = new List<IPellet>();
         PelletFactory pelletFactory = new PelletFactory();
 
@@ -56,6 +62,11 @@ namespace FinaleSignalR_Client
             id = rnd.Next(100000).ToString();
 
             comm = new Communication(messages, this);
+            inputControl = new InputControl();
+            inputArrowKeys = new InputArrowKeys();
+            inputAWSD = new InputAWSD();
+
+            inputControl.setCommand(new CommandArrowKeys(inputArrowKeys));
         }
 
         public void createPlayer(string id)
@@ -122,24 +133,30 @@ namespace FinaleSignalR_Client
         //------------------------Movement-------------------------------
         private void KeyIsDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Left)
+            if (e.KeyCode == Keys.K)
             {
-                LeftTimer.Start();
+                inputControl.setCommand(new CommandArrowKeys(inputArrowKeys));
+            }
+            if (e.KeyCode == Keys.L)
+            {
+                inputControl.setCommand(new CommandAWSD(inputAWSD));
             }
 
-            if (e.KeyCode == Keys.Right)
+            string direction = inputControl.inputDetected(e);
+            switch (direction)
             {
-                RightTimer.Start();
-            }
-
-            if (e.KeyCode == Keys.Up)
-            {
-                UpTimer.Start();
-            }
-
-            if (e.KeyCode == Keys.Down)
-            {
-                DownTimer.Start();
+                case "left":
+                    LeftTimer.Start();
+                    break;
+                case "right":
+                    RightTimer.Start();
+                    break;
+                case "up":
+                    UpTimer.Start();
+                    break;
+                case "down":
+                    DownTimer.Start();
+                    break;
             }
 
             if(e.KeyCode == Keys.D1)
@@ -163,21 +180,21 @@ namespace FinaleSignalR_Client
 
         private void KeyIsUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Left)
+            string direction = inputControl.inputDetected(e);
+            switch (direction)
             {
-                LeftTimer.Stop();
-            }
-            if (e.KeyCode == Keys.Right)
-            {
-                RightTimer.Stop();
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                UpTimer.Stop();
-            }
-            if (e.KeyCode == Keys.Down)
-            {
-                DownTimer.Stop();
+                case "left":
+                    LeftTimer.Stop();
+                    break;
+                case "right":
+                    RightTimer.Stop();
+                    break;
+                case "up":
+                    UpTimer.Stop();
+                    break;
+                case "down":
+                    DownTimer.Stop();
+                    break;
             }
         }
 

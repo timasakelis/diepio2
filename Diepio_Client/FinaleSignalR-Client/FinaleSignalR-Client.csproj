@@ -175,6 +175,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\Command.cs" />
+    <Compile Include="Command\CommandAWSD.cs" />
+    <Compile Include="Command\CommandArrowKeys.cs" />
+    <Compile Include="Command\InputAWSD.cs" />
+    <Compile Include="Command\InputArrowKeys.cs" />
+    <Compile Include="Command\InputControl.cs" />
     <Compile Include="Decorator\Bullet.cs" />
     <Compile Include="Decorator\BulletDecorator.cs" />
     <Compile Include="Decorator\IBullet.cs" />
