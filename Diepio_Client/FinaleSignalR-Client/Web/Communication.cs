@@ -110,7 +110,7 @@ namespace FinaleSignalR_Client.Web
                                     form.Refresh();
                                     break;
                                 case "BULLET":
-                                    form.shootBullet(parsedMessage[2], parsedMessage[3], parsedMessage[4], parsedMessage[5], parsedMessage[6]);
+                                    form.shootBullet(parsedMessage[2], parsedMessage[3], parsedMessage[4], parsedMessage[5], parsedMessage[6], parsedMessage[7], parsedMessage[8]);
                                     break;
                                 case "PELLET":
                                     form.createPellet(int.Parse(parsedMessage[2]), int.Parse(parsedMessage[3]), int.Parse(parsedMessage[4]), int.Parse(parsedMessage[5]));
@@ -163,17 +163,18 @@ namespace FinaleSignalR_Client.Web
             }
         }
 
-        public async void SendBulletInfo(int x, int y, float directionX, float directionY, string id)
+        public async void SendBulletInfo(int x, int y, float directionX, float directionY, string id, string speed, string size)
         {
             try
             {
-                await connection.InvokeAsync("SendMessage", id, $"BULLET|{x}|{y}|{directionX}|{directionY}|{id}");
+                await connection.InvokeAsync("SendMessage", id, $"BULLET|{x}|{y}|{directionX}|{directionY}|{id}|{speed}|{size}");
             }
             catch (Exception ex)
             {
                 messages.Items.Add($"Error sending bullet data: {ex.Message}");
             }
         }
+
 
 
     }

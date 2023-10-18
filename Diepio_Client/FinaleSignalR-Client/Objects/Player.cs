@@ -1,5 +1,7 @@
 ﻿using FinaleSignalR_Client.Controls;
+using FinaleSignalR_Client.Decorator;
 using FinaleSignalR_Client.Stategy;
+using FinaleSignalR_Client.Web;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,18 +14,20 @@ namespace FinaleSignalR_Client.Objects
 {
     public class Player
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public int Playerspeed { get; set; }
         public int MaxHP { get; set; }
         public int CurrentHP { get; set; }
         public PictureBox PlayerBox { get; set; }
+        public Weapon weapon;
         public Player(Size playerSize, string id, string name, int maxHP, int currentHP, 
             int speed, Color color, Point startingPoint) {
-
+            this.Id = id;
             this.Name = name;
             this.CurrentHP = currentHP;
             this.MaxHP = maxHP;
-
+            this.weapon = new Weapon(); // Default weapon
             this.Playerspeed = speed;
             this.PlayerBox = new PictureBox();
             this.PlayerBox.BackColor = color;
@@ -46,6 +50,8 @@ namespace FinaleSignalR_Client.Objects
         {
             moveAlgorithm?.behaveDiffrentley(dirrection, this, mapControl);
         }
+
+
 
     }
 }

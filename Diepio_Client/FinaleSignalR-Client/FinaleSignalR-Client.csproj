@@ -181,7 +181,13 @@
     <Compile Include="Command\InputAWSD.cs" />
     <Compile Include="Command\InputArrowKeys.cs" />
     <Compile Include="Command\InputControl.cs" />
-    <Compile Include="Objects\Bullet.cs" />
+    <Compile Include="Decorator\Bullet.cs" />
+    <Compile Include="Decorator\BulletDecorator.cs" />
+    <Compile Include="Decorator\IBullet.cs" />
+    <Compile Include="Decorator\SizeDecorator.cs" />
+    <Compile Include="Decorator\SpeedDecorator.cs" />
+    <Compile Include="Decorator\Weapon.cs" />
+    <Compile Include="Factory\Pellet.cs" />
     <Compile Include="Objects\Map.cs">
       <SubType>Component</SubType>
     </Compile>
