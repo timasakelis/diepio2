@@ -85,6 +85,12 @@
             playerList.Add(p);
         }
 
+        public void Remove(string p)
+        {
+            playerList = playerList.Where(player => player.id != p).ToList();
+
+        }
+
         public Player getPlayer(string id)
         {
             foreach (Player p in playerList)
@@ -199,6 +205,13 @@
                             }
                         }
                         break;
+
+                    case "Remove":
+                        Players.Remove(parsedMessage[1]);
+                        idCount--;
+                        hubConnection.SendAsync("SendMessage", "SERVER", $"All|Remove|{parsedMessage[1]}");
+                        break;
+
                     case "Coords": //Now saves location data into a custom PlayerList
                         Players.getPlayer(user).setCoords(int.Parse(parsedMessage[1]), int.Parse(parsedMessage[2]));
                         break;

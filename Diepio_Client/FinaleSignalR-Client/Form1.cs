@@ -28,7 +28,7 @@ namespace FinaleSignalR_Client
         int playerCount = 0;
         bool changeColor = false;
         Player player;
-        public Player[] players;
+        public List<Player> players;
 
         public Map mapControl;
         Communication comm;
@@ -52,7 +52,7 @@ namespace FinaleSignalR_Client
         {
             InitializeComponent();
             this.playerBoxes = new System.Windows.Forms.PictureBox[50];
-            this.players = new Player[50];
+            this.players = new List<Player>();
 
             this.KeyPreview = true;
             this.mapControl = new Map();
@@ -68,6 +68,14 @@ namespace FinaleSignalR_Client
             inputAWSD = new InputAWSD();
 
             inputControl.setCommand(new CommandArrowKeys(inputArrowKeys));
+
+            this.FormClosing += YourForm_FormClosing;
+        }
+        private async void YourForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Call RemoveAvatar when the form is closing
+            if(this.id != null)
+                comm.RemoveAvatar(this.id);
         }
 
         public void createPlayer(string id)
@@ -83,7 +91,7 @@ namespace FinaleSignalR_Client
 
             //adding player to map
             playerBoxes[playerCount] = newPlayer.PlayerBox;
-            players[playerCount] = newPlayer;
+            players.Add(newPlayer);
             this.mapControl.Controls.Add(playerBoxes[playerCount]);
             playerCount++;
         }
@@ -253,14 +261,6 @@ namespace FinaleSignalR_Client
         }
 
 
-        public void Upgrade(string size, string speed, string playerid)
-        {
-            Player foundPlayer = players.FirstOrDefault(player => player.Id == playerid);
-            foundPlayer.weapon.Size = int.Parse(size);
-            foundPlayer.weapon.Speed = int.Parse(speed);
-
-        }
-
         private void bulletMovementTimer_Tick(object sender, EventArgs e)
         {
             foreach (IBullet bullet in bullets)
@@ -350,6 +350,34 @@ namespace FinaleSignalR_Client
             pellets.Add(pellet);
         }
 
+        public void RemoveEnemy(string toDelete)
+        {
+            Player pToRemove = players.FirstOrDefault(p => p.Id == toDelete);
+
+            this.mapControl.Controls.Remove(pToRemove.PlayerBox);
+            RemoveEnemyBox(toDelete);
+            var t = playerBoxes;
+            players.Remove(pToRemove);
+        }
+        private void RemoveEnemyBox(string id)
+        {
+            for (int i = 0; i < this.playerCount; i++)
+            {
+                if (playerBoxes[i] != null)
+                {
+                    if(playerBoxes[i].Name == id)
+                    { 
+                        for(int j = i; j < this.playerCount; j++)
+                        {
+                            playerBoxes[j] = playerBoxes[j + 1];
+                        }
+                    }
+
+                }
+                
+            }
+            this.playerCount--;
+        }
         private void ServerTimer_Tick(object sender, EventArgs e)
         {
             comm.SendCoordinates(this.player.PlayerBox.Left, this.player.PlayerBox.Top);

@@ -77,6 +77,7 @@ namespace FinaleSignalR_Client.Web
             }
         }
 
+
         public async void ParseMessage()
         {
             connection.On<string, string>("ReceiveMessage", (user, message) =>
@@ -115,6 +116,9 @@ namespace FinaleSignalR_Client.Web
                                 case "PELLET":
                                     form.createPellet(int.Parse(parsedMessage[2]), int.Parse(parsedMessage[3]), int.Parse(parsedMessage[4]), int.Parse(parsedMessage[5]));
                                     break;
+                                case "Remove":
+                                    form.RemoveEnemy(parsedMessage[2]);
+                                    break;
 
                             }
                         }
@@ -137,6 +141,17 @@ namespace FinaleSignalR_Client.Web
             }
         }
 
+        public async void RemoveAvatar(string text)
+        {
+            try
+            {
+                await connection.InvokeAsync("SendMessage", id, "Remove|" + text);
+            }
+            catch (Exception ex)
+            {
+                messages.Items.Add(ex.Message);
+            }
+        }
         public async void SendChatMessage(string text)
         {
             try
