@@ -23,13 +23,8 @@ namespace FinaleSignalR_Client.Controls
 
         public Map()
         {
-            //this.BackColor = Color.Green;
             this.Size = new Size(800, 600);
             this.BorderStyle = BorderStyle.FixedSingle;
-            //obstacles.Add(new Rectangle(100, 100, 400, 10)); // Obstacle at (100, 100) with size 50x50
-            //obstacles.Add(new Rectangle(200, 200, 10, 90));
-            //obstacles.Add(new Rectangle(500, 300, 10, 200));
-            //obstacles.Add(new Rectangle(100, 400, 100, 10));
 
             this.MouseDown += MapControl_MouseDown;
             this.MouseUp += MapControl_MouseUp;
@@ -40,10 +35,8 @@ namespace FinaleSignalR_Client.Controls
         {
             base.OnPaint(e);
 
-            // Create a graphics object to draw on the map control
             g = e.Graphics;
 
-            // Draw each obstacle in the obstacles list
             foreach (Rectangle obstacle in obstacles)
             {
                 g.FillRectangle(Brushes.Gray, obstacle);
