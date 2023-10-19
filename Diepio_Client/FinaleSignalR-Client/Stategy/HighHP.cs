@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FinaleSignalR_Client.Stategy
 {
-    internal class HighHP : MoveAlgorithm
+    public class HighHP : MoveAlgorithm
     {
         public void behaveDiffrentley(string dirrection, Player player, Map mapControl)
         {

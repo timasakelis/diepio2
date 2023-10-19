@@ -28,7 +28,7 @@ namespace FinaleSignalR_Client
         int playerCount = 0;
         bool changeColor = false;
         Player player;
-        Player[] players;
+        public Player[] players;
 
         public Map mapControl;
         Communication comm;
