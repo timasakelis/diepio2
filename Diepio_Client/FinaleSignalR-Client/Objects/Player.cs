@@ -23,18 +23,21 @@ namespace FinaleSignalR_Client.Objects
         public Weapon weapon;
         public Player(Size playerSize, string id, string name, int maxHP, int currentHP, 
             int speed, Color color, Point startingPoint) {
+
             this.Id = id;
             this.Name = name;
             this.CurrentHP = currentHP;
             this.MaxHP = maxHP;
             this.weapon = new Weapon(); // Default weapon
             this.Playerspeed = speed;
-            this.PlayerBox = new PictureBox();
-            this.PlayerBox.BackColor = color;
-            this.PlayerBox.Location = startingPoint;
-            this.PlayerBox.Name = id;
-            this.PlayerBox.Size = playerSize;
 
+            this.PlayerBox = new PictureBox { 
+                BackColor = color,
+                Location = startingPoint,
+                Name = id,
+                Size = playerSize,
+                
+            };
             this.PlayerBox.TabIndex = 0;
             this.PlayerBox.TabStop = false;
         }
