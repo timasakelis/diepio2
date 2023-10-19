@@ -208,7 +208,7 @@
 
                     case "Remove":
                         Players.Remove(parsedMessage[1]);
-                        idCount--;
+                        RemovePLayerId(parsedMessage[1]);
                         hubConnection.SendAsync("SendMessage", "SERVER", $"All|Remove|{parsedMessage[1]}");
                         break;
 
@@ -232,6 +232,26 @@
         });
 
         await hubConnection.StartAsync();
+    }
+
+    private void RemovePLayerId(string id)
+    {
+        for (int i = 0; i < idCount; i++)
+        {
+            if (playerIds[i] != null)
+            {
+                if (playerIds[i].ToString() == id)
+                {
+                    for (int j = i; j < idCount; j++)
+                    {
+                        playerIds[j] = playerIds[j + 1];
+                    }
+                }
+
+            }
+
+        }
+        this.idCount--;
     }
 
     private async Task Send()
