@@ -34,7 +34,7 @@ namespace FinaleSignalR_Client.Decorator
         {
             return _bullet.GetSize();
         }
-        public void SetTragectory(Point startPosition, Vector2 direction)
+        public virtual void SetTragectory(Point startPosition, Vector2 direction)
         {
             _bullet.SetTragectory(startPosition, direction);
         }

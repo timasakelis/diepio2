@@ -83,7 +83,7 @@ namespace FinaleSignalR_Client
 
         public void createPlayer(string id)
         {
-            var newPlayer = new Player(new Size(64, 64), id, "new player", 20, 20, 5, SystemColors.ControlDark, new Point(666, 422));
+            var newPlayer = new Player(new Size(50, 50), id, "new player", 20, 20, 5, SystemColors.ControlDark, new Point(666, 422));
             newPlayer.SetStrategy(new HighHP());
 
 
@@ -237,7 +237,7 @@ namespace FinaleSignalR_Client
             Vector2 bulletDirection = new Vector2(float.Parse(directionX), float.Parse(directionY));
             Point startPoint = new Point(int.Parse(x), int.Parse(y));
             IBullet bullet = new Bullet(playerid);
-
+            bullet = new BlueBullet(bullet);
 
             for (int i = 0; i < int.Parse(sentSpeed); i++)
             {

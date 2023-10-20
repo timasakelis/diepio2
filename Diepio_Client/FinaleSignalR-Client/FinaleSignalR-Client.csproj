@@ -188,6 +188,7 @@
     <Compile Include="Decorator\Bullet.cs" />
     <Compile Include="Decorator\BulletDecorator.cs" />
     <Compile Include="Decorator\IBullet.cs" />
+    <Compile Include="Decorator\BlueBullet.cs" />
     <Compile Include="Decorator\SizeDecorator.cs" />
     <Compile Include="Decorator\SpeedDecorator.cs" />
     <Compile Include="Decorator\Weapon.cs" />
@@ -208,6 +209,8 @@
     <Compile Include="Prototype\LvlUp.cs" />
     <Compile Include="Prototype\LvlUpPrototype.cs" />
     <Compile Include="Stategy\HighHP.cs" />
+    <Compile Include="Stategy\HighHPReversed.cs" />
+    <Compile Include="Stategy\LowHPColition.cs" />
     <Compile Include="Stategy\MoveAlgorithm.cs" />
     <Compile Include="Stategy\LowHP.cs" />
     <Compile Include="Web\Communication.cs" />
