@@ -204,6 +204,9 @@
     <Compile Include="Objects\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Prototype\IPrototype.cs" />
+    <Compile Include="Prototype\LvlUp.cs" />
+    <Compile Include="Prototype\LvlUpPrototype.cs" />
     <Compile Include="Stategy\HighHP.cs" />
     <Compile Include="Stategy\MoveAlgorithm.cs" />
     <Compile Include="Stategy\LowHP.cs" />
