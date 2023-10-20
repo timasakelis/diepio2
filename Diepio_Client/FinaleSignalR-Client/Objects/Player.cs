@@ -1,6 +1,7 @@
 ﻿using FinaleSignalR_Client.Controls;
 using FinaleSignalR_Client.Decorator;
 using FinaleSignalR_Client.Stategy;
+using FinaleSignalR_Client.Prototype;
 using FinaleSignalR_Client.Web;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,6 @@ namespace FinaleSignalR_Client.Objects
                 Location = startingPoint,
                 Name = id,
                 Size = playerSize,
-                
             };
             this.PlayerBox.TabIndex = 0;
             this.PlayerBox.TabStop = false;
@@ -46,15 +46,18 @@ namespace FinaleSignalR_Client.Objects
 
         public void SetStrategy(MoveAlgorithm moveType)
         {
-            moveAlgorithm = moveType;
+            this.moveAlgorithm = moveType;
         }
 
         public void ExecuteStrategy(string dirrection, Map mapControl)
         {
             moveAlgorithm?.behaveDiffrentley(dirrection, this, mapControl);
         }
-
-
-
+        
+        public void LvlUp(LvlUp stats)
+        {
+            this.Playerspeed = Playerspeed + stats.Playerspeed;
+            this.MaxHP = MaxHP + stats.MaxHP;
+        }
     }
 }

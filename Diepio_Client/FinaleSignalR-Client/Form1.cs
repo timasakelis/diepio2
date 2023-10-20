@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Drawing.Drawing2D;
 using FinaleSignalR_Client.Command;
+using FinaleSignalR_Client.Prototype;
 
 
 
@@ -29,6 +30,8 @@ namespace FinaleSignalR_Client
         bool changeColor = false;
         Player player;
         public List<Player> players;
+
+        LvlUpPrototype prototype = new LvlUpPrototype();
 
         public Map mapControl;
         Communication comm;
@@ -71,7 +74,7 @@ namespace FinaleSignalR_Client
 
             this.FormClosing += YourForm_FormClosing;
         }
-        private async void YourForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void YourForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Call RemoveAvatar when the form is closing
             if(this.id != null)
@@ -260,6 +263,17 @@ namespace FinaleSignalR_Client
 
         }
 
+        private void LvlUpPlayer(string id)
+        {
+            foreach (Player pl in this.players)
+            {
+                if (pl.Id == id)
+                {
+                    pl.LvlUp(prototype.stats);
+                }
+            }
+        }
+
 
         private void bulletMovementTimer_Tick(object sender, EventArgs e)
         {
@@ -299,6 +313,7 @@ namespace FinaleSignalR_Client
                         // Check if the pellet is destroyed
                         if (pellet.IsDestroyed())
                         {
+                            LvlUpPlayer(bullet.playerid);
                             // Remove the pellet
                             pelletsToRemove.Add(pellet);
                             //this.Controls.Remove(pellet.PelletPictureBox);
