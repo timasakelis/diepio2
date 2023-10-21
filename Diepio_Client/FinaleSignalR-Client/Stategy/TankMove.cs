@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 
 namespace FinaleSignalR_Client.Stategy
 {
-    public class LowHP : MoveAlgorithm
+    public class TankMove : MoveAlgorithm
     {
         public void behaveDiffrentley(string dirrection, Player player, Map mapControl)
         {
-            player.Playerspeed = 2;
             switch (dirrection)
             {
                 case "up":

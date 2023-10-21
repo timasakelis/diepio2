@@ -9,11 +9,10 @@ using System.Threading.Tasks;
 
 namespace FinaleSignalR_Client.Stategy
 {
-    public class LowHPColition : MoveAlgorithm
+    public class ScoutMove : MoveAlgorithm
     {
         public void behaveDiffrentley(string dirrection, Player player, Map mapControl)
         {
-            player.Playerspeed = 2;
             switch (dirrection)
             {
                 case "up":
@@ -27,7 +26,7 @@ namespace FinaleSignalR_Client.Stategy
                     }
                     break;
                 case "down":
-                    if (player.PlayerBox.Top + player.Playerspeed < mapControl.mapMaxY)
+                    if (player.PlayerBox.Top +  player.Playerspeed < mapControl.mapMaxY)
                     {
                         int newPlayerTop = player.PlayerBox.Top + player.Playerspeed;
 
@@ -46,7 +45,7 @@ namespace FinaleSignalR_Client.Stategy
 
                             player.PlayerBox.Left -= player.Playerspeed;
                     }
-                    break;
+                    break; 
                 case "right":
                     if (player.PlayerBox.Left + player.Playerspeed < mapControl.mapMaxX)
                     {
