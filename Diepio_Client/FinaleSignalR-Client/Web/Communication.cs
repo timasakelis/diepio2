@@ -65,11 +65,11 @@ namespace FinaleSignalR_Client.Web
             };
         }
 
-        public async void canICreateAvatar()
+        public async void canICreateAvatar(string pClass)
         {
             try
             {
-                await connection.InvokeAsync("SendMessage", id, "Request|CreateAvatar");
+                await connection.InvokeAsync("SendMessage", id, "Request|CreateAvatar|" + pClass);
             }
             catch (Exception ex)
             {
@@ -78,7 +78,7 @@ namespace FinaleSignalR_Client.Web
         }
 
 
-        public async void ParseMessage()
+        public async void ParseMessage(string pClass)
         {
             connection.On<string, string>("ReceiveMessage", (user, message) =>
             {
@@ -92,12 +92,12 @@ namespace FinaleSignalR_Client.Web
                             switch (parsedMessage[1])
                             {
                                 case "RequestAccepted":
-                                    form.RequestAccepted();
+                                    form.RequestAccepted(parsedMessage[2]);
                                     break;
                                 case "EnemyCreated":
                                     if (parsedMessage[2] != id)
                                     {
-                                        form.createPlayer(parsedMessage[2]);
+                                        form.createPlayer(parsedMessage[2], parsedMessage[3]);
                                     }
                                     break;
                                 case "Coords":
@@ -132,7 +132,7 @@ namespace FinaleSignalR_Client.Web
             {
                 await connection.StartAsync();
                 messages.Items.Add("Connection Started");
-                canICreateAvatar();
+                canICreateAvatar(pClass);
                 form.GameStartButtonStuff();
             }
             catch (Exception ex)

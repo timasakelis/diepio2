@@ -1,4 +1,5 @@
 ﻿using FinaleSignalR_Client;
+using FinaleSignalR_Client.Bridge;
 using FinaleSignalR_Client.Controls;
 using FinaleSignalR_Client.Objects;
 using FinaleSignalR_Client.Stategy;
@@ -20,15 +21,14 @@ namespace FinalSignalR_Client.UnitTests
         {
             // Arrange
             Map map = new Map();
-            Player player = new Player(new Size(64, 64), "1", "test player", 20, 20, 5, SystemColors.ControlDark, new Point(666, 422));
-            MoveAlgorithm lowHPStrategy = new LowHP();
-            player.SetStrategy(lowHPStrategy);
-
+            Player player = new Tank("1", "test player",  SystemColors.ControlDark, new Point(666, 422), new TankBehavior());
+            int exSpeed = player.Playerspeed/2;
+            player.TakeDamage(player.CurrentHP);
             // Act
-            player.ExecuteStrategy("up", map); // Choose a direction
+            player.Move("up", map); // Choose a direction
 
             // Assert
-            Assert.AreEqual(2, player.Playerspeed); // LowHP strategy reduces speed
+            Assert.AreEqual(exSpeed, player.Playerspeed); // LowHP strategy reduces speed
         }
 
         [TestMethod]
@@ -36,15 +36,13 @@ namespace FinalSignalR_Client.UnitTests
         {
             // Arrange
             Map map = new Map();
-            Player player = new Player(new Size(64, 64), "1", "test player", 20, 20, 5, SystemColors.ControlDark, new Point(666, 422));
-            MoveAlgorithm highHPStrategy = new HighHP();
-            player.SetStrategy(highHPStrategy);
-
+            Player player = new Tank("1", "test player", SystemColors.ControlDark, new Point(666, 422), new TankBehavior());
+            int exSpeed = player.Playerspeed;
             // Act
-            player.ExecuteStrategy("up", map); // Choose a direction
+            player.Move("up", map); // Choose a direction
 
             // Assert
-            Assert.AreNotEqual(2, player.Playerspeed); // HighHP strategy does not reduce speed
+            Assert.AreNotEqual(exSpeed, player.Playerspeed); // HighHP strategy does not reduce speed
                                                        // You may add more assertions for movement and collision logic if needed
         }
 

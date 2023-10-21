@@ -109,12 +109,14 @@
         public int Left;
         public int Top;
         public string id;
+        public string pClass;
 
-        public Player(string id, int l, int t)
+        public Player(string id, int l, int t, string c)
         {
             this.id = id;
             Left = l;
             Top = t;
+            pClass = c;
         }
 
         public (int, int) getCoords()
@@ -184,16 +186,16 @@
                         {
                             int gotId = int.Parse(user);
                             playerIds[idCount] = gotId;
-                            Players.Add(new Player(user, 500, 500));
-                            hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + "|RequestAccepted");
+                            Players.Add(new Player(user, 500, 500, parsedMessage[2]));
+                            hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + "|RequestAccepted|" + parsedMessage[2]);
                             for (int i = 0; i < idCount; i++)
                             {
                                 if (gotId != playerIds[i])
                                 {
-                                    hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + "|EnemyCreated|" + playerIds[i].ToString());
+                                    hubConnection.SendAsync("SendMessage", "SERVER", gotId.ToString() + "|EnemyCreated|" + playerIds[i].ToString() + "|" + Players.getPlayer(playerIds[i].ToString()).pClass);
                                 }
                             }
-                            hubConnection.SendAsync("SendMessage", "SERVER", "All|EnemyCreated|" + gotId.ToString());
+                            hubConnection.SendAsync("SendMessage", "SERVER", "All|EnemyCreated|" + gotId.ToString() + "|" + Players.getPlayer(gotId.ToString()).pClass);
                             idCount++;
                             for (int i = 0; i < obstCount; i++)
                             {

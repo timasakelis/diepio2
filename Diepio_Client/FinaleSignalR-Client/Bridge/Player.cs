@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FinaleSignalR_Client.Bridge;
 
 namespace FinaleSignalR_Client.Objects
 {
@@ -21,43 +22,62 @@ namespace FinaleSignalR_Client.Objects
         public int MaxHP { get; set; }
         public int CurrentHP { get; set; }
         public PictureBox PlayerBox { get; set; }
-        public Weapon weapon;
-        public Player(Size playerSize, string id, string name, int maxHP, int currentHP, 
-            int speed, Color color, Point startingPoint) {
+        public Weapon weapon {  get; set; }
+        
+        protected IInteractioBehavior _implementation;
+        private Color color;
+        private Point startingPoint;
+        public Player() { }
+        public Player(string id, string name, Color color, Point startingPoint, IInteractioBehavior implementation) {
 
             this.Id = id;
             this.Name = name;
-            this.CurrentHP = currentHP;
-            this.MaxHP = maxHP;
             this.weapon = new Weapon(); // Default weapon
-            this.Playerspeed = speed;
 
             this.PlayerBox = new PictureBox { 
                 BackColor = color,
                 Location = startingPoint,
                 Name = id,
-                Size = playerSize,
             };
             this.PlayerBox.TabIndex = 0;
             this.PlayerBox.TabStop = false;
+
+
+            this._implementation = implementation;
         }
 
-        private MoveAlgorithm moveAlgorithm;
+        public Player(string id, string name, Color color, Point startingPoint)
+        {
+            Id = id;
+            Name = name;
+            this.color = color;
+            this.startingPoint = startingPoint;
+        }
+
+        public virtual void Move(string dirrection, Map mapControl)
+        {
+            _implementation.Move(dirrection,this,mapControl);
+            //moveAlgorithm?.behaveDiffrentley(dirrection, this, mapControl);
+        }
+
+        /*private MoveAlgorithm moveAlgorithm;
 
         public void SetStrategy(MoveAlgorithm moveType)
         {
             this.moveAlgorithm = moveType;
-        }
+        }*/
 
-        public void ExecuteStrategy(string dirrection, Map mapControl)
-        {
-            moveAlgorithm?.behaveDiffrentley(dirrection, this, mapControl);
-        }
         
         public void LvlUp(LvlUp stats)
         {
             this.Playerspeed = Playerspeed + stats.Playerspeed;
             this.MaxHP = MaxHP + stats.MaxHP;
         }
+
+        public virtual void TakeDamage(int damage)
+        {
+            this.CurrentHP -= damage;
+        }
+
     }
 }

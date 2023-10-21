@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using System.Drawing.Drawing2D;
 using FinaleSignalR_Client.Command;
 using FinaleSignalR_Client.Prototype;
+using FinaleSignalR_Client.Bridge;
 
 
 
@@ -28,6 +29,7 @@ namespace FinaleSignalR_Client
         public string id;
         int playerCount = 0;
         bool changeColor = false;
+        string myClass = "scout";
         Player player;
         public List<Player> players;
 
@@ -81,11 +83,19 @@ namespace FinaleSignalR_Client
                 comm.RemoveAvatar(this.id);
         }
 
-        public void createPlayer(string id)
+        public void createPlayer(string id, string pClass)
         {
-            var newPlayer = new Player(new Size(50, 50), id, "new player", 20, 20, 5, SystemColors.ControlDark, new Point(666, 422));
-            newPlayer.SetStrategy(new HighHP());
-
+            //var newPlayer = new Player(id, "new player", SystemColors.ControlDark, new Point(666, 422));
+            //newPlayer.SetStrategy(new ScoutMove());
+            Player newPlayer = new Player();
+            if (pClass == "scout")
+            {
+                newPlayer = new Scout(id, "new player", SystemColors.ControlDark, new Point(666, 422), new ScoutBehavior());
+            }else if (pClass == "tank")
+            {
+                newPlayer = new Tank(id, "new player", SystemColors.ControlDark, new Point(666, 422), new TankBehavior());
+            }
+            
 
             mapControl.mapMinX = 0;
             mapControl.mapMinY = 0;
@@ -99,9 +109,9 @@ namespace FinaleSignalR_Client
             playerCount++;
         }
 
-        public void RequestAccepted()
+        public void RequestAccepted(string pClass)
         {
-            createPlayer(id.ToString());
+            createPlayer(id.ToString(), pClass);
             this.player = players[this.playerCount-1];
             ServerTimer.Start();
             bulletMovementTimer.Start();
@@ -122,7 +132,7 @@ namespace FinaleSignalR_Client
 
         private void button1_Click(object sender, EventArgs e)
         {
-            comm.ParseMessage();
+            comm.ParseMessage(myClass);
         }
 
         public void moveEnemy(string id, int left, int top)
@@ -212,22 +222,22 @@ namespace FinaleSignalR_Client
 
         private void DownTimer_Tick(object sender, EventArgs e)
         {
-            this.player.ExecuteStrategy("down", mapControl);
+            this.player.Move("down", mapControl);
         }
 
         private void LeftTimer_Tick_1(object sender, EventArgs e)
         {
-            this.player.ExecuteStrategy("left", mapControl);
+            this.player.Move("left", mapControl);
         }
 
         private void UpTimer_Tick_1(object sender, EventArgs e)
         {
-            this.player.ExecuteStrategy("up", mapControl);
+            this.player.Move("up", mapControl);
         }
 
         private void RightTimer_Tick_1(object sender, EventArgs e)
         {
-            this.player.ExecuteStrategy("right", mapControl);
+            this.player.Move("right", mapControl);
         }
         //-------------------------------------------------------
 
@@ -287,9 +297,9 @@ namespace FinaleSignalR_Client
                     {//pl.PlayerBox.Name != (bullet as Bullet).playerid &&
                         if (pl.PlayerBox.Name != bullet.playerid && bullet.GetPictureBox().Bounds.IntersectsWith(pl.PlayerBox.Bounds))
                         {
-                            pl.CurrentHP--;
-                            if (pl.CurrentHP < pl.MaxHP * 0.5)
-                                pl.SetStrategy(new LowHP());
+                            pl.TakeDamage(3);
+                            /*if (pl.CurrentHP < pl.MaxHP * 0.5)
+                                pl.SetStrategy(new TankMove());*/
                             if (pl.CurrentHP < 1)
                             {
                                 pl.PlayerBox.BackColor = Color.Red;
@@ -415,6 +425,16 @@ namespace FinaleSignalR_Client
         private void button1_Click_1(object sender, EventArgs e)
         {
             changeColor = true;
+        }
+
+        private void ChooseTank_Click(object sender, EventArgs e)
+        {
+            this.myClass = "tank";
+        }
+
+        private void ChooseScout_Click(object sender, EventArgs e)
+        {
+            this.myClass = "scout";
         }
     }
 }
