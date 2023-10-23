@@ -190,6 +190,9 @@
     <Compile Include="Command\InputAWSD.cs" />
     <Compile Include="Command\InputArrowKeys.cs" />
     <Compile Include="Command\InputControl.cs" />
+    <Compile Include="Command\ISwitchCommand.cs" />
+    <Compile Include="Command\SwitchToArrowKeys.cs" />
+    <Compile Include="Command\SwitchToAWSDCommand.cs" />
     <Compile Include="Decorator\Bullet.cs" />
     <Compile Include="Decorator\BulletDecorator.cs" />
     <Compile Include="Decorator\IBullet.cs" />
