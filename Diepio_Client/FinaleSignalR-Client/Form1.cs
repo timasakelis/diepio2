@@ -157,11 +157,15 @@ namespace FinaleSignalR_Client
         {
             if (e.KeyCode == Keys.K)
             {
-                inputControl.setCommand(new CommandArrowKeys(inputArrowKeys));
+                inputControl.SwitchToArrowKeys();
             }
             if (e.KeyCode == Keys.L)
             {
-                inputControl.setCommand(new CommandAWSD(inputAWSD));
+                inputControl.SwitchToAWSD();
+            }
+            if (e.KeyCode == Keys.O)
+            {
+                inputControl.UndoSwitch();
             }
 
             string direction = inputControl.inputDetected(e);
