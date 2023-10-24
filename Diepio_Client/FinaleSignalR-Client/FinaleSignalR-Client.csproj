@@ -225,7 +225,6 @@
     <Compile Include="Stategy\TankMove.cs" />
     <Compile Include="Facade\CommunicationAvatar.cs" />
     <Compile Include="Facade\CommunicationChat.cs" />
-    <Compile Include="Facade\CommunicationParser.cs" />
     <Compile Include="Facade\CommunicationSendInformation.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

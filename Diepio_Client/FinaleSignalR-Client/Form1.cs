@@ -134,7 +134,7 @@ namespace FinaleSignalR_Client
 
         private void button1_Click(object sender, EventArgs e)
         {
-            commFacade.ParseMessage(myClass); //PUT INTO COMMFACADE or CommunicationFacade
+            commFacade.ParseMessage(myClass);
         }
 
         public void moveEnemy(string id, int left, int top)
