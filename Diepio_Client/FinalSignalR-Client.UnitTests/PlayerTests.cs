@@ -25,10 +25,12 @@ namespace FinalSignalR_Client.UnitTests
             int exSpeed = player.Playerspeed/2;
             player.TakeDamage(player.CurrentHP);
             // Act
+            var oldLoc = player.PlayerBox.Location;
             player.Move("up", map); // Choose a direction
 
             // Assert
             Assert.AreEqual(exSpeed, player.Playerspeed); // LowHP strategy reduces speed
+            Assert.AreNotEqual(oldLoc, player.PlayerBox.Location);
         }
 
         [TestMethod]
@@ -39,11 +41,13 @@ namespace FinalSignalR_Client.UnitTests
             Player player = new Tank("1", "test player", SystemColors.ControlDark, new Point(666, 422), new TankBehavior());
             int exSpeed = player.Playerspeed;
             // Act
+            var oldLoc = player.PlayerBox.Location;
             player.Move("up", map); // Choose a direction
 
             // Assert
-            Assert.AreNotEqual(exSpeed, player.Playerspeed); // HighHP strategy does not reduce speed
-                                                       // You may add more assertions for movement and collision logic if needed
+            Assert.AreEqual(exSpeed, player.Playerspeed); // HighHP strategy does not reduce speed
+            Assert.AreNotEqual(oldLoc, player.PlayerBox.Location); // HighHP strategy does not reduce speed
+                                                          // You may add more assertions for movement and collision logic if needed
         }
 
         //[TestMethod]
