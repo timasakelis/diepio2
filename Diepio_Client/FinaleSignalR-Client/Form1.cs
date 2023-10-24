@@ -15,6 +15,7 @@ using System.Drawing.Drawing2D;
 using FinaleSignalR_Client.Command;
 using FinaleSignalR_Client.Prototype;
 using FinaleSignalR_Client.Bridge;
+using FinaleSignalR_Client.Facade;
 
 
 
@@ -36,7 +37,7 @@ namespace FinaleSignalR_Client
         LvlUpPrototype prototype = new LvlUpPrototype();
 
         public Map mapControl;
-        Communication comm;
+        CommunicationFacade commFacade;
         InputControl inputControl;
         InputArrowKeys inputArrowKeys;
         InputAWSD inputAWSD;
@@ -67,7 +68,8 @@ namespace FinaleSignalR_Client
             Random rnd = new Random();
             id = rnd.Next(100000).ToString();
 
-            comm = new Communication(messages, this);
+            //comm = new CommunicationParser(messages, this);
+            commFacade = new CommunicationFacade(messages, this);
             inputControl = new InputControl();
             inputArrowKeys = new InputArrowKeys();
             inputAWSD = new InputAWSD();
@@ -80,7 +82,7 @@ namespace FinaleSignalR_Client
         {
             // Call RemoveAvatar when the form is closing
             if(this.id != null)
-                comm.RemoveAvatar(this.id);
+                commFacade.RemoveAvatar(this.id);
         }
 
         public void createPlayer(string id, string pClass)
@@ -132,7 +134,7 @@ namespace FinaleSignalR_Client
 
         private void button1_Click(object sender, EventArgs e)
         {
-            comm.ParseMessage(myClass);
+            commFacade.ParseMessage(myClass); //PUT INTO COMMFACADE or CommunicationFacade
         }
 
         public void moveEnemy(string id, int left, int top)
@@ -150,7 +152,7 @@ namespace FinaleSignalR_Client
 
         private void sendMessage_Click(object sender, EventArgs e)
         {
-            comm.SendChatMessage(messageInput.Text);
+            commFacade.SendChatMessage(messageInput.Text);
         }
         //------------------------Movement-------------------------------
         private void KeyIsDown(object sender, KeyEventArgs e)
@@ -409,7 +411,7 @@ namespace FinaleSignalR_Client
         }
         private void ServerTimer_Tick(object sender, EventArgs e)
         {
-            comm.SendCoordinates(this.player.PlayerBox.Left, this.player.PlayerBox.Top);
+            commFacade.SendCoordinates(this.player.PlayerBox.Left, this.player.PlayerBox.Top);
 
             //Send bullet info
             if (this.mapControl.IsShooting() && (DateTime.Now - lastBulletFiredTime) > bulletCooldown)
@@ -422,7 +424,7 @@ namespace FinaleSignalR_Client
                 //Bullet start from center of player instead of corner
                 int bulletStartX = this.player.PlayerBox.Location.X + this.player.PlayerBox.Width / 2;
                 int bulletStartY = this.player.PlayerBox.Location.Y + this.player.PlayerBox.Height / 2;
-                comm.SendBulletInfo(bulletStartX, bulletStartY, direction.X, direction.Y, this.player.PlayerBox.Name, player.weapon.Speed.ToString(), player.weapon.Size.ToString());
+                commFacade.SendBulletInformation(bulletStartX, bulletStartY, direction.X, direction.Y, this.player.PlayerBox.Name, player.weapon.Speed.ToString(), player.weapon.Size.ToString());
             }
         }
 

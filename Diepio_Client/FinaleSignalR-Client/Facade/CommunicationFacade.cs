@@ -1,23 +1,26 @@
-﻿using System;
+﻿using FinaleSignalR_Client.Web;
+using Microsoft.AspNetCore.SignalR.Client;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Numerics;
-using System.Runtime.Remoting.Messaging;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using FinaleSignalR_Client.Controls;
-using FinaleSignalR_Client.Objects;
-using Microsoft.AspNetCore.SignalR.Client;
 
-namespace FinaleSignalR_Client.Web
+namespace FinaleSignalR_Client.Facade
 {
-    public class Communication
+    public class CommunicationFacade
     {
+        private readonly CommunicationAvatar _avatar;
+        private readonly CommunicationSendInformation _sendInformation;
+        private readonly CommunicationChat _chat;
+
         HubConnection connection;
         ListBox messages;
         string id;
         Form1 form;
-        public Communication(ListBox message, Form1 form)
+
+        public CommunicationFacade(ListBox message, Form1 form) 
         {
             this.messages = message;
             this.id = form.id;
@@ -63,20 +66,11 @@ namespace FinaleSignalR_Client.Web
 
                 return Task.CompletedTask;
             };
-        }
 
-        public async void canICreateAvatar(string pClass)
-        {
-            try
-            {
-                await connection.InvokeAsync("SendMessage", id, "Request|CreateAvatar|" + pClass);
-            }
-            catch (Exception ex)
-            {
-                messages.Items.Add(ex.Message);
-            }
+            _avatar = new CommunicationAvatar(connection, id, messages);
+            _chat = new CommunicationChat(connection, id, messages);
+            _sendInformation = new CommunicationSendInformation(connection, id, messages);
         }
-
 
         public async void ParseMessage(string pClass)
         {
@@ -119,7 +113,9 @@ namespace FinaleSignalR_Client.Web
                                 case "Remove":
                                     form.RemoveEnemy(parsedMessage[2]);
                                     break;
-
+                                case "Chat":
+                                    messages.Items.Add(parsedMessage[2]);
+                                    break;
                             }
                         }
                     }
@@ -141,54 +137,29 @@ namespace FinaleSignalR_Client.Web
             }
         }
 
-        public async void RemoveAvatar(string text)
+        public void canICreateAvatar(string pClass)
         {
-            try
-            {
-                await connection.InvokeAsync("SendMessage", id, "Remove|" + text);
-            }
-            catch (Exception ex)
-            {
-                messages.Items.Add(ex.Message);
-            }
-        }
-        public async void SendChatMessage(string text)
-        {
-            try
-            {
-                await connection.InvokeAsync("SendMessage", id, "Chat|" + text);
-            }
-            catch (Exception ex)
-            {
-                messages.Items.Add(ex.Message);
-            }
+            _avatar.canICreateAvatar(pClass);
         }
 
-        public async void SendCoordinates(int left, int top)
+        public void RemoveAvatar(string text)
         {
-            try
-            {
-                await connection.InvokeAsync("SendMessage", id, $"Coords|{left}|{top}");
-            }
-            catch (Exception ex)
-            {
-                messages.Items.Add(ex.Message);
-            }
+            _avatar.RemoveAvatar(text);
         }
 
-        public async void SendBulletInfo(int x, int y, float directionX, float directionY, string id, string speed, string size)
+        public void SendBulletInformation(int x, int y, float directionX, float directionY, string id, string speed, string size)
         {
-            try
-            {
-                await connection.InvokeAsync("SendMessage", id, $"BULLET|{x}|{y}|{directionX}|{directionY}|{id}|{speed}|{size}");
-            }
-            catch (Exception ex)
-            {
-                messages.Items.Add($"Error sending bullet data: {ex.Message}");
-            }
+            _sendInformation.SendBulletInfo(x, y, directionX, directionY, id, speed, size);
         }
 
+        public void SendCoordinates(int left, int top)
+        {
+            _sendInformation.SendCoordinates(left, top);
+        }
 
-
+        public void SendChatMessage(string text)
+        {
+            _chat.SendChatMessage(text);
+        }
     }
 }

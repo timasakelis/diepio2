@@ -223,6 +223,9 @@
                     case "PELLET":
                         hubConnection.SendAsync("SendMessage", "SERVER", $"All|PELLET|{parsedMessage[1]}|{parsedMessage[2]}");
                         break;
+                    case "Chat":
+                        hubConnection.SendAsync("SendMessage", "SERVER", $"All|Chat|{parsedMessage[1]}");
+                        break;
                 }
             }
             //Uncomment to see all messages

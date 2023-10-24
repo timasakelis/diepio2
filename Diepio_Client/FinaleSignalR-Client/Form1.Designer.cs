@@ -48,10 +48,9 @@ namespace FinaleSignalR_Client
             // 
             // openConnection
             // 
-            this.openConnection.Location = new System.Drawing.Point(1288, 27);
-            this.openConnection.Margin = new System.Windows.Forms.Padding(4);
+            this.openConnection.Location = new System.Drawing.Point(966, 22);
             this.openConnection.Name = "openConnection";
-            this.openConnection.Size = new System.Drawing.Size(201, 50);
+            this.openConnection.Size = new System.Drawing.Size(151, 41);
             this.openConnection.TabIndex = 0;
             this.openConnection.Text = "Open Connection";
             this.openConnection.UseVisualStyleBackColor = true;
@@ -90,10 +89,9 @@ namespace FinaleSignalR_Client
             // sendMessage
             // 
             this.sendMessage.Enabled = false;
-            this.sendMessage.Location = new System.Drawing.Point(1301, 85);
-            this.sendMessage.Margin = new System.Windows.Forms.Padding(4);
+            this.sendMessage.Location = new System.Drawing.Point(976, 69);
             this.sendMessage.Name = "sendMessage";
-            this.sendMessage.Size = new System.Drawing.Size(187, 53);
+            this.sendMessage.Size = new System.Drawing.Size(140, 43);
             this.sendMessage.TabIndex = 2;
             this.sendMessage.Text = "Send Message";
             this.sendMessage.UseVisualStyleBackColor = true;
@@ -101,27 +99,25 @@ namespace FinaleSignalR_Client
             // 
             // messageInput
             // 
-            this.messageInput.Location = new System.Drawing.Point(1319, 216);
-            this.messageInput.Margin = new System.Windows.Forms.Padding(4);
+            this.messageInput.Location = new System.Drawing.Point(989, 176);
             this.messageInput.Name = "messageInput";
-            this.messageInput.Size = new System.Drawing.Size(171, 22);
+            this.messageInput.Size = new System.Drawing.Size(129, 20);
             this.messageInput.TabIndex = 1;
             // 
             // messages
             // 
             this.messages.FormattingEnabled = true;
-            this.messages.ItemHeight = 16;
-            this.messages.Location = new System.Drawing.Point(1127, 263);
-            this.messages.Margin = new System.Windows.Forms.Padding(4);
+            this.messages.Location = new System.Drawing.Point(845, 214);
             this.messages.Name = "messages";
-            this.messages.Size = new System.Drawing.Size(363, 644);
+            this.messages.Size = new System.Drawing.Size(273, 524);
             this.messages.TabIndex = 3;
             // 
             // ChangeColors
             // 
-            this.ChangeColors.Location = new System.Drawing.Point(1301, 145);
+            this.ChangeColors.Location = new System.Drawing.Point(976, 118);
+            this.ChangeColors.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ChangeColors.Name = "ChangeColors";
-            this.ChangeColors.Size = new System.Drawing.Size(187, 48);
+            this.ChangeColors.Size = new System.Drawing.Size(140, 39);
             this.ChangeColors.TabIndex = 4;
             this.ChangeColors.Text = "Change colors";
             this.ChangeColors.UseVisualStyleBackColor = true;
@@ -129,9 +125,10 @@ namespace FinaleSignalR_Client
             // 
             // ChooseTank
             // 
-            this.ChooseTank.Location = new System.Drawing.Point(1095, 145);
+            this.ChooseTank.Location = new System.Drawing.Point(821, 118);
+            this.ChooseTank.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ChooseTank.Name = "ChooseTank";
-            this.ChooseTank.Size = new System.Drawing.Size(187, 48);
+            this.ChooseTank.Size = new System.Drawing.Size(140, 39);
             this.ChooseTank.TabIndex = 5;
             this.ChooseTank.Text = "Choose tank";
             this.ChooseTank.UseVisualStyleBackColor = true;
@@ -139,9 +136,10 @@ namespace FinaleSignalR_Client
             // 
             // ChooseScout
             // 
-            this.ChooseScout.Location = new System.Drawing.Point(1095, 90);
+            this.ChooseScout.Location = new System.Drawing.Point(821, 73);
+            this.ChooseScout.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ChooseScout.Name = "ChooseScout";
-            this.ChooseScout.Size = new System.Drawing.Size(187, 48);
+            this.ChooseScout.Size = new System.Drawing.Size(140, 39);
             this.ChooseScout.TabIndex = 6;
             this.ChooseScout.Text = "Choose scout";
             this.ChooseScout.UseVisualStyleBackColor = true;
@@ -149,9 +147,9 @@ namespace FinaleSignalR_Client
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1529, 983);
+            this.ClientSize = new System.Drawing.Size(1147, 799);
             this.Controls.Add(this.ChooseScout);
             this.Controls.Add(this.ChooseTank);
             this.Controls.Add(this.ChangeColors);
@@ -159,7 +157,6 @@ namespace FinaleSignalR_Client
             this.Controls.Add(this.sendMessage);
             this.Controls.Add(this.messageInput);
             this.Controls.Add(this.openConnection);
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyIsDown);
