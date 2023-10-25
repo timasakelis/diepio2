@@ -63,7 +63,12 @@ namespace FinaleSignalR_Client
             this.players = new List<Player>();
 
             this.KeyPreview = true;
-            this.mapControl = new Map();
+
+           // this.mapControl = new Map(new DesertThemeFactory());
+            this.mapControl = new Map(new ArcticThemeFactory());
+
+
+
             this.Controls.Add(this.mapControl);
             this.mapControl.SendToBack();
 

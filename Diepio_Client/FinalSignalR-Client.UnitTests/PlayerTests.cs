@@ -20,7 +20,10 @@ namespace FinalSignalR_Client.UnitTests
         public void Player_ExecuteLowHPStrategy_MoveWithReducedSpeed()
         {
             // Arrange
-            Map map = new Map();
+
+            // Map map = new Map(new DesertThemeFactory());
+            Map map = new Map(new ArcticThemeFactory());
+
             Player player = new Tank("1", "test player",  SystemColors.ControlDark, new Point(666, 422), new TankBehavior());
             int exSpeed = player.Playerspeed/2;
             player.TakeDamage(player.CurrentHP);
@@ -37,7 +40,10 @@ namespace FinalSignalR_Client.UnitTests
         public void Player_ExecuteHighHPStrategy_MoveWithNormalSpeedWithoutCollision()
         {
             // Arrange
-            Map map = new Map();
+
+            // Map map = new Map(new DesertThemeFactory());
+            Map map = new Map(new ArcticThemeFactory());
+
             Player player = new Tank("1", "test player", SystemColors.ControlDark, new Point(666, 422), new TankBehavior());
             int exSpeed = player.Playerspeed;
             // Act
