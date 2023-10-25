@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FinaleSignalR_Client.Bridge;
+using FinaleSignalR_Client.Adapter;
 
 namespace FinaleSignalR_Client.Objects
 {
@@ -22,7 +23,7 @@ namespace FinaleSignalR_Client.Objects
         public int MaxHP { get; set; }
         public int CurrentHP { get; set; }
         public PictureBox PlayerBox { get; set; }
-        public Weapon weapon {  get; set; }
+        public IWepon weapon {  get; set; }
         
         protected IInteractioBehavior _implementation;
         private Color color;
@@ -32,7 +33,7 @@ namespace FinaleSignalR_Client.Objects
 
             this.Id = id;
             this.Name = name;
-            this.weapon = new Weapon(); // Default weapon
+            this.weapon = new Gun(); // Default weapon
 
             this.PlayerBox = new PictureBox { 
                 BackColor = color,
@@ -77,6 +78,11 @@ namespace FinaleSignalR_Client.Objects
         public virtual void TakeDamage(int damage)
         {
             this.CurrentHP -= damage;
+        }
+
+        public void Shoot()
+        {
+
         }
 
     }

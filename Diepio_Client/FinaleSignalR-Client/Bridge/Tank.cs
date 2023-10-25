@@ -1,4 +1,5 @@
-﻿using FinaleSignalR_Client.Objects;
+﻿using FinaleSignalR_Client.Adapter;
+using FinaleSignalR_Client.Objects;
 using FinaleSignalR_Client.Stategy;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,13 @@ namespace FinaleSignalR_Client.Bridge
         public int Armore { get; set; }
         public Tank(string id, string name, Color color, Point startingPoint, IInteractioBehavior behavior) : base(id, name, color, startingPoint, behavior)
         {
+            ShotGun shotgun = new ShotGun();
             base.Playerspeed = 2;
             base.PlayerBox.Size = new Size(50,50);
             this.Armore = 1;
             base.MaxHP = 50;
             base.CurrentHP = 50;
+            base.weapon = new ShotgunAdapt(shotgun);
         }
 
         public override void TakeDamage(int damage)
