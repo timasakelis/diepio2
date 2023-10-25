@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,7 +17,7 @@ namespace FinaleSignalR_Client.Facade
         private readonly CommunicationChat _chat;
 
         HubConnection connection;
-        ListBox messages;
+        public ListBox messages;
         string id;
         Form1 form;
 
@@ -87,6 +88,7 @@ namespace FinaleSignalR_Client.Facade
                             {
                                 case "RequestAccepted":
                                     form.RequestAccepted(parsedMessage[2]);
+                                    messages.Items.Add(parsedMessage[2] + "|RequestGranted");
                                     break;
                                 case "EnemyCreated":
                                     if (parsedMessage[2] != id)
@@ -126,6 +128,7 @@ namespace FinaleSignalR_Client.Facade
 
             try
             {
+                messages.Items.Add("Connection Started");
                 await connection.StartAsync();
                 messages.Items.Add("Connection Started");
                 canICreateAvatar(pClass);
@@ -137,14 +140,19 @@ namespace FinaleSignalR_Client.Facade
             }
         }
 
+        public void StopConnection()
+        {
+            connection.StopAsync();
+        }
+
         public void canICreateAvatar(string pClass)
         {
             _avatar.canICreateAvatar(pClass);
         }
 
-        public void RemoveAvatar(string text)
+        public void RemoveAvatar(string sentId)
         {
-            _avatar.RemoveAvatar(text);
+            _avatar.RemoveAvatar(sentId);
         }
 
         public void SendBulletInformation(int x, int y, float directionX, float directionY, string id, string speed, string size)

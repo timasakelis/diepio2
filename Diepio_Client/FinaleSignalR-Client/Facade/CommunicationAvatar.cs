@@ -33,11 +33,11 @@ namespace FinaleSignalR_Client.Web
             }
         }
 
-        public async void RemoveAvatar(string text)
+        public async void RemoveAvatar(string sentId)
         {
             try
             {
-                await connection.InvokeAsync("SendMessage", id, "Remove|" + text);
+                await connection.InvokeAsync("SendMessage", id, "Remove|" + sentId);
             }
             catch (Exception ex)
             {
