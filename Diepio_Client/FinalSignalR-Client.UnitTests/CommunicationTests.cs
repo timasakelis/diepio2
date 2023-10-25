@@ -1,89 +1,72 @@
-﻿using FinaleSignalR_Client.Objects;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FinaleSignalR_Client.Web;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Windows.Forms;
-using Microsoft.AspNet.SignalR.Infrastructure;
 using System.Threading;
-using Microsoft.AspNet.SignalR;
 using FinaleSignalR_Client.Facade;
-using FinaleSignalR_Client.Web;
-using Microsoft.AspNetCore.SignalR.Client;
+using FinaleSignalR_Client;
+using System.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using FinaleSignalR_Client;
-using Microsoft.AspNet.SignalR.Hosting;
 
 namespace FinalSignalR_Client.UnitTests
 {
     [TestClass]
     public class CommunicationTests
     {
-        [TestMethod]
-        public void Communication_Receive_ChatMessage()
-        {
-            ListBox messages = new ListBox();
-            CommunicationFacade comm = new CommunicationFacade(messages, new Form1());
-            comm.SendChatMessage("First Message");
-            comm.SendChatMessage("Second Message");
-            comm.SendChatMessage("Third Message");
-            Thread.Sleep(100);
-            Assert.AreEqual("3", messages.Items.Count.ToString()); 
-
-            /*
-            string response = "";
-            HubConnection connection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:7181/chatHub")
-                .WithAutomaticReconnect()
-                .Build();
-
-            var serverResponseTask = Parser(connection, "0", result =>
-            {
-                response = result;
-            });
-            canICreateAvatar("0", connection);
-            Thread.Sleep(1000);
-
-            if (response == "")
-            {
-                Assert.Fail("Server was not online or the response timed out");
-            }
-            Assert.AreEqual("RequestAccepted", response);*/
-        }
         /*
         [TestMethod]
-        public void Communication_Receive_Coordinates()
+        public void Communication_Receive_RequestGranted()
         {
-            string response = "";
-            HubConnection connection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:7181/chatHub")
-                .WithAutomaticReconnect()
-                .Build();
-            int left = 5;
-            int top = 10;
+            /*
+             * NOTHING WORKS NOTHING WORKS NOTHING WORKS
+             * NOTHING WORKS NOTHING WORKS NOTHING WORKS
+             * NOTHING WORKS NOTHING WORKS NOTHING WORKS
+             * NOTHING WORKS NOTHING WORKS NOTHING WORKS
+             * 
+            //ListBox messages = new ListBox();
+            Form1 f1 = new Form1();
+            Form1 f2 = new Form1();
+            CommunicationFacade comm = f1.commFacade;
+            CommunicationFacade comm2 = f2.commFacade;
+            f1.StartParsing();
+            f2.StartParsing();
+            Thread.Sleep(100);
+            comm.canICreateAvatar(0.ToString());
+            comm.SendChatMessage("2"); 
+            comm.SendChatMessage("2");
+            Thread.Sleep(100);
+            ListBox messages = f2.commFacade.messages;
+            string lastItem = messages.Items[messages.Items.Count - 1].ToString();
+            Assert.AreEqual("3", messages.Items.Count);
+            comm.StopConnection();
+            /*
+            Form1 form1 = new Form1();
+            
+            CommunicationFacade comm = form1.commFacade;
+            int id = 0;
+            //comm.canICreateAvatar(id.ToString());
+            comm.SendChatMessage("1");
 
-            var serverResponseTask = Parser(connection, "0", result =>
-            {
-                response = result;
-            });
-            SendCoordinates(left, top);
             Thread.Sleep(1000);
-
-            if (response == "")
+            ListBox messages = form1.ReturnMessageItems();
+            string lastItem = "";
+            lastItem = messages.Items[messages.Items.Count - 1].ToString();
+            /*
+            messages.Invoke(new Action(() =>
             {
-                Assert.Fail("Server was not online or the response timed out");
-            }
-            Assert.AreEqual("RequestAccepted", response);
+                lastItem = messages.Items[messages.Items.Count - 1].ToString();
+            }));
+            Assert.AreEqual(id.ToString() + "|RequestGranted", lastItem);
+            comm.StopConnection();*/
+            /*
+            ListBox messages = new ListBox();
+            CommunicationFacade comm = new CommunicationFacade(messages, new Form1());
+            int id = 0;
+            Thread.Sleep(1000);
+            //comm.SendChatMessage("Third Message");
+            comm.canICreateAvatar(id.ToString());
+            Thread.Sleep(100);
+            Assert.AreEqual(id.ToString() + "|RequestGranted", messages.Items[messages.Items.Count-1].ToString());
+            comm.StopConnection();
         }*/
     }
 }

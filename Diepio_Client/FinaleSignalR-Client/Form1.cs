@@ -16,6 +16,7 @@ using FinaleSignalR_Client.Command;
 using FinaleSignalR_Client.Prototype;
 using FinaleSignalR_Client.Bridge;
 using FinaleSignalR_Client.Facade;
+using System.Runtime.Remoting.Messaging;
 
 
 
@@ -33,11 +34,12 @@ namespace FinaleSignalR_Client
         string myClass = "scout";
         Player player;
         public List<Player> players;
+        public ListBox messagesPointer;
 
         LvlUpPrototype prototype = new LvlUpPrototype();
 
         public Map mapControl;
-        CommunicationFacade commFacade;
+        public CommunicationFacade commFacade;
         InputControl inputControl;
         InputArrowKeys inputArrowKeys;
         InputAWSD inputAWSD;
@@ -69,7 +71,8 @@ namespace FinaleSignalR_Client
             id = rnd.Next(100000).ToString();
 
             //comm = new CommunicationParser(messages, this);
-            commFacade = new CommunicationFacade(messages, this);
+            messagesPointer = messages;
+            commFacade = new CommunicationFacade(messagesPointer, this);
             inputControl = new InputControl();
             inputArrowKeys = new InputArrowKeys();
             inputAWSD = new InputAWSD();
@@ -133,6 +136,11 @@ namespace FinaleSignalR_Client
         }
 
         private void button1_Click(object sender, EventArgs e)
+        {
+            commFacade.ParseMessage(myClass);
+        }
+
+        public void StartParsing()
         {
             commFacade.ParseMessage(myClass);
         }
@@ -441,6 +449,18 @@ namespace FinaleSignalR_Client
         private void ChooseScout_Click(object sender, EventArgs e)
         {
             this.myClass = "scout";
+        }
+
+        public List<string> ReturnMessageItems()
+        {
+            List<string> messagesCopy = new List<string>();
+
+            // Copy the items
+            foreach (var item in messages.Items)
+            {
+                messagesCopy.Add(item.ToString());
+            }
+            return messagesCopy;
         }
     }
 }

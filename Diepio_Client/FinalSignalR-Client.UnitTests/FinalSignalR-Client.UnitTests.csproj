@@ -275,6 +275,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BulletTests.cs" />
+    <Compile Include="CommandTests.cs" />
     <Compile Include="CommunicationTests.cs" />
     <Compile Include="PlayerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
