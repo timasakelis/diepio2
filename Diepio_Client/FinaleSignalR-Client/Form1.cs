@@ -215,7 +215,6 @@ namespace FinaleSignalR_Client
             {
                 Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
                 foundPlayer.weapon.Default();
-
             }
         }
 
@@ -273,8 +272,12 @@ namespace FinaleSignalR_Client
                 bullet = new SpeedDecorator(bullet);
             }
 
+
             bullet = new SizeDecorator(bullet, int.Parse(sentSize));
 
+            // This is how it looks with speed 3
+            // 3 SizeDecorator(SpeedDecorator(SpeedDecorator(SpeedDecorator(BlueBullet(IBullet()))))).GetSpeed()
+            
             bullet.SetTragectory(startPoint, bulletDirection);
             mapControl.Controls.Add(bullet.GetPictureBox());
             bullets.Add(bullet);
@@ -437,7 +440,13 @@ namespace FinaleSignalR_Client
                 //Bullet start from center of player instead of corner
                 int bulletStartX = this.player.PlayerBox.Location.X + this.player.PlayerBox.Width / 2;
                 int bulletStartY = this.player.PlayerBox.Location.Y + this.player.PlayerBox.Height / 2;
-                commFacade.SendBulletInformation(bulletStartX, bulletStartY, direction.X, direction.Y, this.player.PlayerBox.Name, player.weapon.Speed.ToString(), player.weapon.Size.ToString());
+
+                List<IBullet> bullets = this.player.weapon.Fire(bulletStartX, bulletStartY, direction, this.player.PlayerBox.Name);
+
+                foreach (IBullet bullet in bullets)
+                {
+                    commFacade.SendBulletInformation(bulletStartX, bulletStartY, bullet.Direction.X, bullet.Direction.Y, this.player.PlayerBox.Name, player.weapon.Speed.ToString(), player.weapon.Size.ToString());
+                }
             }
         }
 
