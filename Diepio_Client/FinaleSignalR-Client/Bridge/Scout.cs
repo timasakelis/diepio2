@@ -1,4 +1,5 @@
-﻿using FinaleSignalR_Client.Objects;
+﻿using FinaleSignalR_Client.Adapter;
+using FinaleSignalR_Client.Objects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +18,7 @@ namespace FinaleSignalR_Client.Bridge
             base.MaxHP = 25;
             base.CurrentHP = 25;
         }*/
-        public Scout(string id, string name, Color color, Point startingPoint, IInteractioBehavior behavior) : base(id, name, color, startingPoint, behavior)
+        public Scout(string id, string name, Color color, Point startingPoint, IInteractioBehavior behavior, IWepon wepon) : base(id, name, color, startingPoint, behavior, wepon)
         {
             base.Playerspeed = 5;
             base.PlayerBox.Size = new Size(30, 30);

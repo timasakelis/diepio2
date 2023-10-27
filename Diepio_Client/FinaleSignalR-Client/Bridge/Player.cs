@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FinaleSignalR_Client.Bridge;
 using FinaleSignalR_Client.Adapter;
+using System.Numerics;
 
 namespace FinaleSignalR_Client.Objects
 {
@@ -23,17 +24,19 @@ namespace FinaleSignalR_Client.Objects
         public int MaxHP { get; set; }
         public int CurrentHP { get; set; }
         public PictureBox PlayerBox { get; set; }
-        public IWepon weapon {  get; set; }
+        //--------------Bridge--------------------
+        protected IWepon weapon;
         
         protected IInteractioBehavior _implementation;
+        //-----------------------------------------
         private Color color;
         private Point startingPoint;
         public Player() { }
-        public Player(string id, string name, Color color, Point startingPoint, IInteractioBehavior implementation) {
+        public Player(string id, string name, Color color, Point startingPoint, IInteractioBehavior implementation, IWepon wepon) {
 
             this.Id = id;
             this.Name = name;
-            this.weapon = new Gun(); // Default weapon
+            this.weapon = wepon; // Default weapon
 
             this.PlayerBox = new PictureBox { 
                 BackColor = color,
@@ -55,20 +58,48 @@ namespace FinaleSignalR_Client.Objects
             this.startingPoint = startingPoint;
         }
 
+        public Player(string id, string name, Color color, Point startingPoint, IInteractioBehavior behavior) : this(id, name, color, startingPoint)
+        {
+        }
+
         public virtual void Move(string dirrection, Map mapControl)
         {
             _implementation.Move(dirrection,this,mapControl);
             //moveAlgorithm?.behaveDiffrentley(dirrection, this, mapControl);
         }
 
-        /*private MoveAlgorithm moveAlgorithm;
-
-        public void SetStrategy(MoveAlgorithm moveType)
+        public virtual List<IBullet> Fire(int x, int y, Vector2 Direction, string id)
         {
-            this.moveAlgorithm = moveType;
-        }*/
+            return this.weapon.Fire(x, y, Direction, id);
+        }
 
-        
+        public virtual void Buff(string type)
+        {
+            switch(type)
+            {
+                case "speed":
+                    this.weapon.SpeedBoost();
+                    break;
+                case "size":
+                    this.weapon.SizeBoost();
+                    break;
+                case "default":
+                    this.weapon.Default();
+                    break;
+            }
+        }
+
+        public virtual int GetWeopenSpeed()
+        {
+            return this.weapon.Speed;
+        }
+
+        public virtual int GetWeopenSize()
+        {
+            return this.weapon.Size;
+        }
+
+
         public void LvlUp(LvlUp stats)
         {
             this.Playerspeed = Playerspeed + stats.Playerspeed;

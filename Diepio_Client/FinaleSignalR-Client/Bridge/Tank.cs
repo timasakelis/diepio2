@@ -13,15 +13,16 @@ namespace FinaleSignalR_Client.Bridge
     public class Tank : Player
     {
         public int Armore { get; set; }
-        public Tank(string id, string name, Color color, Point startingPoint, IInteractioBehavior behavior) : base(id, name, color, startingPoint, behavior)
+        public Tank(string id, string name, Color color, Point startingPoint, IInteractioBehavior behavior, IWepon wepon) : base(id, name, color, startingPoint, behavior, wepon)
         {
-            ShotGun shotgun = new ShotGun();
+            
+            //ShotGun shotgun = new ShotGun();
             base.Playerspeed = 2;
             base.PlayerBox.Size = new Size(50,50);
             this.Armore = 1;
             base.MaxHP = 50;
             base.CurrentHP = 50;
-            base.weapon = new ShotgunAdapt(shotgun);
+            //base.weapon = new ShotgunAdapt(shotgun);
         }
 
         public override void TakeDamage(int damage)
