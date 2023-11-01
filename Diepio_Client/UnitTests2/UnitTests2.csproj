@@ -57,10 +57,10 @@
     <Compile Include="BulletTests.cs" />
     <Compile Include="CommandTests.cs" />
     <Compile Include="CommunicationTests.cs" />
+    <Compile Include="FactoryAutoGen\PelletTests.cs" />
     <Compile Include="PlayerTests.cs" />
     <Compile Include="PrototypeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTest2.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FinaleSignalR-Client\FinaleSignalR-Client.csproj">

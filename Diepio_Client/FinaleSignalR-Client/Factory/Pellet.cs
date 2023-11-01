@@ -74,7 +74,6 @@ namespace FinaleSignalR_Client.Factory
     public class TrianglePellet : IPellet
     {
         public PictureBox PelletPictureBox { get; }
-        public ColorPalette ColorPalette { get; set; }
         public int ID { get; }
         public int HP { get; set; } = 6;  // example value
         public int EXP { get; set; } = 18; // example value
@@ -111,7 +110,6 @@ namespace FinaleSignalR_Client.Factory
     public class OctagonPellet : IPellet
     {
         public PictureBox PelletPictureBox { get; }
-        public ColorPalette ColorPalette { get; set; }
         public int ID { get; }
         public int HP { get; set; } = 2;  // example value
         public int EXP { get; set; } = 20; // example value
