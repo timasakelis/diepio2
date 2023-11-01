@@ -37,7 +37,7 @@ namespace FinaleSignalR_Client
         public List<Player> players;
         public ListBox messagesPointer;
 
-        LvlUpPrototype prototype = new LvlUpPrototype();
+        IPrototype prototype = new LvlUpPrototype();
 
         public Map mapControl;
         public CommunicationFacade commFacade;
@@ -303,7 +303,7 @@ namespace FinaleSignalR_Client
             {
                 if (pl.Id == id)
                 {
-                    pl.LvlUp(prototype.stats);
+                    pl.LvlUp(prototype.Clone().stats);
                 }
             }
         }

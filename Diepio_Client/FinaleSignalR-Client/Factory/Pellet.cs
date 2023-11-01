@@ -29,7 +29,7 @@ namespace FinaleSignalR_Client.Factory
             ColorPal colors = new ColorPal();
             if (cangeColor)
             {
-                Builder.Builder builder = new Builder.ConBuilder();
+                Builder.Builder builder = new Builder.Con2Builder();
                 Builder.Director director = new Builder.Director(builder);
                 colors = director.Construct();
             }

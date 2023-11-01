@@ -51,7 +51,7 @@ namespace FinaleSignalR_Client.Adapter
         public List<IBullet> Fire(int x, int y, Vector2 Direction, string id)
         {
             List<IBullet> bullets = this.ShotGun.Shoot(x, y, Direction, id);
-
+                
             return bullets;
         }
     }

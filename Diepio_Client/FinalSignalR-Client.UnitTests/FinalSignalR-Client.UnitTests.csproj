@@ -274,6 +274,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdapterTest.cs" />
     <Compile Include="BulletTests.cs" />
     <Compile Include="CommandTests.cs" />
     <Compile Include="CommunicationTests.cs" />

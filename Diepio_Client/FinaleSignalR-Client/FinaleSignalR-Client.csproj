@@ -257,6 +257,7 @@
     <Compile Include="Bridge\Tank.cs" />
     <Compile Include="Bridge\TankBehavior.cs" />
     <Compile Include="Builder\Builder.cs" />
+    <Compile Include="Builder\Con2Builder.cs" />
     <Compile Include="Builder\ConBuilder.cs" />
     <Compile Include="Builder\Director.cs" />
     <Compile Include="Builder\ColorPal.cs" />

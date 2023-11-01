@@ -17,7 +17,7 @@ namespace FinaleSignalR_Client.Builder
 
         public ColorPal Construct()
         {
-            return builder.SetSquarePelletColor(Color.Brown).SetTrianglePelletColor(Brushes.LawnGreen).Build();
+            return builder.SetSquarePelletColor().SetTrianglePelletColor().Build();
         }
     }
 }

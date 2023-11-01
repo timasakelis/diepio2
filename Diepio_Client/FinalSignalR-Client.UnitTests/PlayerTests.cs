@@ -1,4 +1,5 @@
 ﻿using FinaleSignalR_Client;
+using FinaleSignalR_Client.Adapter;
 using FinaleSignalR_Client.Bridge;
 using FinaleSignalR_Client.Controls;
 using FinaleSignalR_Client.Objects;
@@ -24,7 +25,7 @@ namespace FinalSignalR_Client.UnitTests
             // Map map = new Map(new DesertThemeFactory());
             Map map = new Map(new ArcticThemeFactory());
 
-            Player player = new Tank("1", "test player",  SystemColors.ControlDark, new Point(666, 422), new TankBehavior());
+            Player player = new Tank("1", "test player",  SystemColors.ControlDark, new Point(666, 422), new TankBehavior(), new ShotgunAdapt(new ShotGun()));
             int exSpeed = player.Playerspeed/2;
             player.TakeDamage(player.CurrentHP);
             // Act
@@ -44,7 +45,7 @@ namespace FinalSignalR_Client.UnitTests
             // Map map = new Map(new DesertThemeFactory());
             Map map = new Map(new ArcticThemeFactory());
 
-            Player player = new Tank("1", "test player", SystemColors.ControlDark, new Point(666, 422), new TankBehavior());
+            Player player = new Tank("1", "test player", SystemColors.ControlDark, new Point(666, 422), new TankBehavior(), new ShotgunAdapt(new ShotGun()));
             int exSpeed = player.Playerspeed;
             // Act
             var oldLoc = player.PlayerBox.Location;
