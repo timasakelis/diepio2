@@ -4,12 +4,11 @@ using System;
 namespace UnitTests2
 {
     [TestClass]
-    public class UnitTest1
+    public class UnitTest2
     {
         [TestMethod]
         public void TestMethod1()
         {
-            Assert.AreEqual(1, 1);
         }
     }
 }

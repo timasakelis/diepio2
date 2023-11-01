@@ -10,5 +10,7 @@ namespace FinaleSignalR_Client.Prototype
     {
         LvlUp stats { get; }
         IPrototype Clone();
+
+        IPrototype DeepClone();
     }
 }

@@ -1,6 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FinaleSignalR_Client.Adapter;
+using FinaleSignalR_Client.Decorator;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace UnitTests2
@@ -11,57 +14,21 @@ namespace UnitTests2
     [TestClass]
     public class AdapterTest
     {
-        public AdapterTest()
+        [TestMethod]
+        public void Adapter_Create_ShotgunAdapter()
         {
-            //
-            // TODO: Add constructor logic here
-            //
+            IWepon wepon = new ShotgunAdapt(new ShotGun());
+
+            Assert.AreEqual(wepon.Speed, 2);
         }
-
-        private TestContext testContextInstance;
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-
-        #region Additional test attributes
-        //
-        // You can use the following additional attributes as you write your tests:
-        //
-        // Use ClassInitialize to run code before running the first test in the class
-        // [ClassInitialize()]
-        // public static void MyClassInitialize(TestContext testContext) { }
-        //
-        // Use ClassCleanup to run code after all tests in a class have run
-        // [ClassCleanup()]
-        // public static void MyClassCleanup() { }
-        //
-        // Use TestInitialize to run code before running each test 
-        // [TestInitialize()]
-        // public void MyTestInitialize() { }
-        //
-        // Use TestCleanup to run code after each test has run
-        // [TestCleanup()]
-        // public void MyTestCleanup() { }
-        //
-        #endregion
 
         [TestMethod]
-        public void TestMethod1()
+        public void Adapter_Shoot_ShotgunAdapter()
         {
-            Assert.AreEqual(2, 2);
+            IWepon wepon = new ShotgunAdapt(new ShotGun());
+            List<IBullet> bullet = wepon.Fire(0, 0, new Vector2(1, 1), "");
+
+            Assert.AreEqual(bullet.Count, 2);
         }
     }
 }

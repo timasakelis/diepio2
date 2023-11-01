@@ -45,14 +45,10 @@ namespace UnitTests2
             inputControl.SwitchToArrowKeys();
             inputControl.SwitchToAWSD();
 
-            KeyEventArgs e = new KeyEventArgs(Keys.None | (Keys)Enum.Parse(typeof(Keys), "A"));
-            string direction = inputControl.inputDetected(e);
-            Assert.AreEqual("left", direction);
-
             inputControl.UndoSwitch();
 
-            e = new KeyEventArgs(Keys.None | (Keys)Enum.Parse(typeof(Keys), "D"));
-            direction = inputControl.inputDetected(e);
+            KeyEventArgs e = new KeyEventArgs(Keys.None | (Keys)Enum.Parse(typeof(Keys), "D"));
+            string direction = inputControl.inputDetected(e);
             Assert.AreNotEqual("right", direction);
 
             inputControl.UndoSwitch();

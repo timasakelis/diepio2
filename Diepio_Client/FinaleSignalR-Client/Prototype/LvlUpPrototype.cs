@@ -16,9 +16,21 @@ namespace FinaleSignalR_Client.Prototype
             return new LvlUpPrototype { stats = this.stats };
         }
 
+        public IPrototype DeepClone()
+        {
+            return new LvlUpPrototype(this.stats.Playerspeed, this.stats.MaxHP);
+        }
+
         public LvlUpPrototype() 
         {
             this.stats = new LvlUp();
+        }
+
+        public LvlUpPrototype(int speed, int hp)
+        {
+            this.stats = new LvlUp();
+            this.stats.MaxHP = hp;
+            this.stats.Playerspeed = speed;
         }
 
         public void ChangeHp (int hp)

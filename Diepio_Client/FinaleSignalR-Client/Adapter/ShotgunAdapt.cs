@@ -17,36 +17,37 @@ namespace FinaleSignalR_Client.Adapter
         public ShotgunAdapt(ShotGun gun)
         {
             this.ShotGun = gun;
+            this.Speed = 2;
         }
 
         public void SpeedBoost()
         {
-            if (this.ShotGun.Speed < 5)
+            if (this.Speed < 5)
             {
-                this.ShotGun.Speed++;
+                this.Speed++;
                 Refresh();
             }
         }
 
         public void SizeBoost()
         {
-            if (this.ShotGun.Size < 8)
+            if (this.Size < 8)
             {
-                this.ShotGun.Size++;
+                this.Size++;
                 Refresh();
             }
         }
 
         public void Default()
         {
-            this.ShotGun.Size = 0;
-            this.ShotGun.Speed = 0;
+            this.Size = 0;
+            this.Speed = 0;
             Refresh();
         }
         public void Refresh()
         {
-            this.Size = this.ShotGun.Size;
-            this.Speed = this.ShotGun.Speed;
+            this.Size = this.Size;
+            this.Speed = this.Speed;
         }
         public List<IBullet> Fire(int x, int y, Vector2 Direction, string id)
         {

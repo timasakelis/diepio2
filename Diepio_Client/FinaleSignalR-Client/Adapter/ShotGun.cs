@@ -12,8 +12,6 @@ namespace FinaleSignalR_Client.Adapter
 {
     public class ShotGun
     {
-        public int Speed { get; set; }
-        public int Size { get; set; }
         public ShotGun() { }
         public List<IBullet> Shoot(int x, int y, Vector2 Direction, string id)
         {

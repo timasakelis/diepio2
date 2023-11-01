@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FinaleSignalR_Client.Builder
 {
-    internal class Director
+    public class Director
     {
         private Builder builder;
         public Director(Builder builder)
