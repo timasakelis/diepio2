@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinaleSignalR-Client", "FinaleSignalR-Client\FinaleSignalR-Client.csproj", "{975D76C8-C59E-419A-A6FA-904597CD567A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinalSignalR-Client.UnitTests", "FinalSignalR-Client.UnitTests\FinalSignalR-Client.UnitTests.csproj", "{0F64E801-DEE0-4B75-B8CD-52D863312E5A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests2", "UnitTests2\UnitTests2.csproj", "{9C029B13-C334-4D20-A878-0CF5AB3704AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{975D76C8-C59E-419A-A6FA-904597CD567A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{975D76C8-C59E-419A-A6FA-904597CD567A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{975D76C8-C59E-419A-A6FA-904597CD567A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0F64E801-DEE0-4B75-B8CD-52D863312E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F64E801-DEE0-4B75-B8CD-52D863312E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F64E801-DEE0-4B75-B8CD-52D863312E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0F64E801-DEE0-4B75-B8CD-52D863312E5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C029B13-C334-4D20-A878-0CF5AB3704AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C029B13-C334-4D20-A878-0CF5AB3704AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C029B13-C334-4D20-A878-0CF5AB3704AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C029B13-C334-4D20-A878-0CF5AB3704AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
