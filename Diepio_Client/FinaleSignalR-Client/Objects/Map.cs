@@ -7,28 +7,44 @@ namespace FinaleSignalR_Client.Controls
 {
     public interface IMapThemeFactory
     {
-        Color GetObstacleColor();
-        Color GetBackgroundColor();
-        List<Rectangle> GenerateObstacles(int count);
+        IBackgroundColor CreateBackgroundColor();
+        IObstacleColor CreateObstacleColor();
+        IObstacles GenerateObstacles(int count);
     }
 
-    public class DesertThemeFactory : IMapThemeFactory
+    public interface IBackgroundColor
     {
-        public Color GetObstacleColor()
-        {
-            return Color.Brown;
-        }
+        Color GetColor();
+    }
 
-        public Color GetBackgroundColor()
-        {
-            return Color.Khaki;
-        }
+    public interface IObstacleColor
+    {
+        Color GetColor();
+    }
 
-        public List<Rectangle> GenerateObstacles(int count)
+    public interface IObstacles
+    {
+        List<Rectangle> GetObstacles();
+    }
+
+    // Concrete implementations for Desert Theme
+    public class DesertBackgroundColor : IBackgroundColor
+    {
+        public Color GetColor() => Color.Khaki;
+    }
+
+    public class DesertObstacleColor : IObstacleColor
+    {
+        public Color GetColor() => Color.Brown;
+    }
+
+    public class DesertObstacles : IObstacles
+    {
+        public List<Rectangle> GetObstacles()
         {
             List<Rectangle> desertObstacles = new List<Rectangle>();
             Random random = new Random();
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < 10; i++) // I've set a default count for simplicity.
             {
                 int x = random.Next(10, 790);
                 int y = random.Next(10, 590);
@@ -38,23 +54,31 @@ namespace FinaleSignalR_Client.Controls
         }
     }
 
-    public class ArcticThemeFactory : IMapThemeFactory
+    public class DesertThemeFactory : IMapThemeFactory
     {
-        public Color GetObstacleColor()
-        {
-            return Color.SkyBlue;
-        }
+        public IBackgroundColor CreateBackgroundColor() => new DesertBackgroundColor();
+        public IObstacleColor CreateObstacleColor() => new DesertObstacleColor();
+        public IObstacles GenerateObstacles(int count) => new DesertObstacles();
+    }
 
-        public Color GetBackgroundColor()
-        {
-            return Color.LightBlue;
-        }
+    // Concrete implementations for Arctic Theme
+    public class ArcticBackgroundColor : IBackgroundColor
+    {
+        public Color GetColor() => Color.LightBlue;
+    }
 
-        public List<Rectangle> GenerateObstacles(int count)
+    public class ArcticObstacleColor : IObstacleColor
+    {
+        public Color GetColor() => Color.SkyBlue;
+    }
+
+    public class ArcticObstacles : IObstacles
+    {
+        public List<Rectangle> GetObstacles()
         {
             List<Rectangle> arcticObstacles = new List<Rectangle>();
             Random random = new Random();
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < 10; i++) // I've set a default count for simplicity.
             {
                 int x = random.Next(10, 790);
                 int y = random.Next(10, 590);
@@ -64,17 +88,26 @@ namespace FinaleSignalR_Client.Controls
         }
     }
 
+    public class ArcticThemeFactory : IMapThemeFactory
+    {
+        public IBackgroundColor CreateBackgroundColor() => new ArcticBackgroundColor();
+        public IObstacleColor CreateObstacleColor() => new ArcticObstacleColor();
+        public IObstacles GenerateObstacles(int count) => new ArcticObstacles();
+    }
+
+    // Map implementation
     public class Map : Panel
     {
+
         public int mapMinX { get; set; }
         public int mapMinY { get; set; }
         public int mapMaxX { get; set; }
         public int mapMaxY { get; set; }
-        public List<Rectangle> obstacles = new List<Rectangle>();
-        Graphics g;
-        Pen p = new Pen(Brushes.Blue);
-        public bool isShooting;
+        public List<Rectangle> obstacles { get; private set; } = new List<Rectangle>();
         private IMapThemeFactory themeFactory;
+        private Graphics g;
+        private Pen p = new Pen(Brushes.Blue);
+        private bool isShooting;
 
         public Map(IMapThemeFactory factory)
         {
@@ -89,15 +122,11 @@ namespace FinaleSignalR_Client.Controls
         {
             base.OnPaint(e);
             g = e.Graphics;
-
-            // Setting the background color
-            g.Clear(themeFactory.GetBackgroundColor());
-
+            g.Clear(themeFactory.CreateBackgroundColor().GetColor());
             foreach (Rectangle obstacle in obstacles)
             {
-                g.FillRectangle(new SolidBrush(themeFactory.GetObstacleColor()), obstacle);
+                g.FillRectangle(new SolidBrush(themeFactory.CreateObstacleColor().GetColor()), obstacle);
             }
-
         }
 
         public void SetObstacle(int x, int y, int w, int h)
@@ -110,14 +139,14 @@ namespace FinaleSignalR_Client.Controls
         {
             foreach (Rectangle obstacle in obst)
             {
-                g.FillRectangle(new SolidBrush(themeFactory.GetObstacleColor()), obstacle);
+                g.FillRectangle(new SolidBrush(themeFactory.CreateObstacleColor().GetColor()), obstacle);
                 obstacles.Add(obstacle);
             }
         }
 
         public void GenerateAndSetObstacles(int count)
         {
-            SetObstacles(themeFactory.GenerateObstacles(count));
+            SetObstacles(themeFactory.GenerateObstacles(count).GetObstacles());
         }
 
         public void MapControl_MouseDown(object sender, MouseEventArgs e)
