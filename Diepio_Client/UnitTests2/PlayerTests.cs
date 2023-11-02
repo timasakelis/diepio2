@@ -11,8 +11,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace FinalSignalR_Client.UnitTests
+namespace UnitTests2
 {
     [TestClass]
     public class PlayerTests

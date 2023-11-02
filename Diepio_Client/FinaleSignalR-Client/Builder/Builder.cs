@@ -10,7 +10,7 @@ namespace FinaleSignalR_Client.Builder
     public abstract class Builder
     {
         public abstract ColorPal Build();
-        public abstract Builder SetSquarePelletColor(Color color);
-        public abstract Builder SetTrianglePelletColor(Brush color);
+        public abstract Builder SetSquarePelletColor();
+        public abstract Builder SetTrianglePelletColor();
     }
 }

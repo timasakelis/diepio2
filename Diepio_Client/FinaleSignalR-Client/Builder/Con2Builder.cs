@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FinaleSignalR_Client.Builder
 {
-    public class ConBuilder : Builder
+    public class Con2Builder : Builder
     {
         private ColorPal colors = new ColorPal();
 
@@ -17,13 +17,13 @@ namespace FinaleSignalR_Client.Builder
         }
         public override Builder SetSquarePelletColor()
         {
-            colors.squarePelletColor = Color.Brown;
+            colors.squarePelletColor = Color.DarkOliveGreen;
             return this;
         }
 
         public override Builder SetTrianglePelletColor()
         {
-            colors.trianglePelletColor = Brushes.LawnGreen;
+            colors.trianglePelletColor = Brushes.AliceBlue;
             return this;
         }
     }

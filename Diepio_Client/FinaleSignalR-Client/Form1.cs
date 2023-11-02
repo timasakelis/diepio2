@@ -17,6 +17,7 @@ using FinaleSignalR_Client.Prototype;
 using FinaleSignalR_Client.Bridge;
 using FinaleSignalR_Client.Facade;
 using System.Runtime.Remoting.Messaging;
+using FinaleSignalR_Client.Adapter;
 
 
 
@@ -36,7 +37,7 @@ namespace FinaleSignalR_Client
         public List<Player> players;
         public ListBox messagesPointer;
 
-        LvlUpPrototype prototype = new LvlUpPrototype();
+        IPrototype prototype = new LvlUpPrototype();
 
         public Map mapControl;
         public CommunicationFacade commFacade;
@@ -100,10 +101,11 @@ namespace FinaleSignalR_Client
             Player newPlayer = new Player();
             if (pClass == "scout")
             {
-                newPlayer = new Scout(id, "new player", SystemColors.ControlDark, new Point(666, 422), new ScoutBehavior());
+                newPlayer = new Scout(id, "new player", SystemColors.ControlDark, new Point(666, 422), new ScoutBehavior(), new Gun());
             }else if (pClass == "tank")
             {
-                newPlayer = new Tank(id, "new player", SystemColors.ControlDark, new Point(666, 422), new TankBehavior());
+                ShotGun shotgun = new ShotGun();
+                newPlayer = new Tank(id, "new player", SystemColors.ControlDark, new Point(666, 422), new TankBehavior(), new ShotgunAdapt(shotgun));
             }
             
 
@@ -203,19 +205,18 @@ namespace FinaleSignalR_Client
             if(e.KeyCode == Keys.D1)
             {
                 Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
-                foundPlayer.weapon.SizeBoost();
+                foundPlayer.Buff("size");
             }
 
             if (e.KeyCode == Keys.D2)
             {
                 Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
-                foundPlayer.weapon.SpeedBoost();
+                foundPlayer.Buff("speed");
             }
             if (e.KeyCode == Keys.D3)
             {
                 Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
-                foundPlayer.weapon.Default();
-
+                foundPlayer.Buff("default");
             }
         }
 
@@ -273,8 +274,12 @@ namespace FinaleSignalR_Client
                 bullet = new SpeedDecorator(bullet);
             }
 
+
             bullet = new SizeDecorator(bullet, int.Parse(sentSize));
 
+            // This is how it looks with speed 3
+            // 3 SizeDecorator(SpeedDecorator(SpeedDecorator(SpeedDecorator(BlueBullet(IBullet()))))).GetSpeed()
+            
             bullet.SetTragectory(startPoint, bulletDirection);
             mapControl.Controls.Add(bullet.GetPictureBox());
             bullets.Add(bullet);
@@ -298,7 +303,7 @@ namespace FinaleSignalR_Client
             {
                 if (pl.Id == id)
                 {
-                    pl.LvlUp(prototype.stats);
+                    pl.LvlUp(prototype.Clone().stats);
                 }
             }
         }
@@ -437,7 +442,13 @@ namespace FinaleSignalR_Client
                 //Bullet start from center of player instead of corner
                 int bulletStartX = this.player.PlayerBox.Location.X + this.player.PlayerBox.Width / 2;
                 int bulletStartY = this.player.PlayerBox.Location.Y + this.player.PlayerBox.Height / 2;
-                commFacade.SendBulletInformation(bulletStartX, bulletStartY, direction.X, direction.Y, this.player.PlayerBox.Name, player.weapon.Speed.ToString(), player.weapon.Size.ToString());
+
+                List<IBullet> bullets = this.player.Fire(bulletStartX, bulletStartY, direction, this.player.PlayerBox.Name);
+
+                foreach (IBullet bullet in bullets)
+                {
+                    commFacade.SendBulletInformation(bulletStartX, bulletStartY, bullet.Direction.X, bullet.Direction.Y, this.player.PlayerBox.Name, player.GetWeopenSpeed().ToString(), player.GetWeopenSize().ToString());
+                }
             }
         }
 

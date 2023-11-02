@@ -16,5 +16,15 @@ namespace FinaleSignalR_Client.Prototype
             this.Playerspeed = 1;
             this.MaxHP = 5;
         }
+
+        public void ChangeHP(int num)
+        {
+            this.MaxHP = num;
+        }
+
+        public void ChangeSpeed(int num)
+        {
+            this.Playerspeed = num;
+        }
     }
 }
