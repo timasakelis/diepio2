@@ -322,46 +322,40 @@ namespace FinaleSignalR_Client
 
         private void bulletMovementTimer_Tick(object sender, EventArgs e)
         {
+            bool playerDead;
+
             foreach (IBullet bullet in bullets)
             {
                 MoveBullet(bullet);
-             
-                foreach (Player pl in this.players)
+
+                for (int i = this.players.Count - 1; i >= 0; i--)
                 {
+                    Player pl = this.players[i];
+
                     if (pl != null)
-                    {//pl.PlayerBox.Name != (bullet as Bullet).playerid &&
-                        if (pl.PlayerBox.Name != bullet.playerid && bullet.GetPictureBox().Bounds.IntersectsWith(pl.PlayerBox.Bounds))
+                    {
+                        if (pl.Id != bullet.playerid && bullet.GetPictureBox().Bounds.IntersectsWith(pl.PlayerBox.Bounds))
                         {
                             pl.TakeDamage(3);
-                            /*if (pl.CurrentHP < pl.MaxHP * 0.5)
-                                pl.SetStrategy(new TankMove());*/
-                            if (pl.CurrentHP < 1)
+
+                            if (pl.CurrentHP < 0)
                             {
-                                pl.PlayerBox.BackColor = Color.Red;
-                                if (this.id == pl.Id)
+                                //commFacade.RemoveAvatar(pl.Id);
+                                if (this.player.Id == pl.Id)//kiekvienas žaidėjas atsakingas už save
                                 {
-                                    commFacade.RemoveAvatar(this.id);
-                                    this.player = null;
-                                    commFacade.StopConnection();
-                                    foreach(var p in this.players)
-                                    {
-                                        this.mapControl.Controls.Remove(p.PlayerBox);
-                                    }
-                                    this.playerBoxes = new PictureBox[50];
-                                    this.players = new List<Player>();
-                                    this.playerCount = 0;
+                                    pl.PlayerBox.BackColor = Color.Red;
+                                    commFacade.RemoveAvatar(this.player.Id);
 
-                                    Random rnd = new Random();
-                                    id = rnd.Next(100000).ToString();
-
-                                    openConnection.Enabled = true;
                                 }
                             }
                             bulletsToRemove.Add(bullet);
-                            this.mapControl.Controls.Remove(bullet.GetPictureBox());  
+                            this.mapControl.Controls.Remove(bullet.GetPictureBox());
+
                         }
                     }
                 }
+
+                
 
                 foreach (IPellet pellet in pellets)
                 {
@@ -437,6 +431,11 @@ namespace FinaleSignalR_Client
                 RemoveEnemyBox(toDelete);
                 //var t = playerBoxes;
                 players.Remove(pToRemove);
+                if(this.player.Id == toDelete)
+                {
+                    this.player = null;
+                    commFacade.StopConnection();
+                }
 
             }
         }

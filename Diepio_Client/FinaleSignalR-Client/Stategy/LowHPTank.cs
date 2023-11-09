@@ -12,31 +12,31 @@ namespace FinaleSignalR_Client.Stategy
     {
         public void behaveDiffrentley(string dirrection, Player player, Map mapControl)
         {
-            player.Playerspeed = player.Playerspeed / 2;
+
             switch (dirrection)
             {
                 case "up":
-                    if (player.PlayerBox.Top - player.Playerspeed > mapControl.mapMinY)
+                    if (player.PlayerBox.Top - player.Playerspeed/2 > mapControl.mapMinY)
                     {
-                        player.PlayerBox.Top -= player.Playerspeed;
+                        player.PlayerBox.Top -= player.Playerspeed / 2;
                     }
                     break;
                 case "down":
-                    if (player.PlayerBox.Top + player.Playerspeed < mapControl.mapMaxY)
+                    if (player.PlayerBox.Top + player.Playerspeed / 2 < mapControl.mapMaxY)
                     {
-                        player.PlayerBox.Top += player.Playerspeed;
+                        player.PlayerBox.Top += player.Playerspeed / 2;
                     }
                     break;
                 case "left":
-                    if (player.PlayerBox.Left - player.Playerspeed > mapControl.mapMinX)
+                    if (player.PlayerBox.Left - player.Playerspeed / 2 > mapControl.mapMinX)
                     {
-                        player.PlayerBox.Left -= player.Playerspeed;
+                        player.PlayerBox.Left -= player.Playerspeed / 2;
                     }
                     break;
                 case "right":
-                    if (player.PlayerBox.Left + player.Playerspeed < mapControl.mapMaxX)
+                    if (player.PlayerBox.Left + player.Playerspeed / 2 < mapControl.mapMaxX)
                     {
-                        player.PlayerBox.Left += player.Playerspeed;
+                        player.PlayerBox.Left += player.Playerspeed / 2;
                     }
                     break;
             }
