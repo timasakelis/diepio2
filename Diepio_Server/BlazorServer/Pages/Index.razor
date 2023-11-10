@@ -108,7 +108,6 @@
     {
         public int Left;
         public int Top;
-        public int Hp;
         public string id;
         public string pClass;
 
@@ -118,15 +117,6 @@
             Left = l;
             Top = t;
             pClass = c;
-            switch (c)
-            {
-                case "tank":
-                    Hp = 50;
-                    break;
-                case "scout":
-                    Hp = 25;
-                    break;
-            }
         }
 
         public (int, int) getCoords()
@@ -138,10 +128,6 @@
         {
             Left = l;
             Top = t;
-        }
-        public void takeDamage(int dam)
-        {
-            this.Hp -= dam;
         }
     }
 

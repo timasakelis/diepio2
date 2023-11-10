@@ -340,10 +340,8 @@ namespace FinaleSignalR_Client
 
                             if (pl.CurrentHP < 0)
                             {
-                                //commFacade.RemoveAvatar(pl.Id);
                                 if (this.player.Id == pl.Id)//kiekvienas žaidėjas atsakingas už save
                                 {
-                                    pl.PlayerBox.BackColor = Color.Red;
                                     commFacade.RemoveAvatar(this.player.Id);
 
                                 }
