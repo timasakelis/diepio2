@@ -96,37 +96,44 @@ namespace FinaleSignalR_Client
 
         public void createPlayer(string id, string pClass)
         {
-            //var newPlayer = new Player(id, "new player", SystemColors.ControlDark, new Point(666, 422));
-            //newPlayer.SetStrategy(new ScoutMove());
-            Player newPlayer = new Player();
-            if (pClass == "scout")
+            Player pToRemove = players.FirstOrDefault(p => p.Id == id);
+            if(pToRemove == null)
             {
-                newPlayer = new Scout(id, "new player", SystemColors.ControlDark, new Point(666, 422), new ScoutBehavior(), new Gun());
-            }else if (pClass == "tank")
-            {
-                ShotGun shotgun = new ShotGun();
-                newPlayer = new Tank(id, "new player", SystemColors.ControlDark, new Point(666, 422), new TankBehavior(), new ShotgunAdapt(shotgun));
-            }
+                Player newPlayer = new Player();
+                if (pClass == "scout")
+                {
+                    newPlayer = new Scout(id, "new player", SystemColors.ControlDark, new Point(666, 422), new ScoutBehavior(), new Gun());
+                }else if (pClass == "tank")
+                {
+                    ShotGun shotgun = new ShotGun();
+                    newPlayer = new Tank(id, "new player", SystemColors.ControlDark, new Point(666, 422), new TankBehavior(), new ShotgunAdapt(shotgun));
+                }
             
 
-            mapControl.mapMinX = 0;
-            mapControl.mapMinY = 0;
-            mapControl.mapMaxX = mapControl.Width - newPlayer.PlayerBox.Width;
-            mapControl.mapMaxY = mapControl.Height - newPlayer.PlayerBox.Height;
+                mapControl.mapMinX = 0;
+                mapControl.mapMinY = 0;
+                mapControl.mapMaxX = mapControl.Width - newPlayer.PlayerBox.Width;
+                mapControl.mapMaxY = mapControl.Height - newPlayer.PlayerBox.Height;
 
-            //adding player to map
-            playerBoxes[playerCount] = newPlayer.PlayerBox;
-            players.Add(newPlayer);
-            this.mapControl.Controls.Add(playerBoxes[playerCount]);
-            playerCount++;
+                //adding player to map
+                playerBoxes[playerCount] = newPlayer.PlayerBox;
+                players.Add(newPlayer);
+                this.mapControl.Controls.Add(playerBoxes[playerCount]);
+                playerCount++;
+
+            }
         }
 
         public void RequestAccepted(string pClass)
         {
-            createPlayer(id.ToString(), pClass);
-            this.player = players[this.playerCount-1];
-            ServerTimer.Start();
-            bulletMovementTimer.Start();
+            if (this.player == null)
+            {
+                createPlayer(id.ToString(), pClass);
+                this.player = players[this.playerCount-1];
+                ServerTimer.Start();
+                bulletMovementTimer.Start();
+
+            }
 
         }
 
@@ -172,51 +179,55 @@ namespace FinaleSignalR_Client
         //------------------------Movement-------------------------------
         private void KeyIsDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.K)
+            if(this.player != null)
             {
-                inputControl.SwitchToArrowKeys();
-            }
-            if (e.KeyCode == Keys.L)
-            {
-                inputControl.SwitchToAWSD();
-            }
-            if (e.KeyCode == Keys.O)
-            {
-                inputControl.UndoSwitch();
-            }
+                if (e.KeyCode == Keys.K)
+                {
+                    inputControl.SwitchToArrowKeys();
+                }
+                if (e.KeyCode == Keys.L)
+                {
+                    inputControl.SwitchToAWSD();
+                }
+                if (e.KeyCode == Keys.O)
+                {
+                    inputControl.UndoSwitch();
+                }
 
-            string direction = inputControl.inputDetected(e);
-            switch (direction)
-            {
-                case "left":
-                    LeftTimer.Start();
-                    break;
-                case "right":
-                    RightTimer.Start();
-                    break;
-                case "up":
-                    UpTimer.Start();
-                    break;
-                case "down":
-                    DownTimer.Start();
-                    break;
-            }
+                string direction = inputControl.inputDetected(e);
+                switch (direction)
+                {
+                    case "left":
+                        LeftTimer.Start();
+                        break;
+                    case "right":
+                        RightTimer.Start();
+                        break;
+                    case "up":
+                        UpTimer.Start();
+                        break;
+                    case "down":
+                        DownTimer.Start();
+                        break;
+                }
 
-            if(e.KeyCode == Keys.D1)
-            {
-                Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
-                foundPlayer.Buff("size");
-            }
+                if(e.KeyCode == Keys.D1)
+                {
+                    Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
+                    foundPlayer.Buff("size");
+                }
 
-            if (e.KeyCode == Keys.D2)
-            {
-                Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
-                foundPlayer.Buff("speed");
-            }
-            if (e.KeyCode == Keys.D3)
-            {
-                Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
-                foundPlayer.Buff("default");
+                if (e.KeyCode == Keys.D2)
+                {
+                    Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
+                    foundPlayer.Buff("speed");
+                }
+                if (e.KeyCode == Keys.D3)
+                {
+                    Player foundPlayer = players.FirstOrDefault(player => player.Id == this.id);
+                    foundPlayer.Buff("default");
+                }
+
             }
         }
 
@@ -311,28 +322,38 @@ namespace FinaleSignalR_Client
 
         private void bulletMovementTimer_Tick(object sender, EventArgs e)
         {
+            bool playerDead;
+
             foreach (IBullet bullet in bullets)
             {
                 MoveBullet(bullet);
-             
-                foreach (Player pl in this.players)
+
+                for (int i = this.players.Count - 1; i >= 0; i--)
                 {
+                    Player pl = this.players[i];
+
                     if (pl != null)
-                    {//pl.PlayerBox.Name != (bullet as Bullet).playerid &&
-                        if (pl.PlayerBox.Name != bullet.playerid && bullet.GetPictureBox().Bounds.IntersectsWith(pl.PlayerBox.Bounds))
+                    {
+                        if (pl.Id != bullet.playerid && bullet.GetPictureBox().Bounds.IntersectsWith(pl.PlayerBox.Bounds))
                         {
                             pl.TakeDamage(3);
-                            /*if (pl.CurrentHP < pl.MaxHP * 0.5)
-                                pl.SetStrategy(new TankMove());*/
-                            if (pl.CurrentHP < 1)
+
+                            if (pl.CurrentHP < 0)
                             {
-                                pl.PlayerBox.BackColor = Color.Red;
+                                if (this.player.Id == pl.Id)//kiekvienas žaidėjas atsakingas už save
+                                {
+                                    commFacade.RemoveAvatar(this.player.Id);
+
+                                }
                             }
                             bulletsToRemove.Add(bullet);
-                            this.mapControl.Controls.Remove(bullet.GetPictureBox());  
+                            this.mapControl.Controls.Remove(bullet.GetPictureBox());
+
                         }
                     }
                 }
+
+                
 
                 foreach (IPellet pellet in pellets)
                 {
@@ -402,11 +423,19 @@ namespace FinaleSignalR_Client
         public void RemoveEnemy(string toDelete)
         {
             Player pToRemove = players.FirstOrDefault(p => p.Id == toDelete);
+            if(pToRemove != null)
+            {
+                this.mapControl.Controls.Remove(pToRemove.PlayerBox);
+                RemoveEnemyBox(toDelete);
+                //var t = playerBoxes;
+                players.Remove(pToRemove);
+                if(this.player.Id == toDelete)
+                {
+                    this.player = null;
+                    commFacade.StopConnection();
+                }
 
-            this.mapControl.Controls.Remove(pToRemove.PlayerBox);
-            RemoveEnemyBox(toDelete);
-            var t = playerBoxes;
-            players.Remove(pToRemove);
+            }
         }
         private void RemoveEnemyBox(string id)
         {
@@ -429,26 +458,30 @@ namespace FinaleSignalR_Client
         }
         private void ServerTimer_Tick(object sender, EventArgs e)
         {
-            commFacade.SendCoordinates(this.player.PlayerBox.Left, this.player.PlayerBox.Top);
-
-            //Send bullet info
-            if (this.mapControl.IsShooting() && (DateTime.Now - lastBulletFiredTime) > bulletCooldown)
+            if (this.player != null)
             {
-                Point targetPoint = this.PointToClient(Cursor.Position);
-                Vector2 start = new Vector2(this.player.PlayerBox.Location.X, this.player.PlayerBox.Location.Y);
-                Vector2 target = new Vector2(targetPoint.X, targetPoint.Y);
-                Vector2 direction = Vector2.Normalize(target - start);
-                lastBulletFiredTime = DateTime.Now;
-                //Bullet start from center of player instead of corner
-                int bulletStartX = this.player.PlayerBox.Location.X + this.player.PlayerBox.Width / 2;
-                int bulletStartY = this.player.PlayerBox.Location.Y + this.player.PlayerBox.Height / 2;
+                commFacade.SendCoordinates(this.player.PlayerBox.Left, this.player.PlayerBox.Top);
 
-                List<IBullet> bullets = this.player.Fire(bulletStartX, bulletStartY, direction, this.player.PlayerBox.Name);
-
-                foreach (IBullet bullet in bullets)
+                //Send bullet info
+                if (this.mapControl.IsShooting() && (DateTime.Now - lastBulletFiredTime) > bulletCooldown)
                 {
-                    commFacade.SendBulletInformation(bulletStartX, bulletStartY, bullet.Direction.X, bullet.Direction.Y, this.player.PlayerBox.Name, player.GetWeopenSpeed().ToString(), player.GetWeopenSize().ToString());
+                    Point targetPoint = this.PointToClient(Cursor.Position);
+                    Vector2 start = new Vector2(this.player.PlayerBox.Location.X, this.player.PlayerBox.Location.Y);
+                    Vector2 target = new Vector2(targetPoint.X, targetPoint.Y);
+                    Vector2 direction = Vector2.Normalize(target - start);
+                    lastBulletFiredTime = DateTime.Now;
+                    //Bullet start from center of player instead of corner
+                    int bulletStartX = this.player.PlayerBox.Location.X + this.player.PlayerBox.Width / 2;
+                    int bulletStartY = this.player.PlayerBox.Location.Y + this.player.PlayerBox.Height / 2;
+
+                    List<IBullet> bullets = this.player.Fire(bulletStartX, bulletStartY, direction, this.player.PlayerBox.Name);
+
+                    foreach (IBullet bullet in bullets)
+                    {
+                        commFacade.SendBulletInformation(bulletStartX, bulletStartY, bullet.Direction.X, bullet.Direction.Y, this.player.PlayerBox.Name, player.GetWeopenSpeed().ToString(), player.GetWeopenSize().ToString());
+                    }
                 }
+
             }
         }
 

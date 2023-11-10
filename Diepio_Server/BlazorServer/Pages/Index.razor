@@ -256,7 +256,11 @@
             }
 
         }
-        this.idCount--;
+        if (this.idCount > 0)
+        {
+            this.idCount--;
+            
+        }
     }
 
     private async Task Send()

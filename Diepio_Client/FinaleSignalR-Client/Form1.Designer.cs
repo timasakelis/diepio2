@@ -5,7 +5,8 @@ namespace FinaleSignalR_Client
     partial class Form1
     {
         /// <summary>
-        /// Required designer variable.
+        /// Requi
+        /// designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
