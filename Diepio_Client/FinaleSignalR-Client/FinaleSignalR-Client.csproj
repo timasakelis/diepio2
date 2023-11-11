@@ -301,6 +301,10 @@
     <Compile Include="Facade\CommunicationAvatar.cs" />
     <Compile Include="Facade\CommunicationChat.cs" />
     <Compile Include="Facade\CommunicationSendInformation.cs" />
+    <Compile Include="Template Method\ColorTemplate.cs" />
+    <Compile Include="Template Method\ColorPal.cs" />
+    <Compile Include="Template Method\ArcticColors.cs" />
+    <Compile Include="Template Method\DesertColors.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

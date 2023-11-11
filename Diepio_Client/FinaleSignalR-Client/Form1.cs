@@ -103,7 +103,8 @@ namespace FinaleSignalR_Client
                 if (pClass == "scout")
                 {
                     newPlayer = new Scout(id, "new player", SystemColors.ControlDark, new Point(666, 422), new ScoutBehavior(), new Gun());
-                }else if (pClass == "tank")
+                }
+                else if (pClass == "tank")
                 {
                     ShotGun shotgun = new ShotGun();
                     newPlayer = new Tank(id, "new player", SystemColors.ControlDark, new Point(666, 422), new TankBehavior(), new ShotgunAdapt(shotgun));

@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
-using FinaleSignalR_Client.Builder;
 using System.Reflection;
 using System.IO;
+using FinaleSignalR_Client.Template_Method;
 
 namespace FinaleSignalR_Client.Factory
 {
@@ -26,12 +26,16 @@ namespace FinaleSignalR_Client.Factory
     {
         public IPellet CreatePellet(int id, int x, int y, int type, bool cangeColor)
         {
-            ColorPal colors = new ColorPal();
+            
+            ColorTemplate colorTemplate = new ArcticColors();
+            ColorPal colors = colorTemplate.PrepareColors();
             if (cangeColor)
             {
-                Builder.Builder builder = new Builder.Con2Builder();
-                Builder.Director director = new Builder.Director(builder);
-                colors = director.Construct();
+                //Builder.Builder builder = new Builder.Con2Builder();
+                //Builder.Director director = new Builder.Director(builder);
+                //colors = director.Construct();
+                colorTemplate = new DesertColors();
+                colors = colorTemplate.PrepareColors();
             }
             switch (type)
             {
