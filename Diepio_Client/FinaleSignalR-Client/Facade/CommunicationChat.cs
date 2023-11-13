@@ -12,13 +12,12 @@ namespace FinaleSignalR_Client.Web
     {
         HubConnection connection;
         string id;
-        ListBox messages;
+        List<string> logger = new List<string>();
 
-        public CommunicationChat(HubConnection hub, string id, ListBox messages)
+        public CommunicationChat(HubConnection hub, string id)
         {
             this.connection = hub;
             this.id = id;
-            this.messages = messages;
         }
 
         public async void SendChatMessage(string text)
@@ -29,7 +28,7 @@ namespace FinaleSignalR_Client.Web
             }
             catch (Exception ex)
             {
-                messages.Items.Add(ex.Message);
+                logger.Add(ex.Message);
             }
         }
     }

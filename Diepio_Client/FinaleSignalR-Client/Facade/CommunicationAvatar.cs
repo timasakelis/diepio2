@@ -12,13 +12,12 @@ namespace FinaleSignalR_Client.Web
     {
         HubConnection connection;
         string id;
-        ListBox messages;
+        List<string> logger = new List<string>();
 
-        public CommunicationAvatar(HubConnection hub, string id, ListBox messages)
+        public CommunicationAvatar(HubConnection hub, string id)
         {
             this.connection = hub;
             this.id = id;
-            this.messages = messages;
         }
 
         public async void canICreateAvatar(string pClass)
@@ -29,7 +28,7 @@ namespace FinaleSignalR_Client.Web
             }
             catch (Exception ex)
             {
-                messages.Items.Add(ex.Message);
+                logger.Add(ex.Message);
             }
         }
 
@@ -41,7 +40,7 @@ namespace FinaleSignalR_Client.Web
             }
             catch (Exception ex)
             {
-                messages.Items.Add(ex.Message);
+                logger.Add(ex.Message);
             }
         }
     }

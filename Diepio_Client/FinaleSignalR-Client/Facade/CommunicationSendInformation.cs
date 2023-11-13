@@ -12,16 +12,13 @@ namespace FinaleSignalR_Client.Web
     {
         HubConnection connection;
         string id;
-        ListBox messages;
+        List<string> logger = new List<string>();
 
-        public CommunicationSendInformation(HubConnection hub, string id, ListBox messages) 
+        public CommunicationSendInformation(HubConnection hub, string id) 
         {
             this.connection = hub;
             this.id = id;
-            this.messages = messages;
         }
-
-        
 
         public async void SendCoordinates(int left, int top)
         {
@@ -31,7 +28,7 @@ namespace FinaleSignalR_Client.Web
             }
             catch (Exception ex)
             {
-                messages.Items.Add(ex.Message);
+                logger.Add(ex.Message);
             }
         }
 
@@ -43,7 +40,7 @@ namespace FinaleSignalR_Client.Web
             }
             catch (Exception ex)
             {
-                messages.Items.Add($"Error sending bullet data: {ex.Message}");
+                logger.Add($"Error sending bullet data: {ex.Message}");
             }
         }
     }

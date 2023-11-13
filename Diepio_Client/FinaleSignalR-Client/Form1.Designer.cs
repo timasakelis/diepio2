@@ -179,7 +179,7 @@ namespace FinaleSignalR_Client
         private System.Windows.Forms.Timer bulletMovementTimer;
         private System.Windows.Forms.Button sendMessage;
         private System.Windows.Forms.TextBox messageInput;
-        private System.Windows.Forms.ListBox messages;
+        public System.Windows.Forms.ListBox messages;
         private System.Windows.Forms.Button ChangeColors;
         private System.Windows.Forms.Button ChooseTank;
         private System.Windows.Forms.Button ChooseScout;

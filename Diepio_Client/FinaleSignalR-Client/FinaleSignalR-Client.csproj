@@ -292,6 +292,7 @@
     <Compile Include="Prototype\IPrototype.cs" />
     <Compile Include="Prototype\LvlUp.cs" />
     <Compile Include="Prototype\LvlUpPrototype.cs" />
+    <Compile Include="Proxy\CommunicationProxy.cs" />
     <Compile Include="Stategy\LowHPTank.cs" />
     <Compile Include="Stategy\ScoutMove.cs" />
     <Compile Include="Stategy\HighHPReversed.cs" />

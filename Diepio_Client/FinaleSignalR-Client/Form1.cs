@@ -18,6 +18,7 @@ using FinaleSignalR_Client.Bridge;
 using FinaleSignalR_Client.Facade;
 using System.Runtime.Remoting.Messaging;
 using FinaleSignalR_Client.Adapter;
+using FinaleSignalR_Client.Proxy;
 
 
 
@@ -35,12 +36,12 @@ namespace FinaleSignalR_Client
         string myClass = "scout";
         Player player;
         public List<Player> players;
-        public ListBox messagesPointer;
 
         IPrototype prototype = new LvlUpPrototype();
 
         public Map mapControl;
-        public CommunicationFacade commFacade;
+        //public CommunicationFacade commFacade;
+        public CommunicationProxy commProxy;
         InputControl inputControl;
         InputArrowKeys inputArrowKeys;
         InputAWSD inputAWSD;
@@ -77,8 +78,7 @@ namespace FinaleSignalR_Client
             id = rnd.Next(100000).ToString();
 
             //comm = new CommunicationParser(messages, this);
-            messagesPointer = messages;
-            commFacade = new CommunicationFacade(messagesPointer, this);
+            commProxy = new CommunicationProxy(this, messages, 0);
             inputControl = new InputControl();
             inputArrowKeys = new InputArrowKeys();
             inputAWSD = new InputAWSD();
@@ -91,7 +91,7 @@ namespace FinaleSignalR_Client
         {
             // Call RemoveAvatar when the form is closing
             if(this.id != null)
-                commFacade.RemoveAvatar(this.id);
+                commProxy.RemoveAvatar(this.id);
         }
 
         public void createPlayer(string id, string pClass)
@@ -152,12 +152,17 @@ namespace FinaleSignalR_Client
 
         private void button1_Click(object sender, EventArgs e)
         {
-            commFacade.ParseMessage(myClass);
+            commProxy.ParseMessage(myClass);
         }
 
         public void StartParsing()
         {
-            commFacade.ParseMessage(myClass);
+            commProxy.ParseMessage(myClass);
+        }
+
+        public void AddMessage(string text)
+        {
+            messages.Items.Add(text);
         }
 
         public void moveEnemy(string id, int left, int top)
@@ -175,7 +180,7 @@ namespace FinaleSignalR_Client
 
         private void sendMessage_Click(object sender, EventArgs e)
         {
-            commFacade.SendChatMessage(messageInput.Text);
+            commProxy.SendChatMessage(messageInput.Text);
         }
         //------------------------Movement-------------------------------
         private void KeyIsDown(object sender, KeyEventArgs e)
@@ -343,7 +348,7 @@ namespace FinaleSignalR_Client
                             {
                                 if (this.player.Id == pl.Id)//kiekvienas žaidėjas atsakingas už save
                                 {
-                                    commFacade.RemoveAvatar(this.player.Id);
+                                    commProxy.RemoveAvatar(this.player.Id);
 
                                 }
                             }
@@ -433,7 +438,7 @@ namespace FinaleSignalR_Client
                 if(this.player.Id == toDelete)
                 {
                     this.player = null;
-                    commFacade.StopConnection();
+                    commProxy.StopConnection();
                 }
 
             }
@@ -461,7 +466,7 @@ namespace FinaleSignalR_Client
         {
             if (this.player != null)
             {
-                commFacade.SendCoordinates(this.player.PlayerBox.Left, this.player.PlayerBox.Top);
+                commProxy.SendCoordinates(this.player.PlayerBox.Left, this.player.PlayerBox.Top);
 
                 //Send bullet info
                 if (this.mapControl.IsShooting() && (DateTime.Now - lastBulletFiredTime) > bulletCooldown)
@@ -479,7 +484,7 @@ namespace FinaleSignalR_Client
 
                     foreach (IBullet bullet in bullets)
                     {
-                        commFacade.SendBulletInformation(bulletStartX, bulletStartY, bullet.Direction.X, bullet.Direction.Y, this.player.PlayerBox.Name, player.GetWeopenSpeed().ToString(), player.GetWeopenSize().ToString());
+                        commProxy.SendBulletInformation(bulletStartX, bulletStartY, bullet.Direction.X, bullet.Direction.Y, this.player.PlayerBox.Name, player.GetWeopenSpeed().ToString(), player.GetWeopenSize().ToString());
                     }
                 }
 

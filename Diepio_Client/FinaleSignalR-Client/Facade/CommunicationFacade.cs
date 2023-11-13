@@ -17,13 +17,13 @@ namespace FinaleSignalR_Client.Facade
         private readonly CommunicationChat _chat;
 
         HubConnection connection;
-        public ListBox messages;
+        public ListBox connectionInvoker;
         string id;
         Form1 form;
 
-        public CommunicationFacade(ListBox message, Form1 form) 
+        public CommunicationFacade(Form1 form) 
         {
-            this.messages = message;
+            this.connectionInvoker = form.messages;
             this.id = form.id;
             this.form = form;
 
@@ -35,10 +35,9 @@ namespace FinaleSignalR_Client.Facade
             // These define what happens during their scenarios
             connection.Reconnecting += (sender) =>
             {
-                messages.Invoke((MethodInvoker)delegate
+                connectionInvoker.Invoke((MethodInvoker)delegate
                 {
-                    var newMessage = "Attempting to connect to the server...";
-                    messages.Items.Add(newMessage);
+                    form.AddMessage("Attempting to connect to the server...");
                 });
 
                 return Task.CompletedTask;
@@ -46,11 +45,9 @@ namespace FinaleSignalR_Client.Facade
 
             connection.Reconnected += (sender) =>
             {
-                messages.Invoke((MethodInvoker)delegate
+                connectionInvoker.Invoke((MethodInvoker)delegate
                 {
-                    var newMessage = "Reconnected to the server";
-                    messages.Items.Clear();
-                    messages.Items.Add(newMessage);
+                    form.AddMessage("Reconnected to the server");
                 });
 
                 return Task.CompletedTask;
@@ -58,26 +55,25 @@ namespace FinaleSignalR_Client.Facade
 
             connection.Closed += (sender) =>
             {
-                messages.Invoke((MethodInvoker)delegate
+                connectionInvoker.Invoke((MethodInvoker)delegate
                 {
-                    var newMessage = "Connection Closed";
-                    messages.Items.Add(newMessage);
+                    form.AddMessage("Connection Closed");
                     form.GameClosedButtonStuff();
                 });
 
                 return Task.CompletedTask;
             };
 
-            _avatar = new CommunicationAvatar(connection, id, messages);
-            _chat = new CommunicationChat(connection, id, messages);
-            _sendInformation = new CommunicationSendInformation(connection, id, messages);
+            _avatar = new CommunicationAvatar(connection, id);
+            _chat = new CommunicationChat(connection, id);
+            _sendInformation = new CommunicationSendInformation(connection, id);
         }
 
         public async void ParseMessage(string pClass)
         {
             connection.On<string, string>("ReceiveMessage", (user, message) =>
             {
-                this.messages.Invoke((MethodInvoker)delegate
+                this.connectionInvoker.Invoke((MethodInvoker)delegate
                 {
                     var parsedMessage = message.Split('|');
                     if (parsedMessage.Length > 0)
@@ -88,7 +84,6 @@ namespace FinaleSignalR_Client.Facade
                             {
                                 case "RequestAccepted":
                                     form.RequestAccepted(parsedMessage[2]);
-                                    messages.Items.Add(parsedMessage[2] + "|RequestGranted");
                                     break;
                                 case "EnemyCreated":
                                     if (parsedMessage[2] != id)
@@ -116,7 +111,7 @@ namespace FinaleSignalR_Client.Facade
                                     form.RemoveEnemy(parsedMessage[2]);
                                     break;
                                 case "Chat":
-                                    messages.Items.Add(parsedMessage[2]);
+                                    form.AddMessage(parsedMessage[2]);
                                     break;
                             }
                         }
@@ -128,15 +123,14 @@ namespace FinaleSignalR_Client.Facade
 
             try
             {
-                messages.Items.Add("Connection Started");
+                form.AddMessage("Connection Started");
                 await connection.StartAsync();
-                messages.Items.Add("Connection Started");
                 canICreateAvatar(pClass);
                 form.GameStartButtonStuff();
             }
             catch (Exception ex)
             {
-                messages.Items.Add(ex.Message);
+                connectionInvoker.Items.Add(ex.Message);
             }
         }
 
