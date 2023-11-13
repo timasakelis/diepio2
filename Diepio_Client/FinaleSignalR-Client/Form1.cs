@@ -40,11 +40,14 @@ namespace FinaleSignalR_Client
         IPrototype prototype = new LvlUpPrototype();
 
         public Map mapControl;
-        //public CommunicationFacade commFacade;
+        
+        //Server
         public CommunicationProxy commProxy;
+        public const int debugLevel = 0; //Sets the amount of messages being sent from proxy
+
+        //Input handling
         InputControl inputControl;
         InputArrowKeys inputArrowKeys;
-        InputAWSD inputAWSD;
     
         List<IPellet> pellets = new List<IPellet>();
         PelletFactory pelletFactory = new PelletFactory();
@@ -78,10 +81,9 @@ namespace FinaleSignalR_Client
             id = rnd.Next(100000).ToString();
 
             //comm = new CommunicationParser(messages, this);
-            commProxy = new CommunicationProxy(this, messages, 0);
+            commProxy = new CommunicationProxy(this, messages, debugLevel);
             inputControl = new InputControl();
             inputArrowKeys = new InputArrowKeys();
-            inputAWSD = new InputAWSD();
 
             inputControl.setCommand(new CommandArrowKeys(inputArrowKeys));
 
