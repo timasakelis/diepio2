@@ -8,8 +8,13 @@ using System.Threading.Tasks;
 
 namespace FinaleSignalR_Client.Stategy
 {
-    public interface MoveAlgorithm
+    public abstract class PlayerState
     {
-        void behaveDiffrentley(string dirrection, Player player, Map mapControl);
+        protected Player player;
+        public void setContexct(Player player)
+        {
+            this.player = player;
+        }
+        public abstract void Move(string dirrection, Map mapControl);
     }
 }
