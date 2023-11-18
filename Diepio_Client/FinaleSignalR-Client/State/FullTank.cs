@@ -1,17 +1,22 @@
 ﻿using FinaleSignalR_Client.Controls;
 using FinaleSignalR_Client.Objects;
+using FinaleSignalR_Client.Stategy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinaleSignalR_Client.Stategy
+namespace FinaleSignalR_Client.State
 {
-    public class TankMove : MoveAlgorithm
+    public class FullTank : PlayerState
     {
-        public void behaveDiffrentley(string dirrection, Player player, Map mapControl)
+        public override void Move(string dirrection, Map mapControl)
         {
+            if (player.CurrentHP < player.MaxHP / 2)
+            {
+                player.TransitionTo(new HurtTank());
+            }
             switch (dirrection)
             {
                 case "up":

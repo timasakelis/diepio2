@@ -1,5 +1,6 @@
 ﻿using FinaleSignalR_Client.Controls;
 using FinaleSignalR_Client.Objects;
+using FinaleSignalR_Client.Stategy;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,15 +8,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinaleSignalR_Client.Stategy
+namespace FinaleSignalR_Client.State
 {
-    public class ScoutMove : MoveAlgorithm
+    public class Confused : PlayerState
     {
-        public void behaveDiffrentley(string dirrection, Player player, Map mapControl)
+        public override void Move(string dirrection, Map mapControl)
         {
             switch (dirrection)
             {
-                case "up":
+                case "down":
                     if (player.PlayerBox.Top - player.Playerspeed > mapControl.mapMinY)
                     {
                         int newPlayerTop = player.PlayerBox.Top - player.Playerspeed;
@@ -25,8 +26,8 @@ namespace FinaleSignalR_Client.Stategy
                             player.PlayerBox.Top -= player.Playerspeed;
                     }
                     break;
-                case "down":
-                    if (player.PlayerBox.Top +  player.Playerspeed < mapControl.mapMaxY)
+                case "up":
+                    if (player.PlayerBox.Top + player.Playerspeed < mapControl.mapMaxY)
                     {
                         int newPlayerTop = player.PlayerBox.Top + player.Playerspeed;
 
@@ -35,7 +36,7 @@ namespace FinaleSignalR_Client.Stategy
                             player.PlayerBox.Top += player.Playerspeed;
                     }
                     break;
-                case "left":
+                case "right":
                     if (player.PlayerBox.Left - player.Playerspeed > mapControl.mapMinX)
                     {
                         int newPlayerLeft = player.PlayerBox.Left - player.Playerspeed;
@@ -45,8 +46,8 @@ namespace FinaleSignalR_Client.Stategy
 
                             player.PlayerBox.Left -= player.Playerspeed;
                     }
-                    break; 
-                case "right":
+                    break;
+                case "left":
                     if (player.PlayerBox.Left + player.Playerspeed < mapControl.mapMaxX)
                     {
                         int newPlayerLeft = player.PlayerBox.Left + player.Playerspeed;

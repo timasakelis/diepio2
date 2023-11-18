@@ -27,12 +27,13 @@ namespace FinaleSignalR_Client.Objects
         //--------------Bridge--------------------
         protected IWepon weapon;
         
-        protected IInteractioBehavior _implementation;
-        //-----------------------------------------
+        //-----------------State------------------------
+        private PlayerState _state;
+        //----------------------------------------
         private Color color;
         private Point startingPoint;
         public Player() { }
-        public Player(string id, string name, Color color, Point startingPoint, IInteractioBehavior implementation, IWepon wepon) {
+        public Player(string id, string name, Color color, Point startingPoint, IWepon wepon) {
 
             this.Id = id;
             this.Name = name;
@@ -46,26 +47,18 @@ namespace FinaleSignalR_Client.Objects
             this.PlayerBox.TabIndex = 0;
             this.PlayerBox.TabStop = false;
 
-
-            this._implementation = implementation;
         }
 
-        public Player(string id, string name, Color color, Point startingPoint)
+        public void TransitionTo(PlayerState state)
         {
-            Id = id;
-            Name = name;
-            this.color = color;
-            this.startingPoint = startingPoint;
+            this._state = state;
+            _state.setContexct(this);
         }
 
-        public Player(string id, string name, Color color, Point startingPoint, IInteractioBehavior behavior) : this(id, name, color, startingPoint)
-        {
-        }
 
         public virtual void Move(string dirrection, Map mapControl)
         {
-            _implementation.Move(dirrection,this,mapControl);
-            //moveAlgorithm?.behaveDiffrentley(dirrection, this, mapControl);
+            _state.Move(dirrection, mapControl);
         }
 
         public virtual List<IBullet> Fire(int x, int y, Vector2 Direction, string id)
@@ -109,11 +102,6 @@ namespace FinaleSignalR_Client.Objects
         public virtual void TakeDamage(int damage)
         {
             this.CurrentHP -= damage;
-        }
-
-        public void Shoot()
-        {
-
         }
 
     }

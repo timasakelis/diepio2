@@ -1,5 +1,6 @@
 ﻿using FinaleSignalR_Client.Controls;
 using FinaleSignalR_Client.Objects;
+using FinaleSignalR_Client.Stategy;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,11 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinaleSignalR_Client.Stategy
+namespace FinaleSignalR_Client.State
 {
-    public class LowHPScout : MoveAlgorithm
+    public class HurtScout : PlayerState
     {
-        public void behaveDiffrentley(string dirrection, Player player, Map mapControl)
+        public override void Move(string dirrection,  Map mapControl)
         {
             switch (dirrection)
             {
@@ -56,6 +57,7 @@ namespace FinaleSignalR_Client.Stategy
                     break;
             }
         }
+
         private bool CollidesWithObstacle(int x, int y, int width, int height, Map mapControl)
         {
             Rectangle playerRect = new Rectangle(x, y, width, height);

@@ -1,5 +1,6 @@
 ﻿using FinaleSignalR_Client.Adapter;
 using FinaleSignalR_Client.Objects;
+using FinaleSignalR_Client.State;
 using FinaleSignalR_Client.Stategy;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace FinaleSignalR_Client.Bridge
     public class Tank : Player
     {
         public int Armore { get; set; }
-        public Tank(string id, string name, Color color, Point startingPoint, IInteractioBehavior behavior, IWepon wepon) : base(id, name, color, startingPoint, behavior, wepon)
+        public Tank(string id, string name, Color color, Point startingPoint, IWepon wepon) : base(id, name, color, startingPoint, wepon)
         {
             
             //ShotGun shotgun = new ShotGun();
@@ -22,12 +23,14 @@ namespace FinaleSignalR_Client.Bridge
             this.Armore = 1;
             base.MaxHP = 50;
             base.CurrentHP = 50;
+            TransitionTo(new FullTank());
             //base.weapon = new ShotgunAdapt(shotgun);
         }
 
         public override void TakeDamage(int damage)
         {
             base.CurrentHP -= (damage - Armore);
+            
         }
     }
 }
