@@ -42,16 +42,20 @@ namespace FinaleSignalR_Client
             this.sendMessage = new System.Windows.Forms.Button();
             this.messageInput = new System.Windows.Forms.TextBox();
             this.messages = new System.Windows.Forms.ListBox();
-            this.ChangeColors = new System.Windows.Forms.Button();
+            this.ArcticColors = new System.Windows.Forms.Button();
             this.ChooseTank = new System.Windows.Forms.Button();
             this.ChooseScout = new System.Windows.Forms.Button();
+            this.CreateCharacter = new System.Windows.Forms.Button();
+            this.DesertColors = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // openConnection
             // 
-            this.openConnection.Location = new System.Drawing.Point(966, 22);
+            this.openConnection.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.openConnection.Location = new System.Drawing.Point(468, 217);
+            this.openConnection.Margin = new System.Windows.Forms.Padding(4);
             this.openConnection.Name = "openConnection";
-            this.openConnection.Size = new System.Drawing.Size(151, 41);
+            this.openConnection.Size = new System.Drawing.Size(434, 116);
             this.openConnection.TabIndex = 0;
             this.openConnection.Text = "Open Connection";
             this.openConnection.UseVisualStyleBackColor = true;
@@ -90,9 +94,10 @@ namespace FinaleSignalR_Client
             // sendMessage
             // 
             this.sendMessage.Enabled = false;
-            this.sendMessage.Location = new System.Drawing.Point(976, 69);
+            this.sendMessage.Location = new System.Drawing.Point(1303, 144);
+            this.sendMessage.Margin = new System.Windows.Forms.Padding(4);
             this.sendMessage.Name = "sendMessage";
-            this.sendMessage.Size = new System.Drawing.Size(140, 43);
+            this.sendMessage.Size = new System.Drawing.Size(187, 53);
             this.sendMessage.TabIndex = 2;
             this.sendMessage.Text = "Send Message";
             this.sendMessage.UseVisualStyleBackColor = true;
@@ -100,36 +105,41 @@ namespace FinaleSignalR_Client
             // 
             // messageInput
             // 
-            this.messageInput.Location = new System.Drawing.Point(989, 176);
+            this.messageInput.Location = new System.Drawing.Point(1319, 217);
+            this.messageInput.Margin = new System.Windows.Forms.Padding(4);
             this.messageInput.Name = "messageInput";
-            this.messageInput.Size = new System.Drawing.Size(129, 20);
+            this.messageInput.Size = new System.Drawing.Size(171, 22);
             this.messageInput.TabIndex = 1;
             // 
             // messages
             // 
             this.messages.FormattingEnabled = true;
-            this.messages.Location = new System.Drawing.Point(845, 214);
+            this.messages.ItemHeight = 16;
+            this.messages.Location = new System.Drawing.Point(1151, 248);
+            this.messages.Margin = new System.Windows.Forms.Padding(4);
             this.messages.Name = "messages";
-            this.messages.Size = new System.Drawing.Size(273, 524);
+            this.messages.Size = new System.Drawing.Size(339, 660);
             this.messages.TabIndex = 3;
             // 
-            // ChangeColors
+            // ArcticColors
             // 
-            this.ChangeColors.Location = new System.Drawing.Point(976, 118);
-            this.ChangeColors.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.ChangeColors.Name = "ChangeColors";
-            this.ChangeColors.Size = new System.Drawing.Size(140, 39);
-            this.ChangeColors.TabIndex = 4;
-            this.ChangeColors.Text = "Change colors";
-            this.ChangeColors.UseVisualStyleBackColor = true;
-            this.ChangeColors.Click += new System.EventHandler(this.button1_Click_1);
+            this.ArcticColors.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ArcticColors.Location = new System.Drawing.Point(373, 217);
+            this.ArcticColors.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ArcticColors.Name = "ArcticColors";
+            this.ArcticColors.Size = new System.Drawing.Size(289, 116);
+            this.ArcticColors.TabIndex = 4;
+            this.ArcticColors.Text = "Arctic colors";
+            this.ArcticColors.UseVisualStyleBackColor = true;
+            this.ArcticColors.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // ChooseTank
             // 
-            this.ChooseTank.Location = new System.Drawing.Point(821, 118);
-            this.ChooseTank.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ChooseTank.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ChooseTank.Location = new System.Drawing.Point(725, 217);
+            this.ChooseTank.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ChooseTank.Name = "ChooseTank";
-            this.ChooseTank.Size = new System.Drawing.Size(140, 39);
+            this.ChooseTank.Size = new System.Drawing.Size(289, 116);
             this.ChooseTank.TabIndex = 5;
             this.ChooseTank.Text = "Choose tank";
             this.ChooseTank.UseVisualStyleBackColor = true;
@@ -137,27 +147,55 @@ namespace FinaleSignalR_Client
             // 
             // ChooseScout
             // 
-            this.ChooseScout.Location = new System.Drawing.Point(821, 73);
-            this.ChooseScout.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ChooseScout.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ChooseScout.Location = new System.Drawing.Point(373, 217);
+            this.ChooseScout.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ChooseScout.Name = "ChooseScout";
-            this.ChooseScout.Size = new System.Drawing.Size(140, 39);
+            this.ChooseScout.Size = new System.Drawing.Size(289, 116);
             this.ChooseScout.TabIndex = 6;
             this.ChooseScout.Text = "Choose scout";
             this.ChooseScout.UseVisualStyleBackColor = true;
             this.ChooseScout.Click += new System.EventHandler(this.ChooseScout_Click);
             // 
+            // CreateCharacter
+            // 
+            this.CreateCharacter.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.CreateCharacter.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CreateCharacter.Location = new System.Drawing.Point(485, 217);
+            this.CreateCharacter.Name = "CreateCharacter";
+            this.CreateCharacter.Size = new System.Drawing.Size(437, 116);
+            this.CreateCharacter.TabIndex = 7;
+            this.CreateCharacter.Text = "Create character";
+            this.CreateCharacter.UseVisualStyleBackColor = true;
+            this.CreateCharacter.Click += new System.EventHandler(this.CreateCharacter_Click);
+            // 
+            // DesertColors
+            // 
+            this.DesertColors.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DesertColors.Location = new System.Drawing.Point(725, 217);
+            this.DesertColors.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.DesertColors.Name = "DesertColors";
+            this.DesertColors.Size = new System.Drawing.Size(289, 116);
+            this.DesertColors.TabIndex = 8;
+            this.DesertColors.Text = "Desert colors";
+            this.DesertColors.UseVisualStyleBackColor = true;
+            this.DesertColors.Click += new System.EventHandler(this.DesertColors_Click);
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1147, 799);
+            this.ClientSize = new System.Drawing.Size(1529, 983);
+            this.Controls.Add(this.DesertColors);
+            this.Controls.Add(this.CreateCharacter);
             this.Controls.Add(this.ChooseScout);
             this.Controls.Add(this.ChooseTank);
-            this.Controls.Add(this.ChangeColors);
+            this.Controls.Add(this.ArcticColors);
             this.Controls.Add(this.messages);
             this.Controls.Add(this.sendMessage);
             this.Controls.Add(this.messageInput);
             this.Controls.Add(this.openConnection);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyIsDown);
@@ -180,9 +218,11 @@ namespace FinaleSignalR_Client
         private System.Windows.Forms.Button sendMessage;
         private System.Windows.Forms.TextBox messageInput;
         public System.Windows.Forms.ListBox messages;
-        private System.Windows.Forms.Button ChangeColors;
+        private System.Windows.Forms.Button ArcticColors;
         private System.Windows.Forms.Button ChooseTank;
         private System.Windows.Forms.Button ChooseScout;
+        private System.Windows.Forms.Button CreateCharacter;
+        private System.Windows.Forms.Button DesertColors;
     }
 }
 
