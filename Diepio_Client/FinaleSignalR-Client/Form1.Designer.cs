@@ -47,6 +47,7 @@ namespace FinaleSignalR_Client
             this.ChooseScout = new System.Windows.Forms.Button();
             this.CreateCharacter = new System.Windows.Forms.Button();
             this.DesertColors = new System.Windows.Forms.Button();
+            this.Reset = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // openConnection
@@ -161,7 +162,7 @@ namespace FinaleSignalR_Client
             // 
             this.CreateCharacter.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.CreateCharacter.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CreateCharacter.Location = new System.Drawing.Point(485, 217);
+            this.CreateCharacter.Location = new System.Drawing.Point(468, 216);
             this.CreateCharacter.Name = "CreateCharacter";
             this.CreateCharacter.Size = new System.Drawing.Size(437, 116);
             this.CreateCharacter.TabIndex = 7;
@@ -181,11 +182,22 @@ namespace FinaleSignalR_Client
             this.DesertColors.UseVisualStyleBackColor = true;
             this.DesertColors.Click += new System.EventHandler(this.DesertColors_Click);
             // 
+            // Reset
+            // 
+            this.Reset.Location = new System.Drawing.Point(1303, 66);
+            this.Reset.Name = "Reset";
+            this.Reset.Size = new System.Drawing.Size(147, 50);
+            this.Reset.TabIndex = 9;
+            this.Reset.Text = "Reset";
+            this.Reset.UseVisualStyleBackColor = true;
+            this.Reset.Click += new System.EventHandler(this.Reset_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1529, 983);
+            this.Controls.Add(this.Reset);
             this.Controls.Add(this.DesertColors);
             this.Controls.Add(this.CreateCharacter);
             this.Controls.Add(this.ChooseScout);
@@ -223,6 +235,7 @@ namespace FinaleSignalR_Client
         private System.Windows.Forms.Button ChooseScout;
         private System.Windows.Forms.Button CreateCharacter;
         private System.Windows.Forms.Button DesertColors;
+        private System.Windows.Forms.Button Reset;
     }
 }
 

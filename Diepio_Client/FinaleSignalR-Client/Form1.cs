@@ -27,6 +27,7 @@ namespace FinaleSignalR_Client
     public partial class Form1 : Form
     {
         Node rootNode;
+        Node reset;
 
         public string id;
         int playerCount = 0;
@@ -63,7 +64,7 @@ namespace FinaleSignalR_Client
         {
             InitializeComponent();
             CreateCompositeTree();
-            this.playerBoxes = new System.Windows.Forms.PictureBox[50];
+            this.playerBoxes = new PictureBox[50];
             this.players = new List<Player>();
 
             this.KeyPreview = true;
@@ -86,13 +87,15 @@ namespace FinaleSignalR_Client
             rootNode = new CompositeButton("root", this.CreateCharacter);
             CompositeButton scoutNode = new CompositeButton("scout", this.ChooseScout);
             CompositeButton tankNode = new CompositeButton("tank", this.ChooseTank);
-            StartGameNode startGameNode = new StartGameNode(this.openConnection);
+            CompositeButton startGameNode = new CompositeButton("start", this.openConnection);
             CompositeButton ArcticNode = new CompositeButton("arctic", this.ArcticColors);
             CompositeButton DesertNode = new CompositeButton("arctic", this.DesertColors);
+            StartGameNode ResetNode = new StartGameNode(this.Reset);
             ArcticNode.AddNeighbour(DesertNode);
             DesertNode.AddNeighbour(ArcticNode);
             scoutNode.AddNeighbour(tankNode);
             tankNode.AddNeighbour(scoutNode);
+            startGameNode.AddNode(ResetNode);
             ArcticNode.AddNode(startGameNode);
             DesertNode.AddNode(startGameNode);
             scoutNode.AddNode(ArcticNode);
@@ -101,6 +104,7 @@ namespace FinaleSignalR_Client
             tankNode.AddNode(DesertNode);
             rootNode.AddNode(scoutNode);
             rootNode.AddNode(tankNode);
+            reset = ResetNode;
             rootNode.Activate();
         }
 
@@ -382,7 +386,7 @@ namespace FinaleSignalR_Client
                                 if (this.player.Id == pl.Id)//kiekvienas žaidėjas atsakingas už save
                                 {
                                     commProxy.RemoveAvatar(this.player.Id);
-
+                                    rootNode.EnableNodes();
                                 }
                             }
                             bulletsToRemove.Add(bullet);
@@ -520,7 +524,6 @@ namespace FinaleSignalR_Client
                         commProxy.SendBulletInformation(bulletStartX, bulletStartY, bullet.Direction.X, bullet.Direction.Y, this.player.PlayerBox.Name, player.GetWeopenSpeed().ToString(), player.GetWeopenSize().ToString());
                     }
                 }
-
             }
         }
 
@@ -569,6 +572,12 @@ namespace FinaleSignalR_Client
             changeColor = true;
             CreateMap(true);
             rootNode.EnableNodes();
+        }
+
+        private void Reset_Click(object sender, EventArgs e)
+        {
+            commProxy.ParseMessage(myClass);
+            reset.DeActivate();
         }
     }
 }
