@@ -251,6 +251,9 @@
     <Compile Include="Adapter\ShotgunAdapt.cs" />
     <Compile Include="Adapter\IWepon.cs" />
     <Compile Include="Adapter\ShotGun.cs" />
+    <Compile Include="Composite\CompositeButton.cs" />
+    <Compile Include="Composite\Node.cs" />
+    <Compile Include="Composite\StartGameNode.cs" />
     <Compile Include="Player\Scout.cs" />
     <Compile Include="Player\Tank.cs" />
     <Compile Include="Builder\Builder.cs" />
@@ -329,9 +332,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Web\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />

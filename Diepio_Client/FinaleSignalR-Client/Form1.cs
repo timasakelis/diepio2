@@ -19,17 +19,16 @@ using FinaleSignalR_Client.Facade;
 using System.Runtime.Remoting.Messaging;
 using FinaleSignalR_Client.Adapter;
 using FinaleSignalR_Client.Proxy;
-
-
-
-// Afk players dont go away so create Player class and all that jazz
+using FinaleSignalR_Client.Composite;
 
 namespace FinaleSignalR_Client
 {
-    //Pellet
 
     public partial class Form1 : Form
     {
+        Node rootNode;
+        Node reset;
+
         public string id;
         int playerCount = 0;
         bool changeColor = false;
@@ -64,18 +63,11 @@ namespace FinaleSignalR_Client
         public Form1()
         {
             InitializeComponent();
-            this.playerBoxes = new System.Windows.Forms.PictureBox[50];
+            CreateCompositeTree();
+            this.playerBoxes = new PictureBox[50];
             this.players = new List<Player>();
 
             this.KeyPreview = true;
-
-           // this.mapControl = new Map(new DesertThemeFactory());
-            this.mapControl = new Map(new ArcticThemeFactory());
-
-
-
-            this.Controls.Add(this.mapControl);
-            this.mapControl.SendToBack();
 
             Random rnd = new Random();
             id = rnd.Next(100000).ToString();
@@ -89,6 +81,49 @@ namespace FinaleSignalR_Client
 
             this.FormClosing += YourForm_FormClosing;
         }
+
+        private void CreateCompositeTree()
+        {
+            rootNode = new CompositeButton("root", this.CreateCharacter);
+            CompositeButton scoutNode = new CompositeButton("scout", this.ChooseScout);
+            CompositeButton tankNode = new CompositeButton("tank", this.ChooseTank);
+            CompositeButton startGameNode = new CompositeButton("start", this.openConnection);
+            CompositeButton ArcticNode = new CompositeButton("arctic", this.ArcticColors);
+            CompositeButton DesertNode = new CompositeButton("arctic", this.DesertColors);
+            StartGameNode ResetNode = new StartGameNode(this.Reset);
+            ArcticNode.AddNeighbour(DesertNode);
+            DesertNode.AddNeighbour(ArcticNode);
+            scoutNode.AddNeighbour(tankNode);
+            tankNode.AddNeighbour(scoutNode);
+            startGameNode.AddNode(ResetNode);
+            ArcticNode.AddNode(startGameNode);
+            DesertNode.AddNode(startGameNode);
+            scoutNode.AddNode(ArcticNode);
+            scoutNode.AddNode(DesertNode);
+            tankNode.AddNode(ArcticNode);
+            tankNode.AddNode(DesertNode);
+            rootNode.AddNode(scoutNode);
+            rootNode.AddNode(tankNode);
+            reset = ResetNode;
+            rootNode.Activate();
+        }
+
+        private void CreateMap(bool desert)
+        {
+            if (desert)
+            {
+                this.mapControl = new Map(new DesertThemeFactory());
+            } 
+            else 
+            {
+                this.mapControl = new Map(new ArcticThemeFactory());
+            }
+            mapControl.Visible = false;
+
+            this.Controls.Add(this.mapControl);
+            this.mapControl.SendToBack();
+        }
+
         private void YourForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Call RemoveAvatar when the form is closing
@@ -154,6 +189,9 @@ namespace FinaleSignalR_Client
 
         private void button1_Click(object sender, EventArgs e)
         {
+            rootNode = rootNode.getNode(0);
+            rootNode.DeActivate();
+            mapControl.Visible = true;
             commProxy.ParseMessage(myClass);
         }
 
@@ -313,7 +351,6 @@ namespace FinaleSignalR_Client
                 }
                 bullets.RemoveAt(0);
             }
-
         }
 
         private void LvlUpPlayer(string id)
@@ -330,8 +367,6 @@ namespace FinaleSignalR_Client
 
         private void bulletMovementTimer_Tick(object sender, EventArgs e)
         {
-            bool playerDead;
-
             foreach (IBullet bullet in bullets)
             {
                 MoveBullet(bullet);
@@ -351,7 +386,7 @@ namespace FinaleSignalR_Client
                                 if (this.player.Id == pl.Id)//kiekvienas žaidėjas atsakingas už save
                                 {
                                     commProxy.RemoveAvatar(this.player.Id);
-
+                                    rootNode.EnableNodes();
                                 }
                             }
                             bulletsToRemove.Add(bullet);
@@ -489,23 +524,29 @@ namespace FinaleSignalR_Client
                         commProxy.SendBulletInformation(bulletStartX, bulletStartY, bullet.Direction.X, bullet.Direction.Y, this.player.PlayerBox.Name, player.GetWeopenSpeed().ToString(), player.GetWeopenSize().ToString());
                     }
                 }
-
             }
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            changeColor = true;
+            rootNode = rootNode.getNode(0);
+            changeColor = false;
+            CreateMap(false);
+            rootNode.EnableNodes();
         }
 
         private void ChooseTank_Click(object sender, EventArgs e)
         {
-            this.myClass = "tank";
+            rootNode = rootNode.getNode(1);
+            this.myClass = rootNode.name;
+            rootNode.EnableNodes();
         }
 
         private void ChooseScout_Click(object sender, EventArgs e)
         {
-            this.myClass = "scout";
+            rootNode = rootNode.getNode(0);
+            this.myClass = rootNode.name;
+            rootNode.EnableNodes();
         }
 
         public List<string> ReturnMessageItems()
@@ -518,6 +559,25 @@ namespace FinaleSignalR_Client
                 messagesCopy.Add(item.ToString());
             }
             return messagesCopy;
+        }
+
+        private void CreateCharacter_Click(object sender, EventArgs e)
+        {
+            rootNode.EnableNodes();
+        }
+
+        private void DesertColors_Click(object sender, EventArgs e)
+        {
+            rootNode = rootNode.getNode(1);
+            changeColor = true;
+            CreateMap(true);
+            rootNode.EnableNodes();
+        }
+
+        private void Reset_Click(object sender, EventArgs e)
+        {
+            commProxy.ParseMessage(myClass);
+            reset.DeActivate();
         }
     }
 }
