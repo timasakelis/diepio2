@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing.Drawing2D;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using System.Drawing.Imaging;
-using System.Reflection;
-using System.IO;
 using FinaleSignalR_Client.Template_Method;
 
 namespace FinaleSignalR_Client.Factory
@@ -24,19 +18,17 @@ namespace FinaleSignalR_Client.Factory
 
     public class PelletFactory
     {
-        public IPellet CreatePellet(int id, int x, int y, int type, bool cangeColor)
+        private Dictionary<int, ColorPal> colorCache = new Dictionary<int, ColorPal>();
+
+        public IPellet CreatePellet(int id, int x, int y, int type, bool changeColor)
         {
-            
-            ColorTemplate colorTemplate = new ArcticColors();
-            ColorPal colors = colorTemplate.PrepareColors();
-            if (cangeColor)
+            if (!colorCache.TryGetValue(type, out ColorPal colors))
             {
-                //Builder.Builder builder = new Builder.Con2Builder();
-                //Builder.Director director = new Builder.Director(builder);
-                //colors = director.Construct();
-                colorTemplate = new DesertColors();
+                ColorTemplate colorTemplate = changeColor ? (ColorTemplate)new DesertColors() : new ArcticColors();
                 colors = colorTemplate.PrepareColors();
+                colorCache[type] = colors;
             }
+
             switch (type)
             {
                 case 0:
@@ -55,16 +47,16 @@ namespace FinaleSignalR_Client.Factory
     {
         public PictureBox PelletPictureBox { get; }
         public int ID { get; }
-        public int HP { get; set; } = 5;  // example value
-        public int EXP { get; set; } = 10; // example value
+        public int HP { get; set; } = 5;
+        public int EXP { get; set; } = 10;
 
-        public SquarePellet(int id, int x, int y, ColorPal collors)
+        public SquarePellet(int id, int x, int y, ColorPal colors)
         {
             ID = id;
             PelletPictureBox = new PictureBox
             {
                 Size = new Size(10, 10),
-                BackColor = collors.squarePelletColor,
+                BackColor = colors.squarePelletColor,
                 Location = new Point(x, y),
             };
         }
@@ -79,27 +71,24 @@ namespace FinaleSignalR_Client.Factory
     {
         public PictureBox PelletPictureBox { get; }
         public int ID { get; }
-        public int HP { get; set; } = 6;  // example value
-        public int EXP { get; set; } = 18; // example value
+        public int HP { get; set; } = 6;
+        public int EXP { get; set; } = 18;
 
         public TrianglePellet(int id, int x, int y, ColorPal colors)
         {
             ID = id;
             PelletPictureBox = new PictureBox
             {
-                Size = new Size(14, 14), // adjusted size
+                Size = new Size(14, 14),
                 BackColor = Color.Transparent,
                 Location = new Point(x, y),
             };
 
             PelletPictureBox.Paint += (s, e) =>
             {
-                // Points to define the triangle with doubled size
                 Point point1 = new Point(7, 0);
                 Point point2 = new Point(0, 14);
                 Point point3 = new Point(14, 14);
-
-                // Define a polygon (here a triangle) and fill it
                 e.Graphics.FillPolygon(colors.trianglePelletColor, new Point[] { point1, point2, point3 });
             };
         }
@@ -110,18 +99,16 @@ namespace FinaleSignalR_Client.Factory
         }
     }
 
-
     public class OctagonPellet : IPellet
     {
         public PictureBox PelletPictureBox { get; }
         public int ID { get; }
-        public int HP { get; set; } = 2;  // example value
-        public int EXP { get; set; } = 20; // example value
+        public int HP { get; set; } = 2;
+        public int EXP { get; set; } = 20;
 
         public OctagonPellet(int id, int x, int y)
         {
             ID = id;
-
             PelletPictureBox = new PictureBox
             {
                 Size = new Size(20, 20),
@@ -129,26 +116,19 @@ namespace FinaleSignalR_Client.Factory
                 Location = new Point(x, y),
             };
 
-            PelletPictureBox.Paint += PelletPictureBox_Paint;
-        }
-
-        private void PelletPictureBox_Paint(object sender, PaintEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            Point[] octagonPoints = new Point[]
+            PelletPictureBox.Paint += (s, e) =>
             {
-            new Point(10, 0),
-            new Point(20, 5),
-            new Point(20, 15),
-            new Point(10, 20),
-            new Point(0, 15),
-            new Point(0, 5),
-            new Point(10, 0),
+                Point[] octagonPoints = new Point[]
+                {
+                    new Point(10, 0), new Point(20, 5),
+                    new Point(20, 15), new Point(10, 20),
+                    new Point(0, 15), new Point(0, 5),
+                    new Point(10, 0)
+                };
+                GraphicsPath path = new GraphicsPath();
+                path.AddPolygon(octagonPoints);
+                e.Graphics.FillPath(Brushes.Purple, path);
             };
-
-            GraphicsPath path = new GraphicsPath();
-            path.AddPolygon(octagonPoints);
-            g.FillPath(Brushes.Purple, path);
         }
 
         public bool IsDestroyed()
