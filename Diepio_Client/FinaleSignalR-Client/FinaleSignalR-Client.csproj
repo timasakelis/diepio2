@@ -254,6 +254,7 @@
     <Compile Include="Composite\CompositeButton.cs" />
     <Compile Include="Composite\Node.cs" />
     <Compile Include="Composite\StartGameNode.cs" />
+    <Compile Include="Iterator\Iterator.cs" />
     <Compile Include="Player\Scout.cs" />
     <Compile Include="Player\Tank.cs" />
     <Compile Include="Builder\Builder.cs" />

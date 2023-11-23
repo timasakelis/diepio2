@@ -20,6 +20,7 @@ using System.Runtime.Remoting.Messaging;
 using FinaleSignalR_Client.Adapter;
 using FinaleSignalR_Client.Proxy;
 using FinaleSignalR_Client.Composite;
+using FinaleSignalR_Client.Iterator;
 
 namespace FinaleSignalR_Client
 {
@@ -105,7 +106,40 @@ namespace FinaleSignalR_Client
             rootNode.AddNode(scoutNode);
             rootNode.AddNode(tankNode);
             reset = ResetNode;
+
+            CompositeIterator iterator = new CompositeIterator(rootNode);
+            for (Node node = iterator.First(); !iterator.IsDone(); node = iterator.Next())
+            {
+                if (node is CompositeButton compositeNode)
+                {
+                    compositeNode.button.Click += (sender, e) => {
+                        NodeClicked(compositeNode);
+                    };
+                }
+            }
+
+            // Initially, activate only the root node or the first level of options.
             rootNode.Activate();
+
+
+        }
+
+        private void NodeClicked(CompositeButton node)
+        {
+            // Deactivate the current node
+            node.DeActivate();
+
+            // Activate the clicked node's children
+            foreach (var childNode in node.Nodes)
+            {
+                childNode.Activate();
+            }
+
+            // Deactivate the neighbours of the clicked node
+            foreach (var neighbourNode in node.Neighbours)
+            {
+                neighbourNode.DeActivate();
+            }
         }
 
         private void CreateMap(bool desert)
@@ -367,75 +401,68 @@ namespace FinaleSignalR_Client
 
         private void bulletMovementTimer_Tick(object sender, EventArgs e)
         {
-            foreach (IBullet bullet in bullets)
+            ListIterator<IBullet> bulletIterator = new ListIterator<IBullet>(bullets);
+            while (!bulletIterator.IsDone())
             {
+                IBullet bullet = bulletIterator.CurrentItem();
                 MoveBullet(bullet);
 
-                for (int i = this.players.Count - 1; i >= 0; i--)
+                ListIterator<Player> playerIterator = new ListIterator<Player>(players);
+                while (!playerIterator.IsDone())
                 {
-                    Player pl = this.players[i];
-
-                    if (pl != null)
+                    Player pl = playerIterator.CurrentItem();
+                    if (pl != null && pl.Id != bullet.playerid && bullet.GetPictureBox().Bounds.IntersectsWith(pl.PlayerBox.Bounds))
                     {
-                        if (pl.Id != bullet.playerid && bullet.GetPictureBox().Bounds.IntersectsWith(pl.PlayerBox.Bounds))
+                        pl.TakeDamage(3);
+                        if (pl.CurrentHP < 0)
                         {
-                            pl.TakeDamage(3);
-
-                            if (pl.CurrentHP < 0)
+                            if (this.player.Id == pl.Id) // Each player is responsible for themselves
                             {
-                                if (this.player.Id == pl.Id)//kiekvienas žaidėjas atsakingas už save
-                                {
-                                    commProxy.RemoveAvatar(this.player.Id);
-                                    rootNode.EnableNodes();
-                                }
+                                commProxy.RemoveAvatar(this.player.Id);
+                                rootNode.EnableNodes(); // This might not work correctly if called outside of UI thread
                             }
-                            bulletsToRemove.Add(bullet);
-                            this.mapControl.Controls.Remove(bullet.GetPictureBox());
-
                         }
+                        bulletsToRemove.Add(bullet);
+                        this.mapControl.Controls.Remove(bullet.GetPictureBox());
                     }
+                    playerIterator.Next();
                 }
 
-                
-
-                foreach (IPellet pellet in pellets)
+                ListIterator<IPellet> pelletIterator = new ListIterator<IPellet>(pellets);
+                while (!pelletIterator.IsDone())
                 {
+                    IPellet pellet = pelletIterator.CurrentItem();
                     if (bullet.GetPictureBox().Bounds.IntersectsWith(pellet.PelletPictureBox.Bounds))
                     {
                         pellet.HP--;
-
-                        // Remove the bullet when it hits a pellet
                         bulletsToRemove.Add(bullet);
                         this.mapControl.Controls.Remove(bullet.GetPictureBox());
-
-                        // Check if the pellet is destroyed
                         if (pellet.IsDestroyed())
                         {
                             LvlUpPlayer(bullet.playerid);
-                            // Remove the pellet
                             pelletsToRemove.Add(pellet);
-                            //this.Controls.Remove(pellet.PelletPictureBox);
                             this.mapControl.Controls.Remove(pellet.PelletPictureBox);
-
-                            // to do: increase tank's EXP when a pellet is destroyed
                         }
                     }
+                    pelletIterator.Next();
                 }
+
+                bulletIterator.Next();
             }
-            
-            // Remove out-of-bounds bullets from the list
+
             foreach (IBullet bullet in bulletsToRemove)
             {
                 bullets.Remove(bullet);
             }
-            // Remove out-of-bounds bullets from the list
+            bulletsToRemove.Clear();
+
             foreach (IPellet pellet in pelletsToRemove)
             {
-                //To do logic send server
                 pellets.Remove(pellet);
             }
-
+            pelletsToRemove.Clear();
         }
+
 
         public void MoveBullet(IBullet bullet)
         {

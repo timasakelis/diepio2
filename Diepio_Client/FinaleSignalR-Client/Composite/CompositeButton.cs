@@ -14,6 +14,16 @@ namespace FinaleSignalR_Client.Composite
         private List<Node> nodes = new List<Node>();
         private List<Node> neighbour = new List<Node>();
 
+        public List<Node> Nodes
+        {
+            get { return nodes; }
+        }
+
+        public List<Node> Neighbours
+        {
+            get { return neighbour; }
+        }
+
         public CompositeButton(string name, Button button) 
         {
             this.name = name;
