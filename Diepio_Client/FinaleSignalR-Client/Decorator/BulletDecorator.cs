@@ -38,5 +38,11 @@ namespace FinaleSignalR_Client.Decorator
         {
             _bullet.SetTragectory(startPosition, direction);
         }
+
+        public void MoveBullet()
+        {
+            this.GetPictureBox().Left += (int)(Direction.X * GetSpeed());
+            this.GetPictureBox().Top += (int)(Direction.Y * GetSpeed());
+        }
     }
 }

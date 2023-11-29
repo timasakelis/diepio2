@@ -71,9 +71,9 @@ namespace FinaleSignalR_Client.State
         {
             Rectangle playerRect = new Rectangle(x, y, width, height);
 
-            foreach (Rectangle obstacle in mapControl.obstacles)
+            foreach (Wall obstacle in mapControl.obstacles)
             {
-                if (playerRect.IntersectsWith(obstacle))
+                if (playerRect.IntersectsWith(obstacle.Bounds))
                 {
                     return true; // Collision detected
                 }
