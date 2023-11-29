@@ -13,30 +13,39 @@ namespace FinaleSignalR_Client.State
     {
         public override void Move(string dirrection,  Map mapControl)
         {
+            if (player.CurrentHP < player.MaxHP * 0.30)
+            {
+                player.TransitionTo(new DyingTank());
+            }
+            else if (player.CurrentHP > player.MaxHP * 0.75)
+            {
+                player.TransitionTo(new FullTank());
+            }
+
             switch (dirrection)
             {
                 case "up":
-                    if (player.PlayerBox.Top - player.Playerspeed / 2 > mapControl.mapMinY)
+                    if (player.PlayerBox.Top - (int)(player.Playerspeed * 0.75) > mapControl.mapMinY)
                     {
-                        player.PlayerBox.Top -= player.Playerspeed / 2;
+                        player.PlayerBox.Top -= (int)(player.Playerspeed * 0.75);
                     }
                     break;
                 case "down":
-                    if (player.PlayerBox.Top + player.Playerspeed / 2 < mapControl.mapMaxY)
+                    if (player.PlayerBox.Top + (int)(player.Playerspeed * 0.75) < mapControl.mapMaxY)
                     {
-                        player.PlayerBox.Top += player.Playerspeed / 2;
+                        player.PlayerBox.Top += (int)(player.Playerspeed * 0.75);
                     }
                     break;
                 case "left":
-                    if (player.PlayerBox.Left - player.Playerspeed / 2 > mapControl.mapMinX)
+                    if (player.PlayerBox.Left - (int)(player.Playerspeed * 0.75) > mapControl.mapMinX)
                     {
-                        player.PlayerBox.Left -= player.Playerspeed / 2;
+                        player.PlayerBox.Left -= (int)(player.Playerspeed * 0.75);
                     }
                     break;
                 case "right":
-                    if (player.PlayerBox.Left + player.Playerspeed / 2 < mapControl.mapMaxX)
+                    if (player.PlayerBox.Left + (int)(player.Playerspeed * 0.75) < mapControl.mapMaxX)
                     {
-                        player.PlayerBox.Left += player.Playerspeed / 2;
+                        player.PlayerBox.Left += (int)(player.Playerspeed * 0.75);
                     }
                     break;
             }

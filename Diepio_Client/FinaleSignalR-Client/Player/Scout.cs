@@ -16,8 +16,8 @@ namespace FinaleSignalR_Client.Bridge
         {
             base.Playerspeed = 5;
             base.PlayerBox.Size = new Size(30, 30);
-            base.MaxHP = 25;
-            base.CurrentHP = 25;
+            base.MaxHP = 35;
+            base.CurrentHP = 35;
             TransitionTo(new FullScout());
         }
     }

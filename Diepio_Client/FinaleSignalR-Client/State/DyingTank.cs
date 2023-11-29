@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FinaleSignalR_Client.State
 {
-    public class FullTank : PlayerState
+    public class DyingTank : PlayerState
     {
         public override void Move(string dirrection, Map mapControl)
         {
@@ -17,34 +17,35 @@ namespace FinaleSignalR_Client.State
             {
                 player.TransitionTo(new HurtTank());
             }
-            else if (player.CurrentHP < player.MaxHP * 0.30)
+            else if (player.CurrentHP > player.MaxHP * 0.75)
             {
-                player.TransitionTo(new DyingTank());
+                player.TransitionTo(new FullTank());
             }
+
             switch (dirrection)
             {
                 case "up":
-                    if (player.PlayerBox.Top - player.Playerspeed > mapControl.mapMinY)
+                    if (player.PlayerBox.Top - (int)(player.Playerspeed * 0.30) > mapControl.mapMinY)
                     {
-                        player.PlayerBox.Top -= player.Playerspeed;
+                        player.PlayerBox.Top -= (int)(player.Playerspeed * 0.30);
                     }
                     break;
                 case "down":
-                    if (player.PlayerBox.Top + player.Playerspeed < mapControl.mapMaxY)
+                    if (player.PlayerBox.Top + (int)(player.Playerspeed * 0.30) < mapControl.mapMaxY)
                     {
-                        player.PlayerBox.Top += player.Playerspeed;
+                        player.PlayerBox.Top += (int)(player.Playerspeed * 0.30);
                     }
                     break;
                 case "left":
-                    if (player.PlayerBox.Left - player.Playerspeed > mapControl.mapMinX)
+                    if (player.PlayerBox.Left - (int)(player.Playerspeed * 0.30) > mapControl.mapMinX)
                     {
-                        player.PlayerBox.Left -= player.Playerspeed;
+                        player.PlayerBox.Left -= (int)(player.Playerspeed * 0.30);
                     }
                     break;
                 case "right":
-                    if (player.PlayerBox.Left + player.Playerspeed < mapControl.mapMaxX)
+                    if (player.PlayerBox.Left + (int)(player.Playerspeed * 0.30) < mapControl.mapMaxX)
                     {
-                        player.PlayerBox.Left += player.Playerspeed;
+                        player.PlayerBox.Left += (int)(player.Playerspeed * 0.30);
                     }
                     break;
             }

@@ -295,6 +295,8 @@
     <Compile Include="Prototype\LvlUpPrototype.cs" />
     <Compile Include="Proxy\CommunicationProxy.cs" />
     <Compile Include="State\Confused.cs" />
+    <Compile Include="State\DyingScout.cs" />
+    <Compile Include="State\DyingTank.cs" />
     <Compile Include="State\FullScout.cs" />
     <Compile Include="State\FullTank.cs" />
     <Compile Include="State\HurtScout.cs" />
