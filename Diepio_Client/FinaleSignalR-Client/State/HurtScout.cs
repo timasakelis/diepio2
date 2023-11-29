@@ -14,6 +14,15 @@ namespace FinaleSignalR_Client.State
     {
         public override void Move(string dirrection,  Map mapControl)
         {
+            if (player.CurrentHP < player.MaxHP * 0.30)
+            {
+                player.TransitionTo(new DyingScout());
+            }
+            else if (player.CurrentHP > player.MaxHP * 0.75)
+            {
+                player.TransitionTo(new FullScout());
+            }
+
             switch (dirrection)
             {
                 case "up":
@@ -62,9 +71,9 @@ namespace FinaleSignalR_Client.State
         {
             Rectangle playerRect = new Rectangle(x, y, width, height);
 
-            foreach (Rectangle obstacle in mapControl.obstacles)
+            foreach (Wall obstacle in mapControl.obstacles)
             {
-                if (playerRect.IntersectsWith(obstacle))
+                if (playerRect.IntersectsWith(obstacle.Bounds))
                 {
                     return true; // Collision detected
                 }

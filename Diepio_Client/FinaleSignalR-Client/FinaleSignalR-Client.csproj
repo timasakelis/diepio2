@@ -255,6 +255,9 @@
     <Compile Include="Composite\Node.cs" />
     <Compile Include="Composite\StartGameNode.cs" />
     <Compile Include="Iterator\Iterator.cs" />
+    <Compile Include="Mediator\BulletAllMediator.cs" />
+    <Compile Include="Mediator\IColitionMediator.cs" />
+    <Compile Include="Objects\Wall.cs" />
     <Compile Include="Player\Scout.cs" />
     <Compile Include="Player\Tank.cs" />
     <Compile Include="Builder\Builder.cs" />
@@ -295,6 +298,8 @@
     <Compile Include="Prototype\LvlUpPrototype.cs" />
     <Compile Include="Proxy\CommunicationProxy.cs" />
     <Compile Include="State\Confused.cs" />
+    <Compile Include="State\DyingScout.cs" />
+    <Compile Include="State\DyingTank.cs" />
     <Compile Include="State\FullScout.cs" />
     <Compile Include="State\FullTank.cs" />
     <Compile Include="State\HurtScout.cs" />

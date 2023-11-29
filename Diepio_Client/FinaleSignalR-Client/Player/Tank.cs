@@ -21,8 +21,8 @@ namespace FinaleSignalR_Client.Bridge
             base.Playerspeed = 2;
             base.PlayerBox.Size = new Size(50,50);
             this.Armore = 1;
-            base.MaxHP = 50;
-            base.CurrentHP = 50;
+            base.MaxHP = 60;
+            base.CurrentHP = 60;
             TransitionTo(new FullTank());
             //base.weapon = new ShotgunAdapt(shotgun);
         }

@@ -13,9 +13,11 @@ namespace FinaleSignalR_Client.Decorator
     {
         string playerid { get; }
         Vector2 Direction { get; }
+
         PictureBox GetPictureBox();
         float GetSpeed();
         Size GetSize();
+        void MoveBullet();
         void SetTragectory(Point startPosition, Vector2 direction);
 
     }

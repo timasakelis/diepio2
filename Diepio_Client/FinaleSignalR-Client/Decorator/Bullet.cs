@@ -44,6 +44,12 @@ namespace FinaleSignalR_Client.Decorator
         {
             return 6;
         }
+
+        public void MoveBullet()
+        {
+            this.GetPictureBox().Left += (int)(Direction.X * GetSpeed());
+            this.GetPictureBox().Top += (int)(Direction.Y * GetSpeed());
+        }
     }
 
 }

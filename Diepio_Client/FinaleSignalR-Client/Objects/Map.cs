@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FinaleSignalR_Client.Objects;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -24,7 +25,7 @@ namespace FinaleSignalR_Client.Controls
 
     public interface IObstacles
     {
-        List<Rectangle> GetObstacles();
+        List<Wall> GetObstacles();
     }
 
     // Concrete implementations for Desert Theme
@@ -40,15 +41,15 @@ namespace FinaleSignalR_Client.Controls
 
     public class DesertObstacles : IObstacles
     {
-        public List<Rectangle> GetObstacles()
+        public List<Wall> GetObstacles()
         {
-            List<Rectangle> desertObstacles = new List<Rectangle>();
+            List<Wall> desertObstacles = new List<Wall>();
             Random random = new Random();
             for (int i = 0; i < 10; i++) // I've set a default count for simplicity.
             {
                 int x = random.Next(10, 790);
                 int y = random.Next(10, 590);
-                desertObstacles.Add(new Rectangle(x, y, 20, 20));
+                desertObstacles.Add(new Wall(new Rectangle(x, y, 20, 20)));
             }
             return desertObstacles;
         }
@@ -74,15 +75,15 @@ namespace FinaleSignalR_Client.Controls
 
     public class ArcticObstacles : IObstacles
     {
-        public List<Rectangle> GetObstacles()
+        public List<Wall> GetObstacles()
         {
-            List<Rectangle> arcticObstacles = new List<Rectangle>();
+            List<Wall> arcticObstacles = new List<Wall>();
             Random random = new Random();
             for (int i = 0; i < 10; i++) // I've set a default count for simplicity.
             {
                 int x = random.Next(10, 790);
                 int y = random.Next(10, 590);
-                arcticObstacles.Add(new Rectangle(x, y, 30, 30));
+                arcticObstacles.Add(new Wall(new Rectangle(x, y, 30, 30)));
             }
             return arcticObstacles;
         }
@@ -103,7 +104,7 @@ namespace FinaleSignalR_Client.Controls
         public int mapMinY { get; set; }
         public int mapMaxX { get; set; }
         public int mapMaxY { get; set; }
-        public List<Rectangle> obstacles { get; private set; } = new List<Rectangle>();
+        public List<Wall> obstacles { get; private set; } = new List<Wall>();
         private IMapThemeFactory themeFactory;
         private Graphics g;
         private Pen p = new Pen(Brushes.Blue);
@@ -123,23 +124,23 @@ namespace FinaleSignalR_Client.Controls
             base.OnPaint(e);
             g = e.Graphics;
             g.Clear(themeFactory.CreateBackgroundColor().GetColor());
-            foreach (Rectangle obstacle in obstacles)
+            foreach (Wall obstacle in obstacles)
             {
-                g.FillRectangle(new SolidBrush(themeFactory.CreateObstacleColor().GetColor()), obstacle);
+                g.FillRectangle(new SolidBrush(themeFactory.CreateObstacleColor().GetColor()), obstacle.Bounds);
             }
         }
 
         public void SetObstacle(int x, int y, int w, int h)
         {
             Rectangle o = new Rectangle(x, y, w, h);
-            obstacles.Add(o);
+            obstacles.Add(new Wall(o));
         }
 
-        public void SetObstacles(List<Rectangle> obst)
+        public void SetObstacles(List<Wall> obst)
         {
-            foreach (Rectangle obstacle in obst)
+            foreach (Wall obstacle in obst)
             {
-                g.FillRectangle(new SolidBrush(themeFactory.CreateObstacleColor().GetColor()), obstacle);
+                g.FillRectangle(new SolidBrush(themeFactory.CreateObstacleColor().GetColor()), obstacle.Bounds);
                 obstacles.Add(obstacle);
             }
         }
