@@ -255,7 +255,7 @@
     <Compile Include="Composite\Node.cs" />
     <Compile Include="Composite\StartGameNode.cs" />
     <Compile Include="Iterator\Iterator.cs" />
-    <Compile Include="Mediator\BulletWallMediator.cs" />
+    <Compile Include="Mediator\BulletAllMediator.cs" />
     <Compile Include="Mediator\IColitionMediator.cs" />
     <Compile Include="Objects\Wall.cs" />
     <Compile Include="Player\Scout.cs" />

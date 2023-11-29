@@ -54,7 +54,7 @@ namespace FinaleSignalR_Client
         PelletFactory pelletFactory = new PelletFactory();
 
         //Bullet
-        BulletWallMediator bulletWallMediator;
+        BulletAllMediator bulletWallMediator;
         List<IBullet> bullets = new List<IBullet>();
         private bool isShooting = false;
         private DateTime lastBulletFiredTime;
@@ -159,7 +159,7 @@ namespace FinaleSignalR_Client
             this.Controls.Add(this.mapControl);
             this.mapControl.SendToBack();
 
-            bulletWallMediator = new BulletWallMediator(mapControl.obstacles, bullets);
+            bulletWallMediator = new BulletAllMediator(mapControl.obstacles, bullets,players,pellets);
         }
 
         private void YourForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -392,7 +392,7 @@ namespace FinaleSignalR_Client
             }
         }
 
-        private void LvlUpPlayer(string id)
+        public void LvlUpPlayer(string id)
         {
             foreach (Player pl in this.players)
             {
@@ -406,8 +406,9 @@ namespace FinaleSignalR_Client
 
         private void bulletMovementTimer_Tick(object sender, EventArgs e)
         {
-            bulletWallMediator.Interact(mapControl,bulletsToRemove);
-            ListIterator<IBullet> bulletIterator = new ListIterator<IBullet>(bullets);
+            bulletWallMediator.Interact(mapControl,bulletsToRemove, this.player, pelletsToRemove,commProxy,rootNode);
+
+            /*ListIterator<IBullet> bulletIterator = new ListIterator<IBullet>(bullets);
             while (!bulletIterator.IsDone())
             {
                 IBullet bullet = bulletIterator.CurrentItem();
@@ -455,7 +456,7 @@ namespace FinaleSignalR_Client
 
                 bulletIterator.Next();
             }
-
+            */
             foreach (IBullet bullet in bulletsToRemove)
             {
                 bullets.Remove(bullet);
