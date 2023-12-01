@@ -254,6 +254,9 @@
     <Compile Include="Composite\CompositeButton.cs" />
     <Compile Include="Composite\Node.cs" />
     <Compile Include="Composite\StartGameNode.cs" />
+    <Compile Include="Interpreter\ChatParser.cs" />
+    <Compile Include="Interpreter\IExpression.cs" />
+    <Compile Include="Interpreter\TerminalExpressions.cs" />
     <Compile Include="Iterator\Iterator.cs" />
     <Compile Include="Mediator\BulletAllMediator.cs" />
     <Compile Include="Mediator\IColitionMediator.cs" />

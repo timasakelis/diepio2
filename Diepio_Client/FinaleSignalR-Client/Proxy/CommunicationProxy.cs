@@ -1,4 +1,5 @@
 ﻿using FinaleSignalR_Client.Facade;
+using FinaleSignalR_Client.Interpreter;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,8 @@ namespace FinaleSignalR_Client.Proxy
         Form1 form;
         ListBox messages;
         CommunicationFacade comm;
-        int debugLevel;
+        public int debugLevel;
+        public ChatParser chatParser;
         /* Explanation of debugging level
          * 0 - No proxy related debugging information
          * 1 - Basic connection messages (ParseMessage, StopConnection, canICreateAvatar, RemoveAvatar)
@@ -26,6 +28,7 @@ namespace FinaleSignalR_Client.Proxy
             this.form = form;
             this.messages = messages;
             this.debugLevel = level;
+            chatParser = new ChatParser();
             comm = new CommunicationFacade(form);
         }
 
@@ -61,7 +64,10 @@ namespace FinaleSignalR_Client.Proxy
         {
             if (debugLevel >= 2)
                 messages.Items.Add("Sending chat message: " + text);
-            comm.SendChatMessage(text);
+            if (!chatParser.ParseCommand(text, form))
+            {
+                comm.SendChatMessage(text);
+            }
         }
 
         public void SendBulletInformation(int x, int y, float directionX, float directionY, string id, string speed, string size)

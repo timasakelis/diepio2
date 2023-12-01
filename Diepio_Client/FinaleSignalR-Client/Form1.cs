@@ -44,7 +44,7 @@ namespace FinaleSignalR_Client
         
         //Server
         public CommunicationProxy commProxy;
-        public const int debugLevel = 0; //Sets the amount of messages being sent from proxy
+        public int debugLevel = 0; //Sets the amount of messages being sent from proxy
 
         //Input handling
         InputControl inputControl;
@@ -608,6 +608,57 @@ namespace FinaleSignalR_Client
         {
             commProxy.ParseMessage(myClass);
             reset.DeActivate();
+        }
+
+        //Interpreter moment
+        public bool speedChangeEnable = false;
+        public bool debugChangeEnable = false;
+
+        public void changeSpeed(string level)
+        {
+            if (speedChangeEnable)
+            {
+                switch (level)
+                {
+                    case "zero":
+                        player.Playerspeed = 0;
+                        break;
+                    case "low":
+                        player.Playerspeed = 2;
+                        break;
+                    case "medium":
+                        player.Playerspeed = 5;
+                        break;
+                    case "high":
+                        player.Playerspeed = 10;
+                        break;
+                }
+            }
+            speedChangeEnable = false;
+    }
+
+        public void changeDebug(string level)
+        {
+            if (debugChangeEnable)
+            {
+                switch (level)
+                {
+                    case "zero":
+                        debugLevel = 0;
+                        break;
+                    case "low":
+                        debugLevel = 1;
+                        break;
+                    case "medium":
+                        debugLevel = 2;
+                        break;
+                    case "high":
+                        debugLevel = 3;
+                        break;
+                }
+            }
+            debugChangeEnable = false;
+            commProxy.debugLevel = debugLevel;
         }
     }
 }
