@@ -26,8 +26,8 @@ namespace FinaleSignalR_Client.Interpreter
     {
         public void interpret(Form1 form)
         {
-            form.changeSpeed("zero");
-            form.changeDebug("zero");
+            form.ChangeSpeed("zero");
+            form.ChangeDebug("zero");
         }
     }
 
@@ -35,8 +35,8 @@ namespace FinaleSignalR_Client.Interpreter
     {
         public void interpret(Form1 form)
         {
-            form.changeSpeed("low");
-            form.changeDebug("low");
+            form.ChangeSpeed("low");
+            form.ChangeDebug("low");
         }
     }
 
@@ -44,8 +44,8 @@ namespace FinaleSignalR_Client.Interpreter
     {
         public void interpret(Form1 form)
         {
-            form.changeSpeed("medium");
-            form.changeDebug("medium");
+            form.ChangeSpeed("medium");
+            form.ChangeDebug("medium");
         }
     }
 
@@ -53,8 +53,26 @@ namespace FinaleSignalR_Client.Interpreter
     {
         public void interpret(Form1 form)
         {
-            form.changeSpeed("high");
-            form.changeDebug("high");
+            form.ChangeSpeed("high");
+            form.ChangeDebug("high");
+        }
+    }
+
+    public class SaveExpression : IExpression
+    {
+        public void interpret(Form1 form)
+        {
+            form.AddMessage("save aaaaa");
+            form.SavePositions();
+        }
+    }
+
+    public class RestoreExpression : IExpression
+    {
+        public void interpret(Form1 form)
+        {
+            form.AddMessage("restore aaaaa");
+            form.RestorePositions(0);
         }
     }
 }
