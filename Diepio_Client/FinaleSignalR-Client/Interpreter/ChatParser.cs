@@ -19,7 +19,9 @@ namespace FinaleSignalR_Client.Interpreter
                 { "zero", new ZeroExpression() },
                 { "low", new LowExpression() },
                 { "medium", new MediumExpression() },
-                { "high", new HighExpression() }
+                { "high", new HighExpression() },
+                { "save", new SaveExpression() },
+                { "restore", new RestoreExpression() }
             };
         }
 

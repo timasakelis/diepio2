@@ -260,6 +260,8 @@
     <Compile Include="Iterator\Iterator.cs" />
     <Compile Include="Mediator\BulletAllMediator.cs" />
     <Compile Include="Mediator\IColitionMediator.cs" />
+    <Compile Include="Memento\MementoMap.cs" />
+    <Compile Include="Memento\MemeObj.cs" />
     <Compile Include="Objects\Wall.cs" />
     <Compile Include="Player\Scout.cs" />
     <Compile Include="Player\Tank.cs" />

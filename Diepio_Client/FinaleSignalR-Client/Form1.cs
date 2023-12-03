@@ -22,6 +22,7 @@ using FinaleSignalR_Client.Proxy;
 using FinaleSignalR_Client.Composite;
 using FinaleSignalR_Client.Iterator;
 using FinaleSignalR_Client.Mediator;
+using FinaleSignalR_Client.Memento;
 
 namespace FinaleSignalR_Client
 {
@@ -37,6 +38,8 @@ namespace FinaleSignalR_Client
         string myClass = "scout";
         Player player;
         public List<Player> players;
+        public MementoMap meme = new MementoMap();
+        
 
         IPrototype prototype = new LvlUpPrototype();
 
@@ -614,7 +617,7 @@ namespace FinaleSignalR_Client
         public bool speedChangeEnable = false;
         public bool debugChangeEnable = false;
 
-        public void changeSpeed(string level)
+        public void ChangeSpeed(string level)
         {
             if (speedChangeEnable)
             {
@@ -637,7 +640,7 @@ namespace FinaleSignalR_Client
             speedChangeEnable = false;
     }
 
-        public void changeDebug(string level)
+        public void ChangeDebug(string level)
         {
             if (debugChangeEnable)
             {
@@ -659,6 +662,16 @@ namespace FinaleSignalR_Client
             }
             debugChangeEnable = false;
             commProxy.debugLevel = debugLevel;
+        }
+
+        public void SavePositions()
+        {
+            meme.Save(players);
+        }
+
+        public void RestorePositions(int index)
+        {
+            players = meme.Restore(players, index);
         }
     }
 }
