@@ -112,16 +112,16 @@ namespace FinaleSignalR_Client
             rootNode.AddNode(tankNode);
             reset = ResetNode;
 
-            CompositeIterator iterator = new CompositeIterator(rootNode);
-            for (Node node = iterator.First(); !iterator.IsDone(); node = iterator.Next())
-            {
-                if (node is CompositeButton compositeNode)
-                {
-                    compositeNode.button.Click += (sender, e) => {
-                        NodeClicked(compositeNode);
-                    };
-                }
-            }
+            //CompositeIterator iterator = new CompositeIterator(rootNode);
+            //for (Node node = iterator.First(); !iterator.IsDone(); node = iterator.Next())
+            //{
+            //    if (node is CompositeButton compositeNode)
+            //    {
+            //        compositeNode.button.Click += (sender, e) => {
+            //            NodeClicked(compositeNode);
+            //        };
+            //    }
+            //}
 
             // Initially, activate only the root node or the first level of options.
             rootNode.Activate();
@@ -401,7 +401,7 @@ namespace FinaleSignalR_Client
             {
                 if (pl.Id == id)
                 {
-                    pl.LvlUp(prototype.Clone().stats);
+                    pl.LvlUp();
                 }
             }
         }
