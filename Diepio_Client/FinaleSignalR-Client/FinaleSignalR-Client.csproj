@@ -251,6 +251,9 @@
     <Compile Include="Adapter\ShotgunAdapt.cs" />
     <Compile Include="Adapter\IWepon.cs" />
     <Compile Include="Adapter\ShotGun.cs" />
+    <Compile Include="ChainOfResp\HealHandler.cs" />
+    <Compile Include="ChainOfResp\ILevelUpHandler.cs" />
+    <Compile Include="ChainOfResp\StatHandler.cs" />
     <Compile Include="Composite\CompositeButton.cs" />
     <Compile Include="Composite\Node.cs" />
     <Compile Include="Composite\StartGameNode.cs" />

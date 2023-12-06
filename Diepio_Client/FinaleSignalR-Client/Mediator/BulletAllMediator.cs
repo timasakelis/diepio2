@@ -91,7 +91,7 @@ namespace FinaleSignalR_Client.Mediator
                         {
                             var toLv = players.FirstOrDefault(p => p.Id == bullet.playerid);
                             if (toLv != null)
-                                toLv.LvlUp(prototype.Clone().stats);
+                                toLv.LvlUp();
                             pelletsToRemove.Add(pellet);
                             map.Controls.Remove(pellet.PelletPictureBox);
                         }

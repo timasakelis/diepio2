@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using FinaleSignalR_Client.Bridge;
 using FinaleSignalR_Client.Adapter;
 using System.Numerics;
+using FinaleSignalR_Client.ChainOfResp;
 
 namespace FinaleSignalR_Client.Objects
 {
@@ -24,6 +25,10 @@ namespace FinaleSignalR_Client.Objects
         public int MaxHP { get; set; }
         public int CurrentHP { get; set; }
         public PictureBox PlayerBox { get; set; }
+        public int lvl { get; set; }
+        int exp;
+        private StatHandler levelUpHandler;
+
         //--------------Bridge--------------------
         protected IWepon weapon;
         
@@ -38,6 +43,10 @@ namespace FinaleSignalR_Client.Objects
             this.Id = id;
             this.Name = name;
             this.weapon = wepon; // Default weapon
+            this.lvl = 0;
+            this.exp = 0;
+            var healHandler = new HealHandler();
+            this.levelUpHandler = new StatHandler(healHandler);
 
             this.PlayerBox = new PictureBox { 
                 BackColor = color,
@@ -93,10 +102,21 @@ namespace FinaleSignalR_Client.Objects
         }
 
 
-        public void LvlUp(LvlUp stats)
+        public void LvlUp()
         {
-            this.Playerspeed = Playerspeed + stats.Playerspeed;
-            this.MaxHP = MaxHP + stats.MaxHP;
+            this.exp++;
+            if (exp > (lvl * 1 + 1))
+            {
+                this.lvl++;
+                this.levelUpHandler.HandleLevelUp(this);
+                if (this.lvl%2 == 0)
+                {
+                    this.PlayerBox.BackColor = Color.Green;
+                } else
+                {
+                    this.PlayerBox.BackColor = Color.Brown;
+                }
+            }
         }
 
         public virtual void TakeDamage(int damage)
