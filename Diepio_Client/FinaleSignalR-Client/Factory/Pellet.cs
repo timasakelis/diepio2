@@ -14,6 +14,14 @@ namespace FinaleSignalR_Client.Factory
         int HP { get; set; }
         int EXP { get; set; }
         bool IsDestroyed();
+        void Accept(IPelletVisitor visitor);
+    }
+
+    public interface IPelletVisitor
+    {
+        void Visit(SquarePellet pellet);
+        void Visit(TrianglePellet pellet);
+        void Visit(OctagonPellet pellet);
     }
 
     public class PelletFactory
@@ -65,6 +73,11 @@ namespace FinaleSignalR_Client.Factory
         {
             return HP <= 0;
         }
+
+        public void Accept(IPelletVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 
     public class TrianglePellet : IPellet
@@ -96,6 +109,11 @@ namespace FinaleSignalR_Client.Factory
         public bool IsDestroyed()
         {
             return HP <= 0;
+        }
+
+        public void Accept(IPelletVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 
@@ -134,6 +152,11 @@ namespace FinaleSignalR_Client.Factory
         public bool IsDestroyed()
         {
             return HP <= 0;
+        }
+
+        public void Accept(IPelletVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }

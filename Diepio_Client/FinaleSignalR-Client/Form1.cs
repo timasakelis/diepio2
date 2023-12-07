@@ -23,6 +23,7 @@ using FinaleSignalR_Client.Composite;
 using FinaleSignalR_Client.Iterator;
 using FinaleSignalR_Client.Mediator;
 using FinaleSignalR_Client.Memento;
+using FinaleSignalR_Client.Visitor;
 
 namespace FinaleSignalR_Client
 {
@@ -55,6 +56,8 @@ namespace FinaleSignalR_Client
     
         List<IPellet> pellets = new List<IPellet>();
         PelletFactory pelletFactory = new PelletFactory();
+        PelletVisitor pelletVisitor = new PelletVisitor();
+
 
         //Bullet
         BulletAllMediator bulletWallMediator;
@@ -472,27 +475,18 @@ namespace FinaleSignalR_Client
             }
             pelletsToRemove.Clear();
         }
-
-
-        
         //Bullet End
 
         public void createPellet(int id, int x, int y, int type)
         {
-            // Check if pellet already exists
             if (pellets.Any(p => p.ID == id))
             {
                 return;
             }
 
-            // Use the factory to create a pellet of a specified type.
             IPellet pellet = pelletFactory.CreatePellet(id, x, y, type, changeColor);
-
-            // Add the pellet to UI controls.
-            //this.Controls.Add(pellet.PelletPictureBox);
+            pellet.Accept(pelletVisitor);
             this.mapControl.Controls.Add(pellet.PelletPictureBox);
-
-            // Add the pellet to the pellet list.
             pellets.Add(pellet);
         }
 
