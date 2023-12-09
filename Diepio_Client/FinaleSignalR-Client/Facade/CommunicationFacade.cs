@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -12,6 +13,7 @@ namespace FinaleSignalR_Client.Facade
 {
     public class CommunicationFacade
     {
+        private Stopwatch _stopwatch = new Stopwatch();
         private readonly CommunicationAvatar _avatar;
         private readonly CommunicationSendInformation _sendInformation;
         private readonly CommunicationChat _chat;
@@ -111,7 +113,10 @@ namespace FinaleSignalR_Client.Facade
                                     form.RemoveEnemy(parsedMessage[2]);
                                     break;
                                 case "Chat":
+                                    _stopwatch.Stop();
                                     form.AddMessage(parsedMessage[2]);
+                                    form.AddMessage(_stopwatch.Elapsed.ToString());
+                                    
                                     break;
                             }
                         }
@@ -161,6 +166,7 @@ namespace FinaleSignalR_Client.Facade
 
         public void SendChatMessage(string text)
         {
+            _stopwatch.Start();
             _chat.SendChatMessage(text);
         }
     }

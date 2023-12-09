@@ -210,6 +210,11 @@ namespace FinaleSignalR_Client
         {
             if (this.player == null)
             {
+                for (int i = 0; i < 1000; i++)
+                {
+                    commProxy.canICreateAvatar(pClass);
+
+                }
                 createPlayer(id.ToString(), pClass);
                 this.player = players[this.playerCount-1];
                 ServerTimer.Start();
