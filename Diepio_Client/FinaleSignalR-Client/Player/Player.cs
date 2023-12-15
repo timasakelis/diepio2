@@ -27,7 +27,7 @@ namespace FinaleSignalR_Client.Objects
         public PictureBox PlayerBox { get; set; }
         public int lvl { get; set; }
         int exp;
-        private StatHandler levelUpHandler;
+        private ILevelUpHandler levelUpHandler;
 
         //--------------Bridge--------------------
         protected IWepon weapon;

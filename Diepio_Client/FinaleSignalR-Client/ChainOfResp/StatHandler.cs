@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FinaleSignalR_Client.ChainOfResp
 {
-    internal class StatHandler
+    internal class StatHandler : ILevelUpHandler
     {
         private readonly ILevelUpHandler _nextHandler;
 
@@ -36,7 +36,10 @@ namespace FinaleSignalR_Client.ChainOfResp
                     break;  
             }
 
-            _nextHandler?.HandleLevelUp(player);
+            if (player.MaxHP == player.CurrentHP)
+            {
+                _nextHandler?.HandleLevelUp(player);
+            }
         }
     }
 }
